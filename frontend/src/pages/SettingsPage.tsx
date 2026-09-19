@@ -132,7 +132,9 @@ export function SettingsPage() {
 
       <div className="grid" style={{ gap: 12 }}>
         <Section title={t('settings.appearance')}>
-          <div className="row wrap" style={{ gap: 16 }}>
+          {/* Top-aligned: only the language field carries a hint, and centring
+              the row would leave its select sitting above the others. */}
+          <div className="row wrap" style={{ gap: 16, alignItems: 'flex-start' }}>
             <label className="field">
               {t('settings.language')}
               <select
@@ -208,6 +210,9 @@ export function SettingsPage() {
         </Section>
 
         <Section title={t('settings.retention')}>
+          {/* The hint sits under the whole row rather than inside the field:
+              as part of the label it made the field taller than the button
+              beside it, which then hung below the select it belongs with. */}
           <div className="row wrap" style={{ gap: 16, alignItems: 'flex-end' }}>
             <label className="field">
               {t('settings.keepFor')}
@@ -221,7 +226,6 @@ export function SettingsPage() {
                   </option>
                 ))}
               </select>
-              <span className="faint">{t('settings.retentionHint')}</span>
             </label>
 
             <button
@@ -232,6 +236,9 @@ export function SettingsPage() {
             >
               {busy === 'cleanup' ? t('settings.cleaning') : t('settings.runCleanup')}
             </button>
+          </div>
+          <div className="faint small" style={{ marginTop: 6 }}>
+            {t('settings.retentionHint')}
           </div>
         </Section>
 
