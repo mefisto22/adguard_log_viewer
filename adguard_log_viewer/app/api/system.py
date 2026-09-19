@@ -13,6 +13,7 @@ from app.categorization.matchers import OPERATORS as MATCH_OPERATORS
 from app.common.timeutil import NAMED_RANGES, now_ns
 from app.db.migrations import current_version, target_version
 from app.filters.fields import all_fields
+from app.i18n import Message
 from app.ingest.records import RESULT_KINDS
 from app.services import settings_service
 from app.services.classification import count_stale_domains
@@ -87,7 +88,7 @@ async def meta() -> dict[str, Any]:
 async def trigger_ingest(state: StateDep) -> dict[str, Any]:
     """Poll AdGuard right now instead of waiting for the next interval."""
     if state.ingestor is None:
-        raise HTTPException(status_code=503, detail="The ingest loop is not running")
+        raise HTTPException(status_code=503, detail=Message("The ingest loop is not running"))
     state.ingestor.trigger()
     return ok(triggered=True)
 

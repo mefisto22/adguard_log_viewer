@@ -18,11 +18,13 @@ import { useAppStore } from '../stores/useAppStore';
 import { useFilterStore } from '../stores/useFilterStore';
 import { useLiveUpdates } from '../hooks/useLiveUpdates';
 import { formatCompact, formatRelative } from '../utils/format';
+import { useT } from '../i18n/useT';
 import type { QueryRow } from '../types/api';
 
 const PAGE_SIZE = 150;
 
 export function LogPage() {
+  const t = useT();
   const filters = useFilterStore();
   const revision = useFilterStore((state) => state.revision);
   const { liveUpdates, setLiveUpdates, pageSize } = useAppStore();
@@ -189,12 +191,16 @@ export function LogPage() {
         }}
       >
         <span className="muted">
-          {total === null ? '—' : `${formatCompact(total)}${capped ? '+' : ''}`} matching queries
-          {rows.length ? ` · showing ${formatCompact(rows.length)}` : ''}
+          {t('log.matching', {
+            count: total === null ? '—' : `${formatCompact(total)}${capped ? '+' : ''}`,
+          })}
+          {rows.length ? t('log.showing', { count: formatCompact(rows.length) }) : ''}
         </span>
 
         {newCount > 0 ? (
-          <span className="badge allowlisted">{formatCompact(newCount)} new</span>
+          <span className="badge allowlisted">
+            {t('log.new', { count: formatCompact(newCount) })}
+          </span>
         ) : null}
 
         <span className="spacer" />
@@ -205,8 +211,10 @@ export function LogPage() {
           onClick={() => setLiveUpdates(!liveUpdates)}
           title={
             liveUpdates
-              ? `Live updates on (${mode === 'stream' ? 'stream' : 'polling'})`
-              : 'Live updates paused'
+              ? mode === 'stream'
+                ? t('log.liveOnStream')
+                : t('log.liveOnPolling')
+              : t('log.liveOff')
           }
         >
           <span
@@ -222,18 +230,20 @@ export function LogPage() {
               display: 'inline-block',
             }}
           />
-          {liveUpdates ? 'Live' : 'Paused'}
+          {liveUpdates ? t('log.live') : t('log.paused')}
         </button>
 
-        <span className="faint nowrap">updated {formatRelative(lastRefresh * 1_000_000)}</span>
+        <span className="faint nowrap">
+          {t('log.updated', { when: formatRelative(lastRefresh * 1_000_000) })}
+        </span>
 
         <button type="button" className="btn sm" onClick={() => void reload()}>
-          Refresh
+          {t('common.refresh')}
         </button>
 
         <div style={{ position: 'relative' }}>
           <button type="button" className="btn sm" onClick={() => setColumnsOpen((v) => !v)}>
-            Columns
+            {t('log.columns')}
           </button>
           {columnsOpen ? (
             <div
@@ -268,7 +278,7 @@ export function LogPage() {
                       )
                     }
                   />
-                  {column.label}
+                  {t(column.label)}
                 </label>
               ))}
               <button
@@ -277,7 +287,7 @@ export function LogPage() {
                 style={{ width: '100%', marginTop: 4 }}
                 onClick={() => persistColumns(DEFAULT_COLUMNS)}
               >
-                Reset to defaults
+                {t('log.resetColumns')}
               </button>
             </div>
           ) : null}
@@ -288,10 +298,10 @@ export function LogPage() {
         <div style={{ padding: 12 }}>
           <Banner
             kind="error"
-            title="Could not load the query log"
+            title={t('log.loadFailed')}
             action={
               <button type="button" className="btn sm" onClick={() => void reload()}>
-                Retry
+                {t('common.retry')}
               </button>
             }
           >
@@ -302,7 +312,7 @@ export function LogPage() {
 
       {loading && rows.length === 0 ? (
         <div style={{ padding: 24 }}>
-          <Spinner label="Loading query log…" />
+          <Spinner label={t('log.loadingLog')} />
         </div>
       ) : (
         <QueryTable
@@ -320,7 +330,7 @@ export function LogPage() {
       )}
 
       {selected ? (
-        <Drawer title="Query detail" onClose={() => setSelected(null)}>
+        <Drawer title={t('detail.title')} onClose={() => setSelected(null)}>
           <QueryDetail row={selected} />
         </Drawer>
       ) : null}

@@ -12,10 +12,13 @@ import type { QueryRow } from '../types/api';
 import { Empty, ResultBadge, Spinner, TagChips } from './ui';
 import { formatMs, formatSmart } from '../utils/format';
 import { Link } from '../router';
+import { useT } from '../i18n/useT';
+import type { TranslationKey } from '../i18n';
 
 export interface ColumnDef {
   key: string;
-  label: string;
+  /** Translated where the column is rendered, not here. */
+  label: TranslationKey;
   width: string;
   sortKey?: string;
   align?: 'left' | 'right';
@@ -25,14 +28,14 @@ export interface ColumnDef {
 export const ALL_COLUMNS: ColumnDef[] = [
   {
     key: 'time',
-    label: 'Time',
+    label: 'column.time',
     width: '108px',
     sortKey: 'time',
     render: (row) => <span className="mono nowrap">{formatSmart(row.ts_ns)}</span>,
   },
   {
     key: 'domain',
-    label: 'Domain',
+    label: 'column.domain',
     width: 'minmax(220px, 2.2fr)',
     sortKey: 'domain',
     render: (row) => (
@@ -43,7 +46,7 @@ export const ALL_COLUMNS: ColumnDef[] = [
   },
   {
     key: 'client',
-    label: 'Device',
+    label: 'column.device',
     width: 'minmax(130px, 1fr)',
     sortKey: 'client_name',
     render: (row) => (
@@ -58,7 +61,7 @@ export const ALL_COLUMNS: ColumnDef[] = [
   },
   {
     key: 'person',
-    label: 'Person',
+    label: 'column.person',
     width: 'minmax(90px, 0.7fr)',
     sortKey: 'person',
     render: (row) =>
@@ -72,40 +75,40 @@ export const ALL_COLUMNS: ColumnDef[] = [
   },
   {
     key: 'query_type',
-    label: 'Type',
+    label: 'column.type',
     width: '64px',
     sortKey: 'query_type',
     render: (row) => <span className="mono">{row.query_type}</span>,
   },
   {
     key: 'result',
-    label: 'Result',
+    label: 'column.result',
     width: '104px',
     sortKey: 'blocked',
     render: (row) => <ResultBadge result={row.result} />,
   },
   {
     key: 'response_status',
-    label: 'Status',
+    label: 'column.status',
     width: '90px',
     sortKey: 'response_status',
     render: (row) => <span className="mono small">{row.response_status || '—'}</span>,
   },
   {
     key: 'categories',
-    label: 'Categories',
+    label: 'column.categories',
     width: 'minmax(140px, 1fr)',
     render: (row) => <TagChips tags={row.categories} limit={2} />,
   },
   {
     key: 'tags',
-    label: 'Tags',
+    label: 'column.tags',
     width: 'minmax(140px, 1fr)',
     render: (row) => <TagChips tags={row.tags} limit={2} />,
   },
   {
     key: 'answer',
-    label: 'Answer',
+    label: 'column.answer',
     width: 'minmax(120px, 1fr)',
     render: (row) => (
       <span className="mono small truncate" title={row.answer}>
@@ -115,7 +118,7 @@ export const ALL_COLUMNS: ColumnDef[] = [
   },
   {
     key: 'rule',
-    label: 'Rule',
+    label: 'column.rule',
     width: 'minmax(140px, 1fr)',
     render: (row) => (
       <span className="mono small truncate" title={row.rule}>
@@ -125,7 +128,7 @@ export const ALL_COLUMNS: ColumnDef[] = [
   },
   {
     key: 'upstream',
-    label: 'Upstream',
+    label: 'column.upstream',
     width: 'minmax(130px, 1fr)',
     sortKey: 'upstream',
     render: (row) => (
@@ -136,7 +139,7 @@ export const ALL_COLUMNS: ColumnDef[] = [
   },
   {
     key: 'response_time',
-    label: 'Latency',
+    label: 'column.latency',
     width: '80px',
     sortKey: 'response_time',
     align: 'right',
@@ -144,7 +147,7 @@ export const ALL_COLUMNS: ColumnDef[] = [
   },
   {
     key: 'client_proto',
-    label: 'Proto',
+    label: 'column.proto',
     width: '70px',
     render: (row) => <span className="mono small">{row.client_proto || 'plain'}</span>,
   },
@@ -186,6 +189,7 @@ export function QueryTable({
   /** Rows with a higher id than this arrived while the user was watching. */
   highlightNewUntilId?: number;
 }) {
+  const t = useT();
   const parent = useRef<HTMLDivElement>(null);
 
   const visible = useMemo(
@@ -260,7 +264,7 @@ export function QueryTable({
               opacity: 1,
             }}
           >
-            {column.label}
+            {t(column.label)}
             {column.sortKey === sort ? (direction === 'desc' ? ' ↓' : ' ↑') : ''}
           </button>
         ))}
@@ -272,7 +276,7 @@ export function QueryTable({
         style={{ flex: '1 1 auto', overflow: 'auto', minHeight: 0 }}
       >
         {rows.length === 0 && !loading ? (
-          <Empty>No DNS queries match this filter.</Empty>
+          <Empty>{t('log.empty')}</Empty>
         ) : (
           <div style={{ height: virtualizer.getTotalSize(), position: 'relative' }}>
             {items.map((item) => {
@@ -320,7 +324,7 @@ export function QueryTable({
 
         {loading ? (
           <div className="row center" style={{ padding: 16, justifyContent: 'center' }}>
-            <Spinner label="Loading…" />
+            <Spinner label={t('common.loading')} />
           </div>
         ) : null}
       </div>

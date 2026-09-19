@@ -9,6 +9,7 @@ from fastapi import APIRouter, HTTPException
 
 from app.api.deps import DbDep, ok
 from app.filters.nodes import FilterError
+from app.i18n import Message, detail_of
 from app.schemas.entities import SavedFilterCreate, SavedFilterUpdate
 from app.services import saved_filter_service
 from app.services.saved_filter_service import EMPTY_FILTER_MESSAGE
@@ -35,12 +36,12 @@ async def create_saved_filter(payload: SavedFilterCreate, db: DbDep) -> dict[str
     try:
         filter_id = await db.run_write(_run)
     except FilterError as err:
-        raise HTTPException(status_code=400, detail=str(err)) from err
+        raise HTTPException(status_code=400, detail=detail_of(err)) from err
     except ValueError as err:
         status = 400 if str(err) == EMPTY_FILTER_MESSAGE else 409
-        raise HTTPException(status_code=status, detail=str(err)) from err
+        raise HTTPException(status_code=status, detail=detail_of(err)) from err
     except sqlite3.IntegrityError as err:
-        raise HTTPException(status_code=409, detail="That name is already taken") from err
+        raise HTTPException(status_code=409, detail=Message("That name is already taken")) from err
     return ok(id=filter_id)
 
 
@@ -60,13 +61,13 @@ async def update_saved_filter(
     try:
         changed = await db.run_write(_run)
     except FilterError as err:
-        raise HTTPException(status_code=400, detail=str(err)) from err
+        raise HTTPException(status_code=400, detail=detail_of(err)) from err
     except ValueError as err:
-        raise HTTPException(status_code=400, detail=str(err)) from err
+        raise HTTPException(status_code=400, detail=detail_of(err)) from err
     except sqlite3.IntegrityError as err:
-        raise HTTPException(status_code=409, detail="That name is already taken") from err
+        raise HTTPException(status_code=409, detail=Message("That name is already taken")) from err
     if not changed:
-        raise HTTPException(status_code=404, detail="Saved filter not found")
+        raise HTTPException(status_code=404, detail=Message("Saved filter not found"))
     return ok()
 
 
@@ -76,5 +77,5 @@ async def delete_saved_filter(filter_id: int, db: DbDep) -> dict[str, Any]:
         lambda conn: saved_filter_service.delete_saved_filter(conn, filter_id)
     )
     if not removed:
-        raise HTTPException(status_code=404, detail="Saved filter not found")
+        raise HTTPException(status_code=404, detail=Message("Saved filter not found"))
     return ok()

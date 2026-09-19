@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { colorFor, formatCompact } from '../utils/format';
+import { useT } from '../i18n/useT';
 import type { ResultKind, TagRef } from '../types/api';
 
 export function Spinner({ label }: { label?: string }) {
@@ -66,7 +67,7 @@ export function Chip({
       {onRemove ? (
         <button
           type="button"
-          aria-label={`Remove ${label}`}
+          aria-label={label}
           onClick={(event) => {
             event.stopPropagation();
             onRemove();
@@ -99,16 +100,18 @@ export function TagChips({ tags, limit = 4 }: { tags: TagRef[]; limit?: number }
   );
 }
 
-const RESULT_LABELS: Record<ResultKind, string> = {
-  allowed: 'Allowed',
-  blocked: 'Blocked',
-  rewritten: 'Rewritten',
-  allowlisted: 'Allowed (list)',
-  error: 'Error',
-};
+const RESULT_KEYS = {
+  allowed: 'result.allowed',
+  blocked: 'result.blocked',
+  rewritten: 'result.rewritten',
+  allowlisted: 'result.allowlisted',
+  error: 'result.error',
+} as const;
 
 export function ResultBadge({ result }: { result: ResultKind }) {
-  return <span className={`badge ${result}`}>{RESULT_LABELS[result] ?? result}</span>;
+  const t = useT();
+  const key = RESULT_KEYS[result];
+  return <span className={`badge ${result}`}>{key ? t(key) : result}</span>;
 }
 
 export function StatCard({
@@ -150,12 +153,13 @@ export interface TopListItem {
 
 export function TopList({
   items,
-  emptyLabel = 'No data in this period',
+  emptyLabel,
 }: {
   items: TopListItem[];
   emptyLabel?: string;
 }) {
-  if (!items.length) return <Empty>{emptyLabel}</Empty>;
+  const t = useT();
+  if (!items.length) return <Empty>{emptyLabel ?? t('dashboard.noData')}</Empty>;
   const max = Math.max(...items.map((item) => item.count), 1);
   return (
     <div className="grid" style={{ gap: 4 }}>
@@ -212,6 +216,15 @@ export function TopList({
   );
 }
 
+function CloseButton({ onClose }: { onClose: () => void }) {
+  const t = useT();
+  return (
+    <button type="button" className="btn ghost icon" onClick={onClose} aria-label={t('common.close')}>
+      ×
+    </button>
+  );
+}
+
 export function Modal({
   title,
   children,
@@ -245,9 +258,7 @@ export function Modal({
       >
         <header>
           <h2 style={{ flex: '1 1 auto' }}>{title}</h2>
-          <button type="button" className="btn ghost icon" onClick={onClose} aria-label="Close">
-            ×
-          </button>
+          <CloseButton onClose={onClose} />
         </header>
         <div className="body">{children}</div>
         {footer ? <footer>{footer}</footer> : null}
@@ -279,9 +290,7 @@ export function Drawer({
       <aside className="drawer" role="dialog" aria-label={title}>
         <header>
           <h2 style={{ flex: '1 1 auto' }}>{title}</h2>
-          <button type="button" className="btn ghost icon" onClick={onClose} aria-label="Close">
-            ×
-          </button>
+          <CloseButton onClose={onClose} />
         </header>
         <div className="body">{children}</div>
       </aside>

@@ -4,6 +4,8 @@ import { create } from 'zustand';
 import { endpoints } from '../api/endpoints';
 import type { Device, Meta, Person, SavedFilter, Status, Tag } from '../types/api';
 import type { LiveEvent, StreamMode } from './liveUpdates';
+import type { Language, LanguagePreference } from '../i18n';
+import { activeLanguage, resolveLanguage, setActiveLanguage, translate } from '../i18n';
 
 type Theme = 'system' | 'light' | 'dark';
 type Density = 'comfortable' | 'compact';
@@ -15,6 +17,8 @@ interface AppState {
   persons: Person[];
   devices: Device[];
   savedFilters: SavedFilter[];
+  language: Language;
+  languagePreference: LanguagePreference;
   theme: Theme;
   density: Density;
   liveUpdates: boolean;
@@ -34,6 +38,7 @@ interface AppState {
   refreshPersons: () => Promise<void>;
   refreshDevices: () => Promise<void>;
   refreshSavedFilters: () => Promise<void>;
+  setLanguage: (preference: LanguagePreference) => void;
   setTheme: (theme: Theme) => void;
   setDensity: (density: Density) => void;
   setLiveUpdates: (value: boolean) => void;
@@ -58,6 +63,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   persons: [],
   devices: [],
   savedFilters: [],
+  language: resolveLanguage('auto'),
+  languagePreference: 'auto',
   theme: 'system',
   density: 'comfortable',
   liveUpdates: true,
@@ -71,16 +78,21 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   bootstrap: async () => {
     try {
-      const [meta, settings, tags, persons, devices, savedFilters, status] = await Promise.all([
+      // Settings first, and on its own: it carries the language, and every
+      // request after it tells the backend which language to answer in. Folded
+      // into the batch below, the status diagnostics would come back in
+      // whatever language was current before the stored preference was read.
+      const settings = await endpoints.settings();
+      get().setPreferences(settings.app);
+
+      const [meta, tags, persons, devices, savedFilters, status] = await Promise.all([
         endpoints.meta(),
-        endpoints.settings(),
         endpoints.tags(),
         endpoints.persons(),
         endpoints.devices(),
         endpoints.savedFilters(),
         endpoints.status(),
       ]);
-      get().setPreferences(settings.app);
       set({
         meta,
         status,
@@ -94,7 +106,10 @@ export const useAppStore = create<AppState>((set, get) => ({
     } catch (error) {
       set({
         loaded: true,
-        error: error instanceof Error ? error.message : 'Could not load the application',
+        error:
+          error instanceof Error
+            ? error.message
+            : translate(activeLanguage(), 'app.loadFailed'),
       });
     }
   },
@@ -110,6 +125,17 @@ export const useAppStore = create<AppState>((set, get) => ({
   refreshPersons: async () => set({ persons: (await endpoints.persons()).items }),
   refreshDevices: async () => set({ devices: (await endpoints.devices()).items }),
   refreshSavedFilters: async () => set({ savedFilters: (await endpoints.savedFilters()).items }),
+
+  setLanguage: (preference) => {
+    const language = resolveLanguage(preference);
+    setActiveLanguage(language);
+    document.documentElement.lang = language;
+    set({ languagePreference: preference, language });
+    void endpoints.updateSettings({ 'ui.language': preference });
+    // The status carries text the backend translated for the previous
+    // language — the AdGuard diagnostics above all. Fetch it again.
+    void get().refreshStatus();
+  },
 
   setTheme: (theme) => {
     applyTheme(theme, get().density);
@@ -129,8 +155,14 @@ export const useAppStore = create<AppState>((set, get) => ({
   setPreferences: (values) => {
     const theme = (values['ui.theme'] as Theme) ?? 'system';
     const density = (values['ui.density'] as Density) ?? 'comfortable';
+    const languagePreference = (values['ui.language'] as LanguagePreference) ?? 'auto';
+    const language = resolveLanguage(languagePreference);
+    setActiveLanguage(language);
     applyTheme(theme, density);
+    document.documentElement.lang = language;
     set({
+      language,
+      languagePreference,
       theme,
       density,
       liveUpdates: values['ui.live_updates'] !== false,

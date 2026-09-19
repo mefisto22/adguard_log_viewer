@@ -4,7 +4,14 @@
  * Under Home Assistant ingress the app lives at a generated prefix such as
  * `/api/hassio_ingress/<token>/`. Every request is therefore made relative to
  * the directory the document was loaded from, never from the site root.
+ *
+ * Every request also carries the language the UI is rendering in. A few
+ * messages come from the backend — validation errors, and the diagnostics about
+ * reaching AdGuard Home — and they are shown in the same banners as everything
+ * else, so they have to speak the same language.
  */
+
+import { activeLanguage, translate } from '../i18n';
 
 export class ApiError extends Error {
   constructor(
@@ -38,17 +45,21 @@ async function parse(response: Response): Promise<unknown> {
 }
 
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
+  const language = activeLanguage();
+  const headers: Record<string, string> = { 'Accept-Language': language };
+  if (body !== undefined) headers['Content-Type'] = 'application/json';
+
   let response: Response;
   try {
     response = await fetch(apiUrl(path), {
       method,
-      headers: body === undefined ? {} : { 'Content-Type': 'application/json' },
+      headers,
       body: body === undefined ? undefined : JSON.stringify(body),
       credentials: 'same-origin',
     });
   } catch (error) {
     throw new ApiError(
-      error instanceof Error ? error.message : 'The add-on could not be reached',
+      error instanceof Error ? error.message : translate(language, 'error.unreachable'),
       0,
     );
   }
@@ -58,7 +69,7 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
     const detail =
       payload && typeof payload === 'object' && 'detail' in payload
         ? String((payload as { detail: unknown }).detail)
-        : `Request failed with HTTP ${response.status}`;
+        : translate(language, 'error.http', { status: response.status });
     throw new ApiError(detail, response.status);
   }
   return payload as T;

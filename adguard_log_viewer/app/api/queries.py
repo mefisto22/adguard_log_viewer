@@ -8,6 +8,7 @@ from typing import Annotated, Any
 from fastapi import APIRouter, HTTPException, Query
 
 from app.api.deps import DbDep
+from app.i18n import Message
 from app.schemas.common import QueryListRequest, SearchSpec
 from app.services import query_service, saved_filter_service
 
@@ -19,7 +20,7 @@ def _resolve(conn: sqlite3.Connection, request: QueryListRequest) -> Any:
     if request.saved_filter_id is not None:
         stored = saved_filter_service.get_saved_filter(conn, request.saved_filter_id)
         if stored is None:
-            raise HTTPException(status_code=404, detail="Saved filter not found")
+            raise HTTPException(status_code=404, detail=Message("Saved filter not found"))
         saved = stored["filter"]
     return request.to_node(saved_filter=saved)
 
@@ -88,5 +89,5 @@ async def list_queries(
 async def get_query(query_id: int, db: DbDep) -> dict[str, Any]:
     item = await db.run_read(lambda conn: query_service.get_query(conn, query_id))
     if item is None:
-        raise HTTPException(status_code=404, detail="Query not found")
+        raise HTTPException(status_code=404, detail=Message("Query not found"))
     return item

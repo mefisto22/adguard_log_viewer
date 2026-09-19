@@ -8,6 +8,7 @@ import time
 from typing import Any
 
 from app.filters.nodes import parse_filter
+from app.i18n import Message
 
 
 def _row(row: sqlite3.Row) -> dict[str, Any]:
@@ -41,7 +42,7 @@ def get_saved_filter(conn: sqlite3.Connection, filter_id: int) -> dict[str, Any]
 #: — worse — indistinguishable from one whose conditions were lost on the way
 #: in. Storing one used to be allowed, and the UI then showed a condition count
 #: for a filter that narrowed nothing.
-EMPTY_FILTER_MESSAGE = (
+EMPTY_FILTER_MESSAGE = Message(
     "A saved filter needs at least one condition. An empty filter matches every "
     "query, which is the same as having no filter at all."
 )
@@ -59,10 +60,10 @@ def create_saved_filter(
 ) -> int:
     name = name.strip()
     if not name:
-        raise ValueError("A saved filter needs a name")
+        raise ValueError(Message("A saved filter needs a name"))
     existing = conn.execute("SELECT id FROM saved_filters WHERE name = ?", (name,)).fetchone()
     if existing:
-        raise ValueError(f"A saved filter named {name!r} already exists")
+        raise ValueError(Message("A saved filter named {name} already exists", name=repr(name)))
 
     now = int(time.time())
     cursor = conn.execute(
@@ -85,7 +86,7 @@ def update_saved_filter(
     params: list[Any] = []
     if name is not None:
         if not name.strip():
-            raise ValueError("A saved filter needs a name")
+            raise ValueError(Message("A saved filter needs a name"))
         sets.append("name = ?")
         params.append(name.strip())
     if description is not None:

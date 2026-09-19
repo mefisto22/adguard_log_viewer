@@ -7,6 +7,7 @@ from typing import Annotated, Any
 from fastapi import APIRouter, HTTPException, Query
 
 from app.api.deps import DbDep, ok
+from app.i18n import Message
 from app.schemas.common import TimeWindow
 from app.schemas.entities import DomainTagsUpdate
 from app.services import domain_service, tag_service
@@ -42,7 +43,7 @@ async def lookup_domain(
         )
     )
     if detail is None:
-        raise HTTPException(status_code=404, detail="Domain not found")
+        raise HTTPException(status_code=404, detail=Message("Domain not found"))
     return detail
 
 
@@ -64,7 +65,7 @@ async def domain_detail(
         )
     )
     if detail is None:
-        raise HTTPException(status_code=404, detail="Domain not found")
+        raise HTTPException(status_code=404, detail=Message("Domain not found"))
     return detail
 
 
@@ -75,5 +76,5 @@ async def set_domain_tags(
     await db.run_write(lambda conn: tag_service.set_domain_tags(conn, domain_id, payload.tag_ids))
     detail = await db.run_read(lambda conn: domain_service.domain_detail(conn, domain_id=domain_id))
     if detail is None:
-        raise HTTPException(status_code=404, detail="Domain not found")
+        raise HTTPException(status_code=404, detail=Message("Domain not found"))
     return ok({"domain": detail["domain"]})

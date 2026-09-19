@@ -9,6 +9,7 @@
 import { useMemo, useState } from 'react';
 import type { Timeline } from '../types/api';
 import { formatCompact, formatDateTime } from '../utils/format';
+import { useT } from '../i18n/useT';
 
 const HEIGHT = 140;
 const PADDING_TOP = 8;
@@ -39,6 +40,7 @@ export function TimelineChart({
   height?: number;
   onSelect?: (fromMs: number, toMs: number) => void;
 }) {
+  const t = useT();
   const [hover, setHover] = useState<number | null>(null);
 
   const points = useMemo(() => timeline?.points ?? [], [timeline]);
@@ -47,7 +49,7 @@ export function TimelineChart({
   if (!timeline || !points.length) {
     return (
       <div className="empty" style={{ height, display: 'grid', placeItems: 'center' }}>
-        No activity in this period
+        {t('dashboard.noActivity')}
       </div>
     );
   }
@@ -67,7 +69,7 @@ export function TimelineChart({
         preserveAspectRatio="none"
         style={{ width: '100%', height, display: 'block' }}
         role="img"
-        aria-label="DNS query activity over time"
+        aria-label={t('chart.aria')}
         onMouseLeave={() => setHover(null)}
       >
         {[0.25, 0.5, 0.75, 1].map((fraction) => (
@@ -151,21 +153,24 @@ export function TimelineChart({
       <div className="row small" style={{ gap: 14, marginTop: 8 }}>
         <span className="row" style={{ gap: 5 }}>
           <span style={{ width: 9, height: 9, borderRadius: 2, background: 'var(--primary)' }} />
-          Allowed
+          {t('chart.allowed')}
         </span>
         <span className="row" style={{ gap: 5 }}>
           <span style={{ width: 9, height: 9, borderRadius: 2, background: 'var(--danger)' }} />
-          Blocked
+          {t('chart.blocked')}
         </span>
         <span className="spacer" />
         {active ? (
           <span className="muted mono nowrap">
-            {formatDateTime(active.t * 1_000_000)} · {formatCompact(active.total)} queries ·{' '}
-            {formatCompact(active.blocked)} blocked
+            {t('chart.tooltip', {
+              time: formatDateTime(active.t * 1_000_000),
+              total: formatCompact(active.total),
+              blocked: formatCompact(active.blocked),
+            })}
           </span>
         ) : (
           <span className="faint">
-            {points.length} buckets of {timeline.bucket_seconds}s
+            {t('chart.buckets', { count: points.length, seconds: timeline.bucket_seconds })}
           </span>
         )}
       </div>

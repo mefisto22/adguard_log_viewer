@@ -13,6 +13,8 @@ from typing import Any
 
 import httpx
 
+from app.i18n import Message
+
 _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_TIMEOUT = httpx.Timeout(connect=5.0, read=30.0, write=10.0, pool=5.0)
@@ -77,12 +79,23 @@ class AdGuardClient:
         try:
             response = await self._client.get(url, params=params)
         except httpx.HTTPError as err:
-            raise AdGuardError(f"Cannot reach AdGuard Home at {self.base_url}: {err}") from err
+            raise AdGuardError(
+                Message(
+                    "Cannot reach AdGuard Home at {url}: {error}",
+                    url=self.base_url,
+                    error=str(err),
+                )
+            ) from err
 
         if response.status_code >= 400:
             detail = _short_body(response)
             raise AdGuardError(
-                f"AdGuard Home returned HTTP {response.status_code} for {path}{detail}",
+                Message(
+                    "AdGuard Home returned HTTP {status} for {path}{detail}",
+                    status=response.status_code,
+                    path=path,
+                    detail=detail,
+                ),
                 status_code=response.status_code,
             )
 
@@ -91,14 +104,20 @@ class AdGuardClient:
             # An HTML login page here means the request was intercepted by the
             # add-on's nginx auth layer rather than answered by AdGuard.
             raise AdGuardError(
-                f"AdGuard Home returned {content_type or 'an unknown content type'} "
-                f"instead of JSON for {path}; check the credentials",
+                Message(
+                    "AdGuard Home returned {content_type} instead of JSON for {path}; "
+                    "check the credentials",
+                    content_type=content_type or Message("an unknown content type"),
+                    path=path,
+                ),
                 status_code=response.status_code,
             )
         try:
             return response.json()
         except ValueError as err:
-            raise AdGuardError(f"Malformed JSON from AdGuard Home for {path}") from err
+            raise AdGuardError(
+                Message("Malformed JSON from AdGuard Home for {path}", path=path)
+            ) from err
 
     # -- endpoints ----------------------------------------------------------
 

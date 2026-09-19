@@ -7,13 +7,14 @@ from typing import Annotated, Any
 from fastapi import Depends, HTTPException, Request
 
 from app.db.database import Database
+from app.i18n import Message
 from app.runtime import AppState
 
 
 def get_state(request: Request) -> AppState:
     state: AppState | None = getattr(request.app.state, "app_state", None)
     if state is None:  # pragma: no cover - only before startup completes
-        raise HTTPException(status_code=503, detail="The application is still starting")
+        raise HTTPException(status_code=503, detail=Message("The application is still starting"))
     return state
 
 

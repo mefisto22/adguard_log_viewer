@@ -9,8 +9,10 @@ import { Link, navigate } from '../router';
 import { useAppStore } from '../stores/useAppStore';
 import { useFilterStore } from '../stores/useFilterStore';
 import { formatCompact, formatDateTime } from '../utils/format';
+import { useT } from '../i18n/useT';
 
 export function DomainDetailPage({ id }: { id: number }) {
+  const t = useT();
   const [range, setRange] = useState('24h');
   const [tagsOpen, setTagsOpen] = useState(false);
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
@@ -50,7 +52,7 @@ export function DomainDetailPage({ id }: { id: number }) {
   if (!data)
     return (
       <div className="main">
-        <Spinner label="Loading domain…" />
+        <Spinner label={t('domains.loadingDomain')} />
       </div>
     );
 
@@ -62,13 +64,15 @@ export function DomainDetailPage({ id }: { id: number }) {
       <div className="row wrap" style={{ gap: 10, marginBottom: 12 }}>
         <div style={{ minWidth: 0 }}>
           <div className="small muted">
-            <Link to="/domains">Domains</Link> /
+            <Link to="/domains">{t('nav.domains')}</Link> /
           </div>
           <h1 style={{ overflowWrap: 'anywhere' }}>{domain.name}</h1>
           <div className="muted small">
-            Registrable: <span className="mono">{domain.registrable_domain}</span> · first seen{' '}
-            {formatDateTime(domain.first_seen_ns)} · last seen{' '}
-            {formatDateTime(domain.last_seen_ns)}
+            {t('domains.registrableLine', {
+              registrable: domain.registrable_domain,
+              first: formatDateTime(domain.first_seen_ns),
+              last: formatDateTime(domain.last_seen_ns),
+            })}
           </div>
           <div className="row wrap" style={{ gap: 4, marginTop: 6 }}>
             {allTags.length ? (
@@ -81,17 +85,17 @@ export function DomainDetailPage({ id }: { id: number }) {
                 />
               ))
             ) : (
-              <span className="faint small">No tags — add one, or write a rule.</span>
+              <span className="faint small">{t('domains.noTags')}</span>
             )}
           </div>
         </div>
         <span className="spacer" />
         <RangePicker range={range} onChange={setRange} />
         <button type="button" className="btn" onClick={openTags}>
-          Edit tags
+          {t('domains.editTags')}
         </button>
         <button type="button" className="btn primary" onClick={showInLog}>
-          Show in log
+          {t('common.showInLog')}
         </button>
       </div>
 
@@ -101,7 +105,9 @@ export function DomainDetailPage({ id }: { id: number }) {
 
       {data.related_domains.length ? (
         <div style={{ marginTop: 12 }}>
-          <Section title={`Related domains under ${domain.registrable_domain}`}>
+          <Section
+            title={t('domains.related', { registrable: domain.registrable_domain })}
+          >
             <table className="data">
               <tbody>
                 {data.related_domains.map((related) => (
@@ -121,23 +127,22 @@ export function DomainDetailPage({ id }: { id: number }) {
 
       {tagsOpen ? (
         <Modal
-          title={`Tags for ${domain.name}`}
+          title={t('domains.tagsModalTitle', { domain: domain.name })}
           onClose={() => setTagsOpen(false)}
           footer={
             <>
               <span className="spacer" />
               <button type="button" className="btn" onClick={() => setTagsOpen(false)}>
-                Cancel
+                {t('common.cancel')}
               </button>
               <button type="button" className="btn primary" onClick={() => void saveTags()}>
-                Save
+                {t('common.save')}
               </button>
             </>
           }
         >
           <p className="muted small" style={{ marginTop: 0 }}>
-            Tags you set here stay put when the rules change. Automatic tags are managed by the
-            rule engine and are not listed.
+            {t('domains.tagsIntro')}
           </p>
           <div style={{ maxHeight: 340, overflow: 'auto' }}>
             {tags.map((tag) => (

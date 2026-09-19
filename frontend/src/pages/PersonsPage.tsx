@@ -7,6 +7,7 @@ import { useAsync } from '../hooks/useAsync';
 import { useAppStore } from '../stores/useAppStore';
 import { Link } from '../router';
 import { colorFor, formatCompact, formatRelative } from '../utils/format';
+import { useT } from '../i18n/useT';
 import type { Person } from '../types/api';
 
 const PALETTE = [
@@ -15,6 +16,7 @@ const PALETTE = [
 ];
 
 export function PersonsPage() {
+  const t = useT();
   const { devices, refreshPersons, refreshDevices } = useAppStore();
   const { data, error, loading, reload } = useAsync(() => endpoints.persons(), []);
 
@@ -71,7 +73,7 @@ export function PersonsPage() {
   };
 
   const remove = async (person: Person) => {
-    if (!window.confirm(`Delete “${person.name}”? Their devices stay, just unassigned.`)) return;
+    if (!window.confirm(t('people.deleteConfirm', { name: person.name }))) return;
     await endpoints.deletePerson(person.id);
     reload();
     await Promise.all([refreshPersons(), refreshDevices()]);
@@ -80,10 +82,10 @@ export function PersonsPage() {
   return (
     <div className="main">
       <Section
-        title="People"
+        title={t('people.title')}
         actions={
           <button type="button" className="btn primary" onClick={openNew}>
-            Add person
+            {t('people.add')}
           </button>
         }
         bodyStyle={{ padding: 0 }}
@@ -91,26 +93,23 @@ export function PersonsPage() {
         {error ? <Banner kind="error">{error}</Banner> : null}
         {loading && !data ? (
           <div style={{ padding: 16 }}>
-            <Spinner label="Loading people…" />
+            <Spinner label={t('people.loading')} />
           </div>
         ) : null}
 
         {data && data.items.length === 0 ? (
-          <Empty>
-            No people yet. Create one and assign their phone, laptop and tablet to it — then you can
-            filter the log by person instead of by IP address.
-          </Empty>
+          <Empty>{t('people.empty')}</Empty>
         ) : null}
 
         {data && data.items.length > 0 ? (
           <table className="data">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Devices</th>
-                <th className="right">Queries</th>
-                <th className="right">Blocked</th>
-                <th>Last activity</th>
+                <th>{t('common.name')}</th>
+                <th>{t('people.colDevices')}</th>
+                <th className="right">{t('common.queries')}</th>
+                <th className="right">{t('common.blocked')}</th>
+                <th>{t('people.colLastActivity')}</th>
                 <th />
               </tr>
             </thead>
@@ -140,7 +139,7 @@ export function PersonsPage() {
                           <Chip key={device.id} label={device.name} title={device.ip} />
                         ))
                       ) : (
-                        <span className="faint">none</span>
+                        <span className="faint">{t('common.none')}</span>
                       )}
                     </div>
                   </td>
@@ -149,14 +148,14 @@ export function PersonsPage() {
                   <td className="muted small nowrap">{formatRelative(person.last_seen_ns)}</td>
                   <td className="right nowrap">
                     <button type="button" className="btn sm" onClick={() => openEdit(person)}>
-                      Edit
+                      {t('common.edit')}
                     </button>{' '}
                     <button
                       type="button"
                       className="btn sm danger"
                       onClick={() => void remove(person)}
                     >
-                      Delete
+                      {t('common.delete')}
                     </button>
                   </td>
                 </tr>
@@ -168,13 +167,15 @@ export function PersonsPage() {
 
       {editing ? (
         <Modal
-          title={editing === 'new' ? 'Add person' : `Edit ${editing.name}`}
+          title={
+            editing === 'new' ? t('people.add') : t('people.editTitle', { name: editing.name })
+          }
           onClose={() => setEditing(null)}
           footer={
             <>
               <span className="spacer" />
               <button type="button" className="btn" onClick={() => setEditing(null)}>
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 type="button"
@@ -182,7 +183,7 @@ export function PersonsPage() {
                 disabled={!name.trim()}
                 onClick={() => void save()}
               >
-                Save
+                {t('common.save')}
               </button>
             </>
           }
@@ -190,18 +191,18 @@ export function PersonsPage() {
           {formError ? <Banner kind="error">{formError}</Banner> : null}
           <div className="grid" style={{ gap: 12 }}>
             <label className="field">
-              Name
+              {t('common.name')}
               <input
                 type="text"
                 autoFocus
                 value={name}
-                placeholder="Péter"
+                placeholder={t('people.namePlaceholder')}
                 onChange={(event) => setName(event.target.value)}
               />
             </label>
 
             <div className="field">
-              Colour
+              {t('common.colour')}
               <div className="row wrap" style={{ gap: 6 }}>
                 {PALETTE.map((option) => (
                   <button
@@ -224,17 +225,17 @@ export function PersonsPage() {
             </div>
 
             <label className="field">
-              Note
+              {t('common.note')}
               <input
                 type="text"
                 value={note}
                 onChange={(event) => setNote(event.target.value)}
-                placeholder="optional"
+                placeholder={t('common.optional')}
               />
             </label>
 
             <div className="field">
-              Devices
+              {t('people.devices')}
               <div
                 style={{
                   maxHeight: 220,
@@ -246,7 +247,7 @@ export function PersonsPage() {
               >
                 {devices.length === 0 ? (
                   <div className="faint small" style={{ padding: 8 }}>
-                    No devices have been seen yet.
+                    {t('people.noDevicesSeen')}
                   </div>
                 ) : (
                   devices.map((device) => (

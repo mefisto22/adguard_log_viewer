@@ -11,17 +11,16 @@ import { Banner, Chip, Empty, Modal, Section, Spinner } from '../components/ui';
 import { endpoints } from '../api/endpoints';
 import { useAsync } from '../hooks/useAsync';
 import { useAppStore } from '../stores/useAppStore';
+import { operatorKey } from '../i18n';
+import { useT } from '../i18n/useT';
 import type { Rule, RuleCondition, TagKind } from '../types/api';
 
-const OPERATORS: { value: string; label: string }[] = [
-  { value: 'suffix', label: 'is or is under (domain suffix)' },
-  { value: 'equals', label: 'equals exactly' },
-  { value: 'contains', label: 'contains' },
-  { value: 'startswith', label: 'starts with' },
-  { value: 'endswith', label: 'ends with' },
-  { value: 'wildcard', label: 'matches wildcard' },
-  { value: 'regex', label: 'matches regex' },
-];
+const OPERATORS = ['suffix', 'exactly', 'contains', 'startswith', 'endswith', 'wildcard', 'regex'];
+
+// The rule editor calls exact matching "exactly", to tell it apart from the
+// filter builder's "is". The stored operator is `equals` either way.
+const OPERATOR_VALUES: Record<string, string> = { exactly: 'equals' };
+const OPERATOR_NAMES: Record<string, string> = { equals: 'exactly' };
 
 const emptyRule = (): Omit<Rule, 'id' | 'builtin'> => ({
   name: '',
@@ -33,6 +32,7 @@ const emptyRule = (): Omit<Rule, 'id' | 'builtin'> => ({
 });
 
 export function RulesPage() {
+  const t = useT();
   const { tags, refreshTags } = useAppStore();
   const { data, error, loading, reload } = useAsync(() => endpoints.rules(), []);
 
@@ -75,15 +75,15 @@ export function RulesPage() {
       tags: draft.tags.filter((tag) => tag.name.trim()),
     };
     if (!payload.name.trim()) {
-      setFormError('The rule needs a name.');
+      setFormError(t('rules.needName'));
       return;
     }
     if (!payload.conditions.length) {
-      setFormError('Add at least one condition.');
+      setFormError(t('rules.needCondition'));
       return;
     }
     if (!payload.tags.length) {
-      setFormError('Add at least one tag to apply.');
+      setFormError(t('rules.needTag'));
       return;
     }
     try {
@@ -98,7 +98,7 @@ export function RulesPage() {
   };
 
   const remove = async (rule: Rule) => {
-    if (!window.confirm(`Delete the rule “${rule.name}”?`)) return;
+    if (!window.confirm(t('rules.deleteConfirm', { name: rule.name }))) return;
     await endpoints.deleteRule(rule.id);
     reload();
   };
@@ -114,8 +114,8 @@ export function RulesPage() {
       });
       setTestResult(
         result.matched
-          ? `Matches — would apply: ${result.tags.map((tag) => tag.name).join(', ')}`
-          : 'Does not match this domain.',
+          ? t('rules.testMatches', { tags: result.tags.map((tag) => tag.name).join(', ') })
+          : t('rules.testNoMatch'),
       );
     } catch (err) {
       setTestResult(err instanceof Error ? err.message : String(err));
@@ -149,47 +149,43 @@ export function RulesPage() {
           kind="info"
           action={
             <button type="button" className="btn sm" disabled={busy} onClick={() => void reclassify()}>
-              {busy ? 'Working…' : 'Re-classify now'}
+              {busy ? t('common.working') : t('rules.reclassifyNow')}
             </button>
           }
         >
-          {data.pending_reclassification} domain(s) are still tagged with an older rule set. They
-          are re-classified in the background as ingest runs.
+          {t('rules.pending', { count: data.pending_reclassification })}
         </Banner>
       ) : null}
 
       <div style={{ marginBottom: 12 }}>
         <Section
-          title="Your rules"
+          title={t('rules.yourRules')}
           actions={
             <button type="button" className="btn primary" onClick={openNew}>
-              Add rule
+              {t('rules.add')}
             </button>
           }
           bodyStyle={{ padding: 0 }}
         >
           {loading && !data ? (
             <div style={{ padding: 16 }}>
-              <Spinner label="Loading rules…" />
+              <Spinner label={t('rules.loading')} />
             </div>
           ) : null}
 
           {data && data.items.length === 0 ? (
-            <Empty>
-              No rules of your own yet. The built-in set already covers the big services — add a
-              rule when you want your own label, for example tagging your work domains.
-            </Empty>
+            <Empty>{t('rules.empty')}</Empty>
           ) : null}
 
           {data && data.items.length > 0 ? (
             <table className="data">
               <thead>
                 <tr>
-                  <th>Rule</th>
-                  <th>Match</th>
-                  <th>Conditions</th>
-                  <th>Applies</th>
-                  <th className="right">Priority</th>
+                  <th>{t('rules.colRule')}</th>
+                  <th>{t('rules.colMatch')}</th>
+                  <th>{t('rules.colConditions')}</th>
+                  <th>{t('rules.colApplies')}</th>
+                  <th className="right">{t('rules.colPriority')}</th>
                   <th />
                 </tr>
               </thead>
@@ -198,9 +194,13 @@ export function RulesPage() {
                   <tr key={rule.id}>
                     <td>
                       <strong>{rule.name}</strong>
-                      {!rule.enabled ? <span className="faint small"> (disabled)</span> : null}
+                      {!rule.enabled ? (
+                        <span className="faint small"> {t('rules.disabled')}</span>
+                      ) : null}
                     </td>
-                    <td className="small muted">{rule.match_mode === 'any' ? 'ANY' : 'ALL'}</td>
+                    <td className="small muted">
+                      {rule.match_mode === 'any' ? t('search.modeAny') : t('search.modeAll')}
+                    </td>
                     <td className="small mono">
                       {rule.conditions.map((condition, index) => (
                         <div key={index}>
@@ -218,14 +218,14 @@ export function RulesPage() {
                     <td className="right mono">{rule.priority}</td>
                     <td className="right nowrap">
                       <button type="button" className="btn sm" onClick={() => openEdit(rule)}>
-                        Edit
+                        {t('common.edit')}
                       </button>{' '}
                       <button
                         type="button"
                         className="btn sm danger"
                         onClick={() => void remove(rule)}
                       >
-                        Delete
+                        {t('common.delete')}
                       </button>
                     </td>
                   </tr>
@@ -237,10 +237,10 @@ export function RulesPage() {
       </div>
 
       <Section
-        title={`Built-in rules (${data?.builtin.length ?? 0})`}
+        title={t('rules.builtinTitle', { count: data?.builtin.length ?? 0 })}
         actions={
           <button type="button" className="btn sm" onClick={() => setShowBuiltin((v) => !v)}>
-            {showBuiltin ? 'Hide' : 'Show'}
+            {showBuiltin ? t('rules.hide') : t('rules.show')}
           </button>
         }
         bodyStyle={showBuiltin ? { padding: 0 } : undefined}
@@ -249,9 +249,9 @@ export function RulesPage() {
           <table className="data">
             <thead>
               <tr>
-                <th>Rule</th>
-                <th>Matches</th>
-                <th>Applies</th>
+                <th>{t('rules.colRule')}</th>
+                <th>{t('rules.colMatches')}</th>
+                <th>{t('rules.colApplies')}</th>
               </tr>
             </thead>
             <tbody>
@@ -276,26 +276,26 @@ export function RulesPage() {
           </table>
         ) : (
           <p className="muted small" style={{ margin: 0 }}>
-            The add-on ships with a rule set covering the common services — Google, Meta, streaming,
-            advertising, telemetry, IoT vendors and more. It is bundled with the image; nothing is
-            downloaded at runtime.
+            {t('rules.builtinIntro')}
           </p>
         )}
       </Section>
 
       {editing ? (
         <Modal
-          title={editing === 'new' ? 'New rule' : `Edit “${editing.name}”`}
+          title={
+            editing === 'new' ? t('rules.newTitle') : t('rules.editTitle', { name: editing.name })
+          }
           onClose={() => setEditing(null)}
           wide
           footer={
             <>
               <span className="spacer" />
               <button type="button" className="btn" onClick={() => setEditing(null)}>
-                Cancel
+                {t('common.cancel')}
               </button>
               <button type="button" className="btn primary" onClick={() => void save()}>
-                Save
+                {t('common.save')}
               </button>
             </>
           }
@@ -305,7 +305,7 @@ export function RulesPage() {
           <div className="grid" style={{ gap: 12 }}>
             <div className="row wrap" style={{ gap: 10 }}>
               <label className="field" style={{ flex: '2 1 220px' }}>
-                Rule name
+                {t('rules.ruleName')}
                 <input
                   type="text"
                   autoFocus
@@ -315,19 +315,19 @@ export function RulesPage() {
                 />
               </label>
               <label className="field" style={{ flex: '1 1 130px' }}>
-                Match
+                {t('rules.matchLabel')}
                 <select
                   value={draft.match_mode}
                   onChange={(event) =>
                     setDraft({ ...draft, match_mode: event.target.value as 'any' | 'all' })
                   }
                 >
-                  <option value="any">ANY condition</option>
-                  <option value="all">ALL conditions</option>
+                  <option value="any">{t('rules.matchAny')}</option>
+                  <option value="all">{t('rules.matchAll')}</option>
                 </select>
               </label>
               <label className="field" style={{ flex: '0 0 110px' }}>
-                Priority
+                {t('rules.priority')}
                 <input
                   type="number"
                   value={draft.priority}
@@ -337,7 +337,7 @@ export function RulesPage() {
                 />
               </label>
               <label className="field" style={{ flex: '0 0 auto' }}>
-                Enabled
+                {t('rules.enabled')}
                 <input
                   type="checkbox"
                   checked={draft.enabled}
@@ -347,22 +347,29 @@ export function RulesPage() {
             </div>
 
             <div className="field">
-              Conditions
+              {t('rules.conditions')}
               <div className="grid" style={{ gap: 6 }}>
                 {draft.conditions.map((condition, index) => (
                   <div key={index} className="row" style={{ gap: 6 }}>
                     <span className="muted small nowrap" style={{ width: 52 }}>
-                      domain
+                      {t('rules.domainLabel')}
                     </span>
                     <select
-                      value={condition.operator}
-                      onChange={(event) => patchCondition(index, { operator: event.target.value })}
+                      value={OPERATOR_NAMES[condition.operator] ?? condition.operator}
+                      onChange={(event) =>
+                        patchCondition(index, {
+                          operator: OPERATOR_VALUES[event.target.value] ?? event.target.value,
+                        })
+                      }
                     >
-                      {OPERATORS.map((operator) => (
-                        <option key={operator.value} value={operator.value}>
-                          {operator.label}
-                        </option>
-                      ))}
+                      {OPERATORS.map((name) => {
+                        const key = operatorKey(name);
+                        return (
+                          <option key={name} value={name}>
+                            {key ? t(key) : name}
+                          </option>
+                        );
+                      })}
                     </select>
                     <input
                       type="text"
@@ -399,14 +406,14 @@ export function RulesPage() {
                       })
                     }
                   >
-                    + Condition
+                    {t('builder.addCondition')}
                   </button>
                 </div>
               </div>
             </div>
 
             <div className="field">
-              Tags to apply
+              {t('rules.tagsToApply')}
               <div className="grid" style={{ gap: 6 }}>
                 {draft.tags.map((tag, index) => (
                   <div key={index} className="row" style={{ gap: 6 }}>
@@ -438,8 +445,8 @@ export function RulesPage() {
                         })
                       }
                     >
-                      <option value="tag">tag</option>
-                      <option value="category">category</option>
+                      <option value="tag">{t('rules.kindTag')}</option>
+                      <option value="category">{t('rules.kindCategory')}</option>
                     </select>
                     <button
                       type="button"
@@ -468,14 +475,14 @@ export function RulesPage() {
                       setDraft({ ...draft, tags: [...draft.tags, { name: '', kind: 'tag' }] })
                     }
                   >
-                    + Tag
+                    {t('rules.addTag')}
                   </button>
                 </div>
               </div>
             </div>
 
             <div className="field">
-              Try it
+              {t('rules.tryIt')}
               <div className="row" style={{ gap: 6 }}>
                 <input
                   type="text"
@@ -485,7 +492,7 @@ export function RulesPage() {
                   style={{ flex: '1 1 200px' }}
                 />
                 <button type="button" className="btn" onClick={() => void runTest()}>
-                  Test
+                  {t('rules.test')}
                 </button>
               </div>
               {testResult ? <div className="small muted">{testResult}</div> : null}

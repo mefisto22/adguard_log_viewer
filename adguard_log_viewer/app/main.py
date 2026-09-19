@@ -12,8 +12,10 @@ import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import Any
 
 from fastapi import FastAPI, Request
+from fastapi.exceptions import HTTPException
 from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 
@@ -23,6 +25,14 @@ from app.common.timeutil import now_ns
 from app.config import Settings, get_settings
 from app.db.database import Database, QueryTimeout, set_database
 from app.filters.nodes import FilterError
+from app.i18n import (
+    Message,
+    detail_of,
+    localize,
+    reset_current_language,
+    resolve_language,
+    set_current_language,
+)
 from app.ingest.ingestor import Ingestor
 from app.logging_setup import setup_logging
 from app.runtime import AppState
@@ -88,17 +98,44 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     application.state.app_state = state
 
+    @application.middleware("http")
+    async def _language(request: Request, call_next: Any) -> Response:
+        """Pin the request's language for the messages the backend produces.
+
+        The frontend sends the language it is rendering in ``Accept-Language``,
+        which already reflects both Home Assistant's language and any override
+        the user picked on the Settings page. A browser hitting the API directly
+        sends its own list, which is the right answer for it too.
+        """
+        token = set_current_language(resolve_language(request.headers.get("accept-language")))
+        try:
+            return await call_next(request)
+        finally:
+            reset_current_language(token)
+
+    def _error(err: Exception) -> JSONResponse:
+        return JSONResponse(status_code=400, content={"detail": str(localize(detail_of(err)))})
+
     @application.exception_handler(FilterError)
     async def _filter_error(_: Request, err: FilterError) -> JSONResponse:
-        return JSONResponse(status_code=400, content={"detail": str(err)})
+        return _error(err)
 
     @application.exception_handler(QueryTimeout)
     async def _query_timeout(_: Request, err: QueryTimeout) -> JSONResponse:
-        return JSONResponse(status_code=400, content={"detail": str(err)})
+        return _error(err)
 
     @application.exception_handler(SettingsError)
     async def _settings_error(_: Request, err: SettingsError) -> JSONResponse:
-        return JSONResponse(status_code=400, content={"detail": str(err)})
+        return _error(err)
+
+    @application.exception_handler(HTTPException)
+    async def _http_error(_: Request, err: HTTPException) -> JSONResponse:
+        """FastAPI's own handler, with the detail translated on the way out."""
+        return JSONResponse(
+            status_code=err.status_code,
+            content={"detail": localize(err.detail)},
+            headers=err.headers,
+        )
 
     application.include_router(api_router)
 
@@ -110,7 +147,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def spa(path: str) -> Response:
         """Serve the single-page app, falling back to ``index.html``."""
         if path.startswith("api/"):
-            return JSONResponse(status_code=404, content={"detail": "Not found"})
+            return JSONResponse(status_code=404, content={"detail": str(Message("Not found"))})
 
         candidate = (STATIC_DIR / path).resolve() if path else INDEX_FILE
         if (

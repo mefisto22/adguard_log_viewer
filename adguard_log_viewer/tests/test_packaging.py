@@ -259,3 +259,46 @@ class TestRepository:
             if path.is_file() and ".venv" not in path.parts
         ]
         assert not duplicates, f"copies left behind: {duplicates}"
+
+
+class TestOptionTranslations:
+    """Home Assistant renders the add-on's Configuration tab from these.
+
+    The Supervisor picks the file matching the user's own language, so a missing
+    entry shows the raw option key — ``adguard_url`` instead of a label and an
+    explanation — to exactly the people who most need the explanation.
+    """
+
+    @pytest.fixture
+    def translations(self) -> dict[str, dict]:
+        return {
+            path.stem: yaml.safe_load(path.read_text(encoding="utf-8"))
+            for path in sorted((ADDON_ROOT / "translations").glob("*.yaml"))
+        }
+
+    def test_one_file_per_language_the_app_speaks(self, translations: dict[str, dict]) -> None:
+        from app.i18n import LANGUAGES
+
+        assert set(translations) == set(LANGUAGES)
+
+    def test_every_option_is_described_in_every_language(
+        self, config: dict, translations: dict[str, dict]
+    ) -> None:
+        options = set(config["schema"])
+        for language, data in translations.items():
+            described = data.get("configuration") or {}
+            assert set(described) == options, (
+                f"{language}.yaml does not match the schema: "
+                f"missing {sorted(options - set(described))}, "
+                f"unknown {sorted(set(described) - options)}"
+            )
+            for key, entry in described.items():
+                assert entry.get("name"), f"{language}.yaml: {key} has no name"
+                assert entry.get("description"), f"{language}.yaml: {key} has no description"
+
+    def test_the_published_port_is_explained_in_every_language(
+        self, config: dict, translations: dict[str, dict]
+    ) -> None:
+        ports = set(config.get("ports") or {})
+        for language, data in translations.items():
+            assert set(data.get("network") or {}) == ports, f"{language}.yaml: ports differ"

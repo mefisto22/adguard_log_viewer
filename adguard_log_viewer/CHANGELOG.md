@@ -1,5 +1,49 @@
 # Changelog
 
+## 0.2.0
+
+**Hungarian and English, following Home Assistant.** *(Magyarul lentebb.)*
+
+- The web interface is now translated. It reads the language from the Home
+  Assistant frontend around it — under ingress the page is same-origin, so the
+  `lang` attribute of the parent document is readable, and that reflects the
+  language chosen in the user's profile rather than just the system default.
+  Outside Home Assistant it falls back to the browser's language, then English.
+- The add-on's Configuration page was already translated through
+  `translations/en.yaml` and `translations/hu.yaml`; a packaging test now keeps
+  those files in step with the option schema, so a new option cannot ship with
+  an untranslated label.
+- Messages produced by the backend — validation errors, "not found" replies and
+  the diagnostics about reaching AdGuard Home — are translated too. Each request
+  carries an `Accept-Language` header and the reply follows it.
+- Dates, numbers and relative times use the same language, so a Hungarian page
+  no longer mixes Hungarian labels with `09/19/2026` timestamps.
+- Settings → Appearance → Language overrides the choice per user:
+  *Follow Home Assistant*, *English* or *Magyar*.
+- README.md and DOCS.md are bilingual, English first.
+
+---
+
+**Magyar és angol, a Home Assistantot követve.**
+
+- A webes felület mostantól fordítva van. A nyelvet a körülötte lévő Home
+  Assistant felülettől veszi — ingress alatt az oldal azonos origin-ről szolgál
+  ki, így a szülő dokumentum `lang` attribútuma olvasható, az pedig a
+  felhasználó profiljában választott nyelvet tükrözi, nem csak a rendszerét.
+  Home Assistanton kívül a böngésző nyelvére, majd az angolra esik vissza.
+- Az add-on Konfiguráció lapja eddig is fordítva volt a `translations/en.yaml`
+  és `translations/hu.yaml` fájlokból; mostantól egy csomagolási teszt tartja
+  szinkronban ezeket az opciósémával, így új opció nem kerülhet ki lefordítatlan
+  felirattal.
+- A backend üzenetei — validációs hibák, „nem található" válaszok és az AdGuard
+  elérésével kapcsolatos diagnosztika — szintén fordítottak. Minden kérés visz
+  egy `Accept-Language` fejlécet, a válasz ehhez igazodik.
+- A dátumok, számok és relatív időpontok is ezt a nyelvet követik, így egy magyar
+  oldalon nem keverednek a feliratok `09/19/2026` alakú időbélyegekkel.
+- A Settings → Megjelenés → Nyelv felhasználónként felülírja a választást:
+  *Home Assistant szerint*, *English* vagy *Magyar*.
+- A README.md és a DOCS.md két nyelvű, angollal kezdve.
+
 ## 0.1.5
 
 **Az automatikus felderítés eddig soha nem működhetett.**

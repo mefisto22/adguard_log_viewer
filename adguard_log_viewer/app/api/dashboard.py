@@ -8,6 +8,7 @@ from typing import Annotated, Any
 from fastapi import APIRouter, HTTPException, Query
 
 from app.api.deps import DbDep
+from app.i18n import Message
 from app.schemas.common import DashboardRequest
 from app.services import dashboard_service
 
@@ -33,7 +34,9 @@ async def dashboard(request: DashboardRequest, db: DbDep) -> dict[str, Any]:
     requested = request.parts or list(dashboard_service.DEFAULT_PARTS)
     unknown = [part for part in requested if part not in dashboard_service.PART_BUILDERS]
     if unknown:
-        raise HTTPException(status_code=400, detail=f"Unknown dashboard part: {unknown[0]}")
+        raise HTTPException(
+            status_code=400, detail=Message("Unknown dashboard part: {part}", part=unknown[0])
+        )
 
     async def _part(name: str) -> tuple[str, Any]:
         value = await db.run_read(

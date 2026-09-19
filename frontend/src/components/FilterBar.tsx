@@ -13,10 +13,12 @@ import {
   useFilterStore,
 } from '../stores/useFilterStore';
 import { endpoints } from '../api/endpoints';
-import { RANGE_LABELS } from '../utils/format';
+import { rangeKey } from '../i18n';
+import { useT } from '../i18n/useT';
 import type { ResultKind } from '../types/api';
 
 export function FilterBar({ compact = false }: { compact?: boolean }) {
+  const t = useT();
   const { meta, tags, persons, devices, savedFilters, refreshSavedFilters } = useAppStore();
   const store = useFilterStore();
   const [builderOpen, setBuilderOpen] = useState(false);
@@ -49,10 +51,10 @@ export function FilterBar({ compact = false }: { compact?: boolean }) {
       persons.map((person) => ({
         value: String(person.id),
         label: person.name,
-        hint: `${person.device_count} devices`,
+        hint: t('filter.devicesCount', { count: person.device_count }),
         color: person.color || undefined,
       })),
-    [persons],
+    [persons, t],
   );
   const deviceOptions = useMemo(
     () =>
@@ -88,7 +90,7 @@ export function FilterBar({ compact = false }: { compact?: boolean }) {
   const saveCurrent = async () => {
     setSaveError(null);
     if (!saveable) {
-      setSaveError('There is nothing to save yet — add a search term or a condition first.');
+      setSaveError(t('filter.saveNothing'));
       return;
     }
     try {
@@ -114,19 +116,22 @@ export function FilterBar({ compact = false }: { compact?: boolean }) {
       <select
         value={store.range}
         onChange={(event) => store.setRange(event.target.value)}
-        title="Time range"
+        title={t('filter.timeRange')}
       >
-        {ranges.map((range) => (
-          <option key={range} value={range}>
-            {RANGE_LABELS[range] ?? range}
-          </option>
-        ))}
+        {ranges.map((range) => {
+          const key = rangeKey(range);
+          return (
+            <option key={range} value={range}>
+              {key ? t(key) : range}
+            </option>
+          );
+        })}
       </select>
 
       <MultiSearch />
 
       <MultiSelect
-        label="Person"
+        label={t('filter.person')}
         options={personOptions}
         selected={store.quick.personIds.map(String)}
         onToggle={(value) => store.toggleQuick('personIds', Number(value))}
@@ -134,7 +139,7 @@ export function FilterBar({ compact = false }: { compact?: boolean }) {
       />
 
       <MultiSelect
-        label="Device"
+        label={t('filter.device')}
         options={deviceOptions}
         selected={store.quick.clientIds.map(String)}
         onToggle={(value) => store.toggleQuick('clientIds', Number(value))}
@@ -142,7 +147,7 @@ export function FilterBar({ compact = false }: { compact?: boolean }) {
       />
 
       <MultiSelect
-        label="Category"
+        label={t('filter.category')}
         options={categoryOptions}
         selected={store.quick.categories}
         onToggle={(value) => store.toggleQuick('categories', value)}
@@ -150,7 +155,7 @@ export function FilterBar({ compact = false }: { compact?: boolean }) {
       />
 
       <MultiSelect
-        label="Tag"
+        label={t('filter.tag')}
         options={tagOptions}
         selected={store.quick.tags}
         onToggle={(value) => store.toggleQuick('tags', value)}
@@ -158,7 +163,7 @@ export function FilterBar({ compact = false }: { compact?: boolean }) {
       />
 
       <MultiSelect
-        label="Type"
+        label={t('filter.type')}
         options={queryTypeOptions}
         selected={store.quick.queryTypes}
         onToggle={(value) => store.toggleQuick('queryTypes', value)}
@@ -172,14 +177,14 @@ export function FilterBar({ compact = false }: { compact?: boolean }) {
         onChange={(event) =>
           store.setQuick({ result: event.target.value as ResultKind | '' })
         }
-        title="Result"
+        title={t('filter.result')}
       >
-        <option value="">Any result</option>
-        <option value="blocked">Blocked</option>
-        <option value="allowed">Allowed</option>
-        <option value="rewritten">Rewritten</option>
-        <option value="allowlisted">Allow-listed</option>
-        <option value="error">Error</option>
+        <option value="">{t('result.anyResult')}</option>
+        <option value="blocked">{t('result.blocked')}</option>
+        <option value="allowed">{t('result.allowed')}</option>
+        <option value="rewritten">{t('result.rewritten')}</option>
+        <option value="allowlisted">{t('result.allowlistedFilter')}</option>
+        <option value="error">{t('result.error')}</option>
       </select>
 
       <button
@@ -192,7 +197,7 @@ export function FilterBar({ compact = false }: { compact?: boolean }) {
             : undefined
         }
       >
-        Advanced{advancedCount ? ` (${advancedCount})` : ''}
+        {advancedCount ? t('filter.advancedWithCount', { count: advancedCount }) : t('filter.advanced')}
       </button>
 
       <select
@@ -207,9 +212,9 @@ export function FilterBar({ compact = false }: { compact?: boolean }) {
           const saved = savedFilters.find((item) => item.id === id);
           if (saved) store.applySavedFilter(saved.id, saved.name, saved.filter);
         }}
-        title="Saved filters"
+        title={t('nav.savedFilters')}
       >
-        <option value="">Saved filters…</option>
+        <option value="">{t('filter.savedFilters')}</option>
         {savedFilters.map((saved) => (
           <option key={saved.id} value={saved.id}>
             {saved.name}
@@ -223,58 +228,53 @@ export function FilterBar({ compact = false }: { compact?: boolean }) {
             type="button"
             className="btn"
             disabled={!saveable}
-            title={
-              saveable
-                ? 'Save these conditions for later'
-                : 'Add a search term or a condition first'
-            }
+            title={saveable ? t('filter.saveTitle') : t('filter.saveDisabledTitle')}
             onClick={() => setSaveOpen(true)}
           >
-            Save
+            {t('common.save')}
           </button>
           <button type="button" className="btn ghost" onClick={store.reset}>
-            Reset
+            {t('common.reset')}
           </button>
         </>
       ) : null}
 
       {builderOpen ? (
         <Modal
-          title="Advanced filter"
+          title={t('filter.advancedModalTitle')}
           onClose={() => setBuilderOpen(false)}
           wide
           footer={
             <>
               <span className="spacer" />
               <button type="button" className="btn" onClick={() => setBuilderOpen(false)}>
-                Cancel
+                {t('common.cancel')}
               </button>
               <button type="button" className="btn primary" onClick={applyBuilder}>
-                Apply
+                {t('common.apply')}
               </button>
             </>
           }
         >
           <p className="muted small" style={{ marginTop: 0 }}>
-            Groups can be nested, so <code>(A OR B) AND (C OR D)</code> is expressible. The whole
-            tree is evaluated by the backend in SQL.
+            {t('filter.advancedIntro')}
           </p>
           <FilterBuilder value={draft} onChange={(group) => setDraft(group ?? emptyGroup())} />
           {!groupHasContent(draft) ? (
-            <p className="faint small">Empty conditions are dropped when the filter is applied.</p>
+            <p className="faint small">{t('filter.advancedEmptyHint')}</p>
           ) : null}
         </Modal>
       ) : null}
 
       {saveOpen ? (
         <Modal
-          title="Save this filter"
+          title={t('filter.saveModalTitle')}
           onClose={() => setSaveOpen(false)}
           footer={
             <>
               <span className="spacer" />
               <button type="button" className="btn" onClick={() => setSaveOpen(false)}>
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 type="button"
@@ -282,26 +282,23 @@ export function FilterBar({ compact = false }: { compact?: boolean }) {
                 disabled={!saveName.trim()}
                 onClick={() => void saveCurrent()}
               >
-                Save
+                {t('common.save')}
               </button>
             </>
           }
         >
           {saveError ? <Banner kind="error">{saveError}</Banner> : null}
           <label className="field">
-            Name
+            {t('common.name')}
             <input
               type="text"
               autoFocus
               value={saveName}
-              placeholder="YouTube activity"
+              placeholder={t('filter.saveNamePlaceholder')}
               onChange={(event) => setSaveName(event.target.value)}
             />
           </label>
-          <p className="faint small">
-            The search terms, the quick filters and the advanced filter are all saved. The time
-            range is not — it stays as you set it each time.
-          </p>
+          <p className="faint small">{t('filter.saveExplains')}</p>
         </Modal>
       ) : null}
     </div>

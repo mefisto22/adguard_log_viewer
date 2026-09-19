@@ -11,25 +11,10 @@
 import { useMemo } from 'react';
 import type { FieldSpec, FilterNode, Group, Predicate } from '../types/api';
 import { useAppStore } from '../stores/useAppStore';
+import { fieldKey, operatorKey } from '../i18n';
+import { useT } from '../i18n/useT';
 
-const OPERATOR_LABELS: Record<string, string> = {
-  equals: 'is',
-  not_equals: 'is not',
-  contains: 'contains',
-  not_contains: 'does not contain',
-  startswith: 'starts with',
-  endswith: 'ends with',
-  regex: 'matches regex',
-  not_regex: 'does not match regex',
-  in: 'is one of',
-  not_in: 'is none of',
-  is_empty: 'is empty',
-  is_not_empty: 'is not empty',
-  gt: '>',
-  gte: '≥',
-  lt: '<',
-  lte: '≤',
-};
+
 
 const VALUELESS = new Set(['is_empty', 'is_not_empty']);
 const LIST_OPERATORS = new Set(['in', 'not_in']);
@@ -62,6 +47,7 @@ function ValueEditor({
   predicate: Predicate;
   onChange: (patch: Partial<Predicate>) => void;
 }) {
+  const t = useT();
   if (VALUELESS.has(predicate.operator)) return null;
 
   if (LIST_OPERATORS.has(predicate.operator)) {
@@ -69,7 +55,7 @@ function ValueEditor({
       <input
         type="text"
         value={(predicate.values ?? []).join(', ')}
-        placeholder="value, value, value"
+        placeholder={t('builder.valueListPlaceholder')}
         onChange={(event) =>
           onChange({
             values: event.target.value
@@ -89,8 +75,8 @@ function ValueEditor({
         value={String(predicate.value ?? 'true')}
         onChange={(event) => onChange({ value: event.target.value === 'true' })}
       >
-        <option value="true">yes</option>
-        <option value="false">no</option>
+        <option value="true">{t('common.yes')}</option>
+        <option value="false">{t('common.no')}</option>
       </select>
     );
   }
@@ -102,7 +88,7 @@ function ValueEditor({
         onChange={(event) => onChange({ value: event.target.value })}
         style={{ flex: '1 1 160px' }}
       >
-        <option value="">—</option>
+        <option value="">{t('builder.emptyChoice')}</option>
         {field.choices.map((choice) => (
           <option key={choice} value={choice}>
             {choice || '(empty)'}
@@ -116,7 +102,7 @@ function ValueEditor({
     <input
       type={field.kind === 'number' ? 'number' : 'text'}
       value={String(predicate.value ?? '')}
-      placeholder={field.kind === 'time' ? 'now-24h or 2024-05-01T10:00' : 'value'}
+      placeholder={field.kind === 'time' ? t('builder.timePlaceholder') : t('builder.valuePlaceholder')}
       onChange={(event) =>
         onChange({
           value: field.kind === 'number' ? Number(event.target.value) : event.target.value,
@@ -138,6 +124,7 @@ function PredicateRow({
   onChange: (node: Predicate) => void;
   onRemove: () => void;
 }) {
+  const t = useT();
   const field = fields.find((item) => item.name === predicate.field) ?? fields[0];
 
   return (
@@ -157,22 +144,28 @@ function PredicateRow({
         }}
         title={field.description}
       >
-        {fields.map((item) => (
-          <option key={item.name} value={item.name}>
-            {item.label}
-          </option>
-        ))}
+        {fields.map((item) => {
+          const key = fieldKey(item.name);
+          return (
+            <option key={item.name} value={item.name}>
+              {key ? t(key) : item.label}
+            </option>
+          );
+        })}
       </select>
 
       <select
         value={predicate.operator}
         onChange={(event) => onChange({ ...predicate, operator: event.target.value })}
       >
-        {field.operators.map((operator) => (
-          <option key={operator} value={operator}>
-            {OPERATOR_LABELS[operator] ?? operator}
-          </option>
-        ))}
+        {field.operators.map((operator) => {
+          const key = operatorKey(operator);
+          return (
+            <option key={operator} value={operator}>
+              {key ? t(key) : operator}
+            </option>
+          );
+        })}
       </select>
 
       <ValueEditor
@@ -185,8 +178,8 @@ function PredicateRow({
         type="button"
         className="btn ghost icon"
         onClick={onRemove}
-        aria-label="Remove condition"
-        title="Remove condition"
+        aria-label={t('builder.removeCondition')}
+        title={t('builder.removeCondition')}
       >
         ×
       </button>
@@ -207,6 +200,7 @@ export function GroupEditor({
   onRemove?: () => void;
   depth?: number;
 }) {
+  const t = useT();
   return (
     <div
       style={{
@@ -220,11 +214,11 @@ export function GroupEditor({
         <select
           value={group.op}
           onChange={(event) => onChange({ ...group, op: event.target.value as Group['op'] })}
-          title="How the conditions in this group combine"
+          title={t('builder.groupTitle')}
         >
-          <option value="and">Match ALL (AND)</option>
-          <option value="or">Match ANY (OR)</option>
-          <option value="not">NOT</option>
+          <option value="and">{t('builder.matchAll')}</option>
+          <option value="or">{t('builder.matchAny')}</option>
+          <option value="not">{t('builder.matchNot')}</option>
         </select>
         <span className="spacer" />
         <button
@@ -234,7 +228,7 @@ export function GroupEditor({
             onChange({ ...group, children: [...group.children, defaultPredicate(fields)] })
           }
         >
-          + Condition
+          {t('builder.addCondition')}
         </button>
         {depth < 4 ? (
           <button
@@ -242,18 +236,23 @@ export function GroupEditor({
             className="btn sm"
             onClick={() => onChange({ ...group, children: [...group.children, emptyGroup()] })}
           >
-            + Group
+            {t('builder.addGroup')}
           </button>
         ) : null}
         {onRemove ? (
-          <button type="button" className="btn sm ghost" onClick={onRemove} title="Remove group">
+          <button
+            type="button"
+            className="btn sm ghost"
+            onClick={onRemove}
+            title={t('builder.removeGroup')}
+          >
             ×
           </button>
         ) : null}
       </div>
 
       {group.children.length === 0 ? (
-        <div className="faint small">No conditions yet — every row matches.</div>
+        <div className="faint small">{t('builder.noConditions')}</div>
       ) : (
         <div className="grid" style={{ gap: 6 }}>
           {group.children.map((child, index) =>
@@ -289,18 +288,19 @@ export function FilterBuilder({
   value: Group | null;
   onChange: (group: Group | null) => void;
 }) {
+  const t = useT();
   const meta = useAppStore((state) => state.meta);
   const fields = useMemo(() => meta?.fields ?? [], [meta]);
   const group = value ?? emptyGroup();
 
-  if (!fields.length) return <div className="muted">Loading fields…</div>;
+  if (!fields.length) return <div className="muted">{t('builder.loadingFields')}</div>;
 
   return (
     <div className="grid" style={{ gap: 10 }}>
       <GroupEditor group={group} fields={fields} onChange={onChange} />
       <div className="row">
         <button type="button" className="btn sm ghost" onClick={() => onChange(null)}>
-          Clear the whole filter
+          {t('builder.clearAll')}
         </button>
       </div>
     </div>

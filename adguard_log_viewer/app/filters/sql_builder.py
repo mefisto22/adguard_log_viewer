@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from app.common.timeutil import parse_time_expression
 from app.filters.fields import NEGATIVE_OPERATORS, FieldSpec, get_field, positive_operator
 from app.filters.nodes import FilterError, FilterNode, Group, Predicate
+from app.i18n import Message
 from app.ingest.records import reasons_for_kind
 
 #: Alias the queries table is given in every statement the builder targets.
@@ -70,12 +71,14 @@ def _text_predicate(column: str, operator: str, value: object, params: list[obje
         return f"{column} REGEXP ?"
     if operator == "is_empty":
         return f"({column} IS NULL OR {column} = '')"
-    raise FilterError(f"Operator {operator!r} cannot be applied to a text field")
+    raise FilterError(
+        Message("Operator {operator} cannot be applied to a text field", operator=repr(operator))
+    )
 
 
 def _list_predicate(column: str, values: list[object], params: list[object]) -> str:
     if not values:
-        raise FilterError("A list condition needs at least one value")
+        raise FilterError(Message("A list condition needs at least one value"))
     placeholders = ", ".join("?" for _ in values)
     params.extend(str(value) for value in values)
     return f"{column} COLLATE NOCASE IN ({placeholders})"
@@ -88,11 +91,13 @@ def _number_predicate(
         try:
             return float(raw) * spec.scale  # type: ignore[arg-type]
         except (TypeError, ValueError) as err:
-            raise FilterError(f"{spec.label} expects a number, got {raw!r}") from err
+            raise FilterError(
+                Message("{field} expects a number, got {value}", field=spec.label, value=repr(raw))
+            ) from err
 
     if operator == "in":
         if not predicate.values:
-            raise FilterError("A list condition needs at least one value")
+            raise FilterError(Message("A list condition needs at least one value"))
         placeholders = ", ".join("?" for _ in predicate.values)
         params.extend(convert(value) for value in predicate.values)
         return f"{column} IN ({placeholders})"
@@ -100,7 +105,11 @@ def _number_predicate(
     params.append(convert(predicate.value))
     symbols = {"equals": "=", "gt": ">", "gte": ">=", "lt": "<", "lte": "<="}
     if operator not in symbols:
-        raise FilterError(f"Operator {operator!r} cannot be applied to a numeric field")
+        raise FilterError(
+            Message(
+                "Operator {operator} cannot be applied to a numeric field", operator=repr(operator)
+            )
+        )
     return f"{column} {symbols[operator]} ?"
 
 
@@ -113,10 +122,14 @@ def _bool_predicate(column: str, value: object, params: list[object]) -> str:
 def _time_predicate(column: str, operator: str, value: object, params: list[object]) -> str:
     resolved = parse_time_expression(value if isinstance(value, (str, int, float)) else None)
     if resolved is None:
-        raise FilterError(f"Cannot interpret {value!r} as a point in time")
+        raise FilterError(Message("Cannot interpret {value} as a point in time", value=repr(value)))
     symbols = {"gt": ">", "gte": ">=", "lt": "<", "lte": "<="}
     if operator not in symbols:
-        raise FilterError(f"Operator {operator!r} cannot be applied to a time field")
+        raise FilterError(
+            Message(
+                "Operator {operator} cannot be applied to a time field", operator=repr(operator)
+            )
+        )
     params.append(resolved)
     return f"{column} {symbols[operator]} ?"
 
@@ -128,7 +141,7 @@ def _result_predicate(column: str, predicate: Predicate, params: list[object]) -
     for kind in kinds:
         reasons.extend(reasons_for_kind(str(kind).strip().lower()))
     if not reasons:
-        raise FilterError("Unknown result kind")
+        raise FilterError(Message("Unknown result kind"))
     placeholders = ", ".join("?" for _ in reasons)
     params.extend(reasons)
     return f"{column} IN ({placeholders})"
@@ -137,7 +150,7 @@ def _result_predicate(column: str, predicate: Predicate, params: list[object]) -
 def _compile_predicate(predicate: Predicate, params: list[object]) -> str:
     spec = get_field(predicate.field)
     if spec is None:  # pragma: no cover - parse_filter already rejected this
-        raise FilterError(f"Unknown filter field {predicate.field!r}")
+        raise FilterError(Message("Unknown filter field {field}", field=repr(predicate.field)))
 
     operator = positive_operator(predicate.operator)
     negate = predicate.operator in NEGATIVE_OPERATORS
@@ -154,7 +167,7 @@ def _compile_predicate(predicate: Predicate, params: list[object]) -> str:
         return f"{QUERY_ALIAS}.{spec.fk} {membership} ({spec.subquery}{inner})"
     else:
         if not spec.column:  # pragma: no cover - defensive
-            raise FilterError(f"Field {spec.name!r} cannot be filtered on")
+            raise FilterError(Message("Field {field} cannot be filtered on", field=repr(spec.name)))
         column = f"{QUERY_ALIAS}.{spec.column}"
         sql = _leaf_sql(spec, column, operator, predicate, inner_params)
 

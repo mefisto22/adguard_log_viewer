@@ -12,6 +12,7 @@ import time
 from typing import Any
 
 from app.db.sqlutil import chunked, placeholders
+from app.i18n import Message
 from app.services import dashboard_service
 
 CLIENT_SELECT = """
@@ -194,7 +195,7 @@ def create_person(
 ) -> int:
     name = name.strip()
     if not name:
-        raise ValueError("A person needs a name")
+        raise ValueError(Message("A person needs a name"))
     cursor = conn.execute(
         "INSERT INTO persons (name, color, note, created_at) VALUES (?, ?, ?, ?)",
         (name, color.strip(), note.strip(), int(time.time())),
@@ -214,7 +215,7 @@ def update_person(
     params: list[Any] = []
     if name is not None:
         if not name.strip():
-            raise ValueError("A person needs a name")
+            raise ValueError(Message("A person needs a name"))
         sets.append("name = ?")
         params.append(name.strip())
     if color is not None:

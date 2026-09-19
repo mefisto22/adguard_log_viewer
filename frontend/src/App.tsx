@@ -14,20 +14,21 @@ import { TagsPage } from './pages/TagsPage';
 import { SavedFiltersPage } from './pages/SavedFiltersPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { useAppStore } from './stores/useAppStore';
+import { useT } from './i18n/useT';
 import { startLiveUpdates, stopLiveUpdates } from './stores/liveUpdates';
 import { useFilterStore } from './stores/useFilterStore';
 
 const NAV = [
-  { to: '/', label: 'Dashboard' },
-  { to: '/log', label: 'Query log' },
-  { to: '/devices', label: 'Devices' },
-  { to: '/persons', label: 'People' },
-  { to: '/domains', label: 'Domains' },
-  { to: '/rules', label: 'Rules' },
-  { to: '/tags', label: 'Tags' },
-  { to: '/filters', label: 'Saved filters' },
-  { to: '/settings', label: 'Settings' },
-];
+  { to: '/', key: 'nav.dashboard' },
+  { to: '/log', key: 'nav.log' },
+  { to: '/devices', key: 'nav.devices' },
+  { to: '/persons', key: 'nav.people' },
+  { to: '/domains', key: 'nav.domains' },
+  { to: '/rules', key: 'nav.rules' },
+  { to: '/tags', key: 'nav.tags' },
+  { to: '/filters', key: 'nav.savedFilters' },
+  { to: '/settings', key: 'nav.settings' },
+] as const;
 
 function ShieldIcon() {
   return (
@@ -43,6 +44,8 @@ function isActive(path: string, to: string): boolean {
 }
 
 function Page({ path, segments }: { path: string; segments: string[] }) {
+  const t = useT();
+
   if (path === '/') return <DashboardPage />;
   if (path === '/log') return <LogPage />;
 
@@ -62,8 +65,8 @@ function Page({ path, segments }: { path: string; segments: string[] }) {
 
   return (
     <div className="main">
-      <Banner kind="warn" title="Page not found">
-        <Link to="/">Back to the dashboard</Link>
+      <Banner kind="warn" title={t('app.pageNotFound')}>
+        <Link to="/">{t('app.backToDashboard')}</Link>
       </Banner>
     </div>
   );
@@ -71,6 +74,7 @@ function Page({ path, segments }: { path: string; segments: string[] }) {
 
 export function App() {
   const route = useRoute();
+  const t = useT();
   const { loaded, error, bootstrap, status, defaultRange, liveUpdates } = useAppStore();
   const setRange = useFilterStore((state) => state.setRange);
 
@@ -96,7 +100,7 @@ export function App() {
       <header className="topbar">
         <Link to="/" className="brand">
           <ShieldIcon />
-          AdGuard Log Viewer
+          {t('app.title')}
         </Link>
         <nav className="nav">
           {NAV.map((item) => (
@@ -105,29 +109,29 @@ export function App() {
               to={item.to}
               className={isActive(route.path, item.to) ? 'active' : undefined}
             >
-              {item.label}
+              {t(item.key)}
             </Link>
           ))}
         </nav>
         {providerDown ? (
           <Link to="/settings" className="badge blocked" title={status?.provider?.detail}>
-            AdGuard unreachable
+            {t('app.adguardUnreachable')}
           </Link>
         ) : null}
       </header>
 
       {!loaded ? (
         <div className="main">
-          <Spinner label="Starting…" />
+          <Spinner label={t('app.starting')} />
         </div>
       ) : error ? (
         <div className="main">
           <Banner
             kind="error"
-            title="The add-on backend could not be reached"
+            title={t('app.backendUnreachable')}
             action={
               <button type="button" className="btn sm" onClick={() => void bootstrap()}>
-                Retry
+                {t('common.retry')}
               </button>
             }
           >

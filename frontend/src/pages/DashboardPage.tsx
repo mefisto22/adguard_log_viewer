@@ -11,9 +11,11 @@ import { useFilterStore } from '../stores/useFilterStore';
 import { useLiveUpdates } from '../hooks/useLiveUpdates';
 import { formatCompact, formatMs, formatNumber, formatPercent } from '../utils/format';
 import { navigate } from '../router';
+import { useT } from '../i18n/useT';
 import type { TopRow } from '../types/api';
 
 export function DashboardPage() {
+  const t = useT();
   const revision = useFilterStore((state) => state.revision);
   const buildFilterRequest = useFilterStore((state) => state.buildFilterRequest);
   const { lastEvent } = useLiveUpdates();
@@ -54,10 +56,10 @@ export function DashboardPage() {
       {error ? (
         <Banner
           kind="error"
-          title="Could not load the dashboard"
+          title={t('dashboard.loadFailed')}
           action={
             <button type="button" className="btn sm" onClick={reload}>
-              Retry
+              {t('common.retry')}
             </button>
           }
         >
@@ -67,7 +69,7 @@ export function DashboardPage() {
 
       {loading && !data ? (
         <div style={{ padding: 24 }}>
-          <Spinner label="Crunching the numbers…" />
+          <Spinner label={t('dashboard.crunching')} />
         </div>
       ) : null}
 
@@ -80,30 +82,30 @@ export function DashboardPage() {
               marginBottom: 12,
             }}
           >
-            <StatCard label="DNS queries" value={formatNumber(summary.total)} />
+            <StatCard label={t('dashboard.dnsQueries')} value={formatNumber(summary.total)} />
             <StatCard
-              label="Blocked"
+              label={t('common.blocked')}
               value={formatNumber(summary.blocked)}
               sub={formatPercent(summary.blocked_percent)}
               accent="var(--danger)"
             />
             <StatCard
-              label="Allowed"
+              label={t('common.allowed')}
               value={formatNumber(summary.allowed)}
               accent="var(--success)"
             />
-            <StatCard label="Unique domains" value={formatNumber(summary.unique_domains)} />
-            <StatCard label="Active devices" value={formatNumber(summary.active_clients)} />
-            <StatCard label="People seen" value={formatNumber(summary.active_persons)} />
+            <StatCard label={t('common.uniqueDomains')} value={formatNumber(summary.unique_domains)} />
+            <StatCard label={t('dashboard.activeDevices')} value={formatNumber(summary.active_clients)} />
+            <StatCard label={t('dashboard.peopleSeen')} value={formatNumber(summary.active_persons)} />
             <StatCard
-              label="Avg response"
+              label={t('common.avgResponse')}
               value={formatMs(summary.avg_response_time_ms)}
-              sub={`${formatCompact(summary.cached)} from cache`}
+              sub={t('common.cachedSuffix', { count: formatCompact(summary.cached) })}
             />
           </div>
 
           <div style={{ marginBottom: 12 }}>
-            <Section title="Query activity">
+            <Section title={t('dashboard.queryActivity')}>
               <TimelineChart timeline={data?.timeline ?? null} height={170} />
             </Section>
           </div>
@@ -112,13 +114,13 @@ export function DashboardPage() {
             className="grid"
             style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}
           >
-            <Section title="Top domains">
+            <Section title={t('dashboard.topDomains')}>
               <TopList items={domainItems(data?.top_domains)} />
             </Section>
-            <Section title="Top blocked domains">
+            <Section title={t('dashboard.topBlockedDomains')}>
               <TopList items={domainItems(data?.top_blocked_domains)} />
             </Section>
-            <Section title="Top devices">
+            <Section title={t('dashboard.topDevices')}>
               <TopList
                 items={(data?.top_clients ?? []).map((row) => ({
                   key: String(row.client_id),
@@ -129,7 +131,7 @@ export function DashboardPage() {
                 }))}
               />
             </Section>
-            <Section title="Top people">
+            <Section title={t('dashboard.topPeople')}>
               <TopList
                 items={(data?.top_persons ?? []).map((row) => ({
                   key: String(row.person_id),
@@ -138,34 +140,34 @@ export function DashboardPage() {
                   blocked: row.blocked,
                   onClick: () => navigate(`/persons/${row.person_id}`),
                 }))}
-                emptyLabel="No devices are assigned to a person yet"
+                emptyLabel={t('dashboard.noPersonAssigned')}
               />
             </Section>
-            <Section title="Top categories">
+            <Section title={t('dashboard.topCategories')}>
               <TopList items={tagItems(data?.top_categories)} />
             </Section>
-            <Section title="Top tags">
+            <Section title={t('dashboard.topTags')}>
               <TopList items={tagItems(data?.top_tags)} />
             </Section>
-            <Section title="Query types">
+            <Section title={t('dashboard.queryTypes')}>
               <TopList
                 items={(data?.top_query_types ?? []).map((row) => ({
                   key: row.query_type ?? '',
-                  label: row.query_type || '(none)',
+                  label: row.query_type || t('chart.noneLabel'),
                   count: row.count,
                   blocked: row.blocked,
                 }))}
               />
             </Section>
-            <Section title="Upstream servers">
+            <Section title={t('dashboard.upstreamServers')}>
               <TopList
                 items={(data?.top_upstreams ?? []).map((row) => ({
                   key: row.upstream ?? '',
-                  label: row.upstream || '(cache)',
+                  label: row.upstream || t('chart.cacheLabel'),
                   count: row.count,
                   blocked: row.blocked,
                 }))}
-                emptyLabel="AdGuard did not report an upstream"
+                emptyLabel={t('dashboard.noUpstream')}
               />
             </Section>
           </div>

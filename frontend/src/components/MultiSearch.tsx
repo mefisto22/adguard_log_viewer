@@ -10,6 +10,8 @@ import { useState } from 'react';
 import { Chip } from './ui';
 import { useFilterStore } from '../stores/useFilterStore';
 import { useAppStore } from '../stores/useAppStore';
+import { fieldKey } from '../i18n';
+import { useT } from '../i18n/useT';
 
 const SEARCHABLE_FIELDS = [
   'domain',
@@ -23,6 +25,7 @@ const SEARCHABLE_FIELDS = [
 ];
 
 export function MultiSearch() {
+  const t = useT();
   const [draft, setDraft] = useState('');
   const terms = useFilterStore((state) => state.terms);
   const mode = useFilterStore((state) => state.searchMode);
@@ -33,8 +36,11 @@ export function MultiSearch() {
   const setSearchFields = useFilterStore((state) => state.setSearchFields);
   const meta = useAppStore((state) => state.meta);
 
-  const fieldLabel = (name: string) =>
-    meta?.fields.find((field) => field.name === name)?.label ?? name;
+  const fieldLabel = (name: string) => {
+    const key = fieldKey(name);
+    if (key) return t(key);
+    return meta?.fields.find((field) => field.name === name)?.label ?? name;
+  };
 
   const commit = () => {
     // A comma or space separated paste becomes several terms at once.
@@ -68,7 +74,7 @@ export function MultiSearch() {
       <input
         type="search"
         value={draft}
-        placeholder={terms.length ? 'Add another term…' : 'Search domain, client, answer…'}
+        placeholder={terms.length ? t('search.placeholderMore') : t('search.placeholder')}
         onChange={(event) => setDraft(event.target.value)}
         onKeyDown={(event) => {
           if (event.key === 'Enter' || event.key === ',') {
@@ -87,15 +93,11 @@ export function MultiSearch() {
         <button
           type="button"
           className="btn sm"
-          title={
-            mode === 'any'
-              ? 'Matching at least one term (OR). Click for ALL.'
-              : 'Matching every term (AND). Click for ANY.'
-          }
+          title={mode === 'any' ? t('search.modeAnyTitle') : t('search.modeAllTitle')}
           onClick={() => setSearchMode(mode === 'any' ? 'all' : 'any')}
           style={{ borderColor: 'var(--primary)', color: 'var(--primary-strong)' }}
         >
-          {mode === 'any' ? 'ANY' : 'ALL'}
+          {mode === 'any' ? t('search.modeAny') : t('search.modeAll')}
         </button>
       ) : null}
 
@@ -109,17 +111,17 @@ export function MultiSearch() {
             setSearchFields([value]);
           }
         }}
-        title="Which field the terms are matched against"
+        title={t('search.fieldTitle')}
         className="inline"
       >
         {SEARCHABLE_FIELDS.map((name) => (
           <option key={name} value={name}>
-            in {fieldLabel(name)}
+            {t('search.inField', { field: fieldLabel(name) })}
           </option>
         ))}
-        <option value="__all__">in any field</option>
+        <option value="__all__">{t('search.inAnyField')}</option>
         {fields.length > 1 ? (
-          <option value="__multi__">in {fields.length} fields</option>
+          <option value="__multi__">{t('search.inFields', { count: fields.length })}</option>
         ) : null}
       </select>
     </div>

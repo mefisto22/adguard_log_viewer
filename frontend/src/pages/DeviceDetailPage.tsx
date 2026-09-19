@@ -8,8 +8,10 @@ import { useAsync } from '../hooks/useAsync';
 import { Link, navigate } from '../router';
 import { useFilterStore } from '../stores/useFilterStore';
 import { formatDateTime } from '../utils/format';
+import { useT } from '../i18n/useT';
 
 export function DeviceDetailPage({ id }: { id: number }) {
+  const t = useT();
   const [range, setRange] = useState('24h');
   const load = useCallback(() => endpoints.deviceDetail(id, range), [id, range]);
   const { data, error, loading } = useAsync(load, [id, range]);
@@ -26,7 +28,7 @@ export function DeviceDetailPage({ id }: { id: number }) {
   if (!data)
     return (
       <div className="main">
-        <Spinner label="Loading device…" />
+        <Spinner label={t('devices.loadingDevice')} />
       </div>
     );
 
@@ -37,7 +39,7 @@ export function DeviceDetailPage({ id }: { id: number }) {
       <div className="row wrap" style={{ gap: 10, marginBottom: 12 }}>
         <div>
           <div className="small muted">
-            <Link to="/devices">Devices</Link> /
+            <Link to="/devices">{t('nav.devices')}</Link> /
           </div>
           <h1>{device.name}</h1>
           <div className="muted small">
@@ -51,14 +53,16 @@ export function DeviceDetailPage({ id }: { id: number }) {
             ) : null}
           </div>
           <div className="faint small">
-            First seen {formatDateTime(device.first_seen_ns)} · last seen{' '}
-            {formatDateTime(device.last_seen_ns)}
+            {t('devices.firstLastSeen', {
+              first: formatDateTime(device.first_seen_ns),
+              last: formatDateTime(device.last_seen_ns),
+            })}
           </div>
         </div>
         <span className="spacer" />
         <RangePicker range={range} onChange={setRange} />
         <button type="button" className="btn primary" onClick={showInLog}>
-          Show in log
+          {t('common.showInLog')}
         </button>
       </div>
 

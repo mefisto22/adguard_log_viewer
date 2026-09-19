@@ -6,10 +6,12 @@ import { endpoints } from '../api/endpoints';
 import { useAsync } from '../hooks/useAsync';
 import { Link } from '../router';
 import { formatCompact, formatRelative } from '../utils/format';
+import { useT } from '../i18n/useT';
 
 const PAGE = 100;
 
 export function DomainsPage() {
+  const t = useT();
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('query_count');
   const [page, setPage] = useState(0);
@@ -25,12 +27,12 @@ export function DomainsPage() {
   return (
     <div className="main">
       <Section
-        title="Domains"
+        title={t('domains.title')}
         actions={
           <div className="row wrap" style={{ gap: 8, flex: '1 1 auto', justifyContent: 'flex-end' }}>
             <input
               type="search"
-              placeholder="Search domains…"
+              placeholder={t('domains.searchPlaceholder')}
               value={search}
               onChange={(event) => {
                 setSearch(event.target.value);
@@ -45,11 +47,11 @@ export function DomainsPage() {
                 setPage(0);
               }}
             >
-              <option value="query_count">Most queries</option>
-              <option value="blocked">Most blocked</option>
-              <option value="last_seen">Last seen</option>
-              <option value="first_seen">First seen</option>
-              <option value="name">Name</option>
+              <option value="query_count">{t('devices.sortQueries')}</option>
+              <option value="blocked">{t('devices.sortBlocked')}</option>
+              <option value="last_seen">{t('devices.sortLastSeen')}</option>
+              <option value="first_seen">{t('devices.sortFirstSeen')}</option>
+              <option value="name">{t('devices.sortName')}</option>
             </select>
           </div>
         }
@@ -58,24 +60,24 @@ export function DomainsPage() {
         {error ? <Banner kind="error">{error}</Banner> : null}
         {loading && !data ? (
           <div style={{ padding: 16 }}>
-            <Spinner label="Loading domains…" />
+            <Spinner label={t('domains.loading')} />
           </div>
         ) : null}
 
-        {data && data.items.length === 0 ? <Empty>No domains match.</Empty> : null}
+        {data && data.items.length === 0 ? <Empty>{t('domains.empty')}</Empty> : null}
 
         {data && data.items.length > 0 ? (
           <>
             <table className="data">
               <thead>
                 <tr>
-                  <th>Domain</th>
-                  <th>Registrable</th>
-                  <th>Categories</th>
-                  <th>Tags</th>
-                  <th className="right">Queries</th>
-                  <th className="right">Blocked</th>
-                  <th>Last seen</th>
+                  <th>{t('domains.colDomain')}</th>
+                  <th>{t('domains.colRegistrable')}</th>
+                  <th>{t('column.categories')}</th>
+                  <th>{t('column.tags')}</th>
+                  <th className="right">{t('common.queries')}</th>
+                  <th className="right">{t('common.blocked')}</th>
+                  <th>{t('devices.colLastSeen')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -101,7 +103,11 @@ export function DomainsPage() {
 
             <div className="row" style={{ padding: 10, gap: 8 }}>
               <span className="muted small">
-                {formatCompact(total)} domains · page {page + 1} of {pages}
+                {t('domains.pageInfo', {
+                  total: formatCompact(total),
+                  page: page + 1,
+                  pages,
+                })}
               </span>
               <span className="spacer" />
               <button
@@ -110,7 +116,7 @@ export function DomainsPage() {
                 disabled={page === 0}
                 onClick={() => setPage((value) => value - 1)}
               >
-                Previous
+                {t('common.previous')}
               </button>
               <button
                 type="button"
@@ -118,7 +124,7 @@ export function DomainsPage() {
                 disabled={page + 1 >= pages}
                 onClick={() => setPage((value) => value + 1)}
               >
-                Next
+                {t('common.next')}
               </button>
             </div>
           </>

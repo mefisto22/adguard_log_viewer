@@ -26,6 +26,8 @@ from typing import Any, TypeVar
 
 import anyio
 
+from app.i18n import Message
+
 _LOGGER = logging.getLogger(__name__)
 
 T = TypeVar("T")
@@ -183,9 +185,12 @@ class Database:
         except sqlite3.OperationalError as err:
             if "interrupted" in str(err).lower():
                 raise QueryTimeout(
-                    f"The query was still running after {self.read_timeout:.0f} seconds and was "
-                    "stopped. Narrow the time range, or simplify the filter — a regular "
-                    "expression in particular cannot use an index."
+                    Message(
+                        "The query was still running after {seconds} seconds and was "
+                        "stopped. Narrow the time range, or simplify the filter — a regular "
+                        "expression in particular cannot use an index.",
+                        seconds=f"{self.read_timeout:.0f}",
+                    )
                 ) from err
             raise
         finally:

@@ -8,6 +8,7 @@ import { useAsync } from '../hooks/useAsync';
 import { useAppStore } from '../stores/useAppStore';
 import { pruneGroup, useFilterStore } from '../stores/useFilterStore';
 import { navigate } from '../router';
+import { useT } from '../i18n/useT';
 import type { Group, SavedFilter } from '../types/api';
 
 function describe(filter: SavedFilter['filter']): string {
@@ -23,10 +24,11 @@ function describe(filter: SavedFilter['filter']): string {
     const value = record.values ? record.values.join(', ') : String(record.value ?? '');
     return `${record.field} ${record.operator} ${value}`;
   };
-  return walk(filter) || 'matches everything';
+  return walk(filter);
 }
 
 export function SavedFiltersPage() {
+  const t = useT();
   const { refreshSavedFilters } = useAppStore();
   const { data, error, loading, reload } = useAsync(() => endpoints.savedFilters(), []);
   const filters = useFilterStore();
@@ -75,7 +77,7 @@ export function SavedFiltersPage() {
   };
 
   const remove = async (saved: SavedFilter) => {
-    if (!window.confirm(`Delete the saved filter “${saved.name}”?`)) return;
+    if (!window.confirm(t('saved.deleteConfirm', { name: saved.name }))) return;
     await endpoints.deleteSavedFilter(saved.id);
     reload();
     await refreshSavedFilters();
@@ -92,32 +94,30 @@ export function SavedFiltersPage() {
       {error ? <Banner kind="error">{error}</Banner> : null}
 
       <Section
-        title="Saved filters"
+        title={t('saved.title')}
         actions={
           <button type="button" className="btn primary" onClick={() => open('new')}>
-            New filter
+            {t('saved.new')}
           </button>
         }
         bodyStyle={{ padding: 0 }}
       >
         {loading && !data ? (
           <div style={{ padding: 16 }}>
-            <Spinner label="Loading…" />
+            <Spinner label={t('common.loading')} />
           </div>
         ) : null}
 
         {data && data.items.length === 0 ? (
-          <Empty>
-            No saved filters yet. Build one in the log view and press Save, or create one here.
-          </Empty>
+          <Empty>{t('saved.empty')}</Empty>
         ) : null}
 
         {data && data.items.length > 0 ? (
           <table className="data">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Condition</th>
+                <th>{t('common.name')}</th>
+                <th>{t('saved.colCondition')}</th>
                 <th />
               </tr>
             </thead>
@@ -131,21 +131,25 @@ export function SavedFiltersPage() {
                     ) : null}
                   </td>
                   <td className="mono small" style={{ maxWidth: 520, overflowWrap: 'anywhere' }}>
-                    {describe(saved.filter)}
+                    {describe(saved.filter) || t('saved.matchesEverything')}
                   </td>
                   <td className="right nowrap">
-                    <button type="button" className="btn sm primary" onClick={() => apply(saved)}>
-                      Apply
+                    <button
+                      type="button"
+                      className="btn sm primary"
+                      onClick={() => apply(saved)}
+                    >
+                      {t('common.apply')}
                     </button>{' '}
                     <button type="button" className="btn sm" onClick={() => open(saved)}>
-                      Edit
+                      {t('common.edit')}
                     </button>{' '}
                     <button
                       type="button"
                       className="btn sm danger"
                       onClick={() => void remove(saved)}
                     >
-                      Delete
+                      {t('common.delete')}
                     </button>
                   </td>
                 </tr>
@@ -157,14 +161,18 @@ export function SavedFiltersPage() {
 
       {editing ? (
         <Modal
-          title={editing === 'new' ? 'New saved filter' : `Edit “${editing.name}”`}
+          title={
+            editing === 'new'
+              ? t('saved.newTitle')
+              : t('saved.editTitle', { name: editing.name })
+          }
           onClose={() => setEditing(null)}
           wide
           footer={
             <>
               <span className="spacer" />
               <button type="button" className="btn" onClick={() => setEditing(null)}>
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 type="button"
@@ -172,7 +180,7 @@ export function SavedFiltersPage() {
                 disabled={!name.trim()}
                 onClick={() => void save()}
               >
-                Save
+                {t('common.save')}
               </button>
             </>
           }
@@ -181,17 +189,17 @@ export function SavedFiltersPage() {
           <div className="grid" style={{ gap: 12 }}>
             <div className="row wrap" style={{ gap: 10 }}>
               <label className="field" style={{ flex: '1 1 200px' }}>
-                Name
+                {t('common.name')}
                 <input
                   type="text"
                   autoFocus
                   value={name}
-                  placeholder="YouTube activity"
+                  placeholder={t('filter.saveNamePlaceholder')}
                   onChange={(event) => setName(event.target.value)}
                 />
               </label>
               <label className="field" style={{ flex: '2 1 260px' }}>
-                Description
+                {t('common.description')}
                 <input
                   type="text"
                   value={description}

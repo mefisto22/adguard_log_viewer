@@ -6,6 +6,7 @@ import { endpoints } from '../api/endpoints';
 import { useAsync } from '../hooks/useAsync';
 import { useAppStore } from '../stores/useAppStore';
 import { formatCompact } from '../utils/format';
+import { useT } from '../i18n/useT';
 import type { Tag, TagKind } from '../types/api';
 
 const PALETTE = [
@@ -14,6 +15,7 @@ const PALETTE = [
 ];
 
 export function TagsPage() {
+  const t = useT();
   const { refreshTags } = useAppStore();
   const { data, error, loading, reload } = useAsync(() => endpoints.tags(), []);
   const [editing, setEditing] = useState<Tag | 'new' | null>(null);
@@ -53,7 +55,7 @@ export function TagsPage() {
   };
 
   const remove = async (tag: Tag) => {
-    if (!window.confirm(`Delete “${tag.name}”?`)) return;
+    if (!window.confirm(t('tags.deleteConfirm', { name: tag.name }))) return;
     try {
       await endpoints.deleteTag(tag.id);
       reload();
@@ -64,14 +66,14 @@ export function TagsPage() {
   };
 
   const groups: { kind: TagKind; title: string }[] = [
-    { kind: 'category', title: 'Categories' },
-    { kind: 'tag', title: 'Tags' },
+    { kind: 'category', title: t('tags.categories') },
+    { kind: 'tag', title: t('tags.tags') },
   ];
 
   return (
     <div className="main">
       {error ? <Banner kind="error">{error}</Banner> : null}
-      {loading && !data ? <Spinner label="Loading tags…" /> : null}
+      {loading && !data ? <Spinner label={t('tags.loading')} /> : null}
 
       <div className="grid" style={{ gap: 12 }}>
         {groups.map((group) => (
@@ -80,7 +82,7 @@ export function TagsPage() {
             title={group.title}
             actions={
               <button type="button" className="btn primary" onClick={() => open('new')}>
-                Add
+                {t('common.add')}
               </button>
             }
             bodyStyle={{ padding: 0 }}
@@ -88,10 +90,10 @@ export function TagsPage() {
             <table className="data">
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th className="right">Domains</th>
-                  <th>Source</th>
+                  <th>{t('common.name')}</th>
+                  <th>{t('common.description')}</th>
+                  <th className="right">{t('tags.colDomains')}</th>
+                  <th>{t('tags.colSource')}</th>
                   <th />
                 </tr>
               </thead>
@@ -105,10 +107,10 @@ export function TagsPage() {
                       </td>
                       <td className="muted small">{tag.description || '—'}</td>
                       <td className="right mono">{formatCompact(tag.domain_count)}</td>
-                      <td className="small muted">{tag.builtin ? 'built-in' : 'yours'}</td>
+                      <td className="small muted">{tag.builtin ? t('tags.builtin') : t('tags.yours')}</td>
                       <td className="right nowrap">
                         <button type="button" className="btn sm" onClick={() => open(tag)}>
-                          Edit
+                          {t('common.edit')}
                         </button>{' '}
                         {!tag.builtin ? (
                           <button
@@ -116,7 +118,7 @@ export function TagsPage() {
                             className="btn sm danger"
                             onClick={() => void remove(tag)}
                           >
-                            Delete
+                            {t('common.delete')}
                           </button>
                         ) : null}
                       </td>
@@ -130,13 +132,15 @@ export function TagsPage() {
 
       {editing ? (
         <Modal
-          title={editing === 'new' ? 'New tag' : `Edit ${editing.name}`}
+          title={
+            editing === 'new' ? t('tags.newTitle') : t('tags.editTitle', { name: editing.name })
+          }
           onClose={() => setEditing(null)}
           footer={
             <>
               <span className="spacer" />
               <button type="button" className="btn" onClick={() => setEditing(null)}>
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 type="button"
@@ -144,7 +148,7 @@ export function TagsPage() {
                 disabled={!name.trim()}
                 onClick={() => void save()}
               >
-                Save
+                {t('common.save')}
               </button>
             </>
           }
@@ -152,7 +156,7 @@ export function TagsPage() {
           {formError ? <Banner kind="error">{formError}</Banner> : null}
           <div className="grid" style={{ gap: 12 }}>
             <label className="field">
-              Name
+              {t('common.name')}
               <input
                 type="text"
                 autoFocus
@@ -162,15 +166,15 @@ export function TagsPage() {
             </label>
             {editing === 'new' ? (
               <label className="field">
-                Kind
+                {t('tags.kind')}
                 <select value={kind} onChange={(event) => setKind(event.target.value as TagKind)}>
-                  <option value="tag">Tag</option>
-                  <option value="category">Category</option>
+                  <option value="tag">{t('tags.kindTag')}</option>
+                  <option value="category">{t('tags.kindCategory')}</option>
                 </select>
               </label>
             ) : null}
             <div className="field">
-              Colour
+              {t('common.colour')}
               <div className="row wrap" style={{ gap: 6 }}>
                 {PALETTE.map((option) => (
                   <button
@@ -192,7 +196,7 @@ export function TagsPage() {
               </div>
             </div>
             <label className="field">
-              Description
+              {t('common.description')}
               <input
                 type="text"
                 value={description}

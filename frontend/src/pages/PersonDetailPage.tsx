@@ -7,8 +7,10 @@ import { endpoints } from '../api/endpoints';
 import { useAsync } from '../hooks/useAsync';
 import { Link, navigate } from '../router';
 import { useFilterStore } from '../stores/useFilterStore';
+import { useT } from '../i18n/useT';
 
 export function PersonDetailPage({ id }: { id: number }) {
+  const t = useT();
   const [range, setRange] = useState('24h');
   const load = useCallback(() => endpoints.personDetail(id, range), [id, range]);
   const { data, error, loading } = useAsync(load, [id, range]);
@@ -25,7 +27,7 @@ export function PersonDetailPage({ id }: { id: number }) {
   if (!data)
     return (
       <div className="main">
-        <Spinner label="Loading person…" />
+        <Spinner label={t('people.loadingPerson')} />
       </div>
     );
 
@@ -34,7 +36,7 @@ export function PersonDetailPage({ id }: { id: number }) {
       <div className="row wrap" style={{ gap: 10, marginBottom: 12 }}>
         <div>
           <div className="small muted">
-            <Link to="/persons">People</Link> /
+            <Link to="/persons">{t('nav.people')}</Link> /
           </div>
           <h1>{data.person.name}</h1>
           <div className="row wrap" style={{ gap: 4, marginTop: 4 }}>
@@ -51,7 +53,7 @@ export function PersonDetailPage({ id }: { id: number }) {
         <span className="spacer" />
         <RangePicker range={range} onChange={setRange} />
         <button type="button" className="btn primary" onClick={showInLog}>
-          Show in log
+          {t('common.showInLog')}
         </button>
       </div>
 

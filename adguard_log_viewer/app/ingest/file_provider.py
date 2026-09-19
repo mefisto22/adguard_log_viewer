@@ -25,6 +25,7 @@ import anyio
 
 from app.common.domains import normalize_domain
 from app.common.timeutil import parse_timestamp
+from app.i18n import Message
 from app.ingest.dns_wire import parse_base64_message
 from app.ingest.provider import Checkpoint, FetchResult, ProviderStatus, QueryLogProvider
 from app.ingest.records import QueryRecord, reason_name
@@ -146,10 +147,11 @@ class AdGuardFileQueryLogProvider(QueryLogProvider):
                     name=self.name,
                     available=False,
                     source=str(self.path),
-                    detail=(
-                        f"{self.path} does not exist inside this container. On Home "
+                    detail=Message(
+                        "{path} does not exist inside this container. On Home "
                         "Assistant OS an add-on cannot read another add-on's data "
-                        "directory — use the AdGuard API provider instead."
+                        "directory — use the AdGuard API provider instead.",
+                        path=self.path,
                     ),
                 )
             if not os.access(self.path, os.R_OK):
@@ -157,14 +159,17 @@ class AdGuardFileQueryLogProvider(QueryLogProvider):
                     name=self.name,
                     available=False,
                     source=str(self.path),
-                    detail=f"{self.path} exists but is not readable by this add-on.",
+                    detail=Message(
+                        "{path} exists but is not readable by this add-on.",
+                        path=self.path,
+                    ),
                 )
             stat = self.path.stat()
             return ProviderStatus(
                 name=self.name,
                 available=True,
                 source=str(self.path),
-                detail=f"Tailing {self.path}",
+                detail=Message("Tailing {path}", path=self.path),
                 extra={"size_bytes": stat.st_size},
             )
 

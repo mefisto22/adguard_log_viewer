@@ -23,6 +23,7 @@ from typing import Any
 from app.adguard.client import AdGuardClient, AdGuardError
 from app.common.domains import normalize_domain
 from app.common.timeutil import parse_timestamp
+from app.i18n import Message, detail_of
 from app.ingest.provider import Checkpoint, FetchResult, ProviderStatus, QueryLogProvider
 from app.ingest.records import DnsAnswer, QueryRecord, reason_name
 
@@ -149,7 +150,7 @@ class AdGuardApiQueryLogProvider(QueryLogProvider):
                 available=False,
                 source="(address not determined)",
                 detail=self._setup_error
-                or "The AdGuard Home address could not be worked out.",
+                or Message("The AdGuard Home address could not be worked out."),
             )
 
         try:
@@ -157,7 +158,7 @@ class AdGuardApiQueryLogProvider(QueryLogProvider):
         except AdGuardError as err:
             hint = ""
             if err.is_auth_error:
-                hint = (
+                hint = Message(
                     " The AdGuard Home add-on protects its web port with Home Assistant "
                     "login by default — set a Home Assistant username and password in "
                     "this add-on's options."
@@ -166,13 +167,13 @@ class AdGuardApiQueryLogProvider(QueryLogProvider):
                 name=self.name,
                 available=False,
                 source=self._client.base_url,
-                detail=f"{err}{hint}",
+                detail=Message("{error}{hint}", error=detail_of(err), hint=hint),
             )
 
         extra["adguard_version"] = str(status.get("version") or "")
         extra["protection_enabled"] = bool(status.get("protection_enabled"))
         if not status.get("running", True):
-            warnings.append("AdGuard Home reports that its DNS server is not running.")
+            warnings.append(Message("AdGuard Home reports that its DNS server is not running."))
 
         try:
             config = await self._client.querylog_config()
@@ -180,19 +181,25 @@ class AdGuardApiQueryLogProvider(QueryLogProvider):
             config = {}
         if config and config.get("enabled") is False:
             warnings.append(
-                "The query log is disabled in AdGuard Home; no new records will arrive."
+                Message("The query log is disabled in AdGuard Home; no new records will arrive.")
             )
         if config.get("anonymize_client_ip"):
             warnings.append(
-                "AdGuard Home anonymises client IP addresses, so per-device "
-                "attribution will be incomplete."
+                Message(
+                    "AdGuard Home anonymises client IP addresses, so per-device "
+                    "attribution will be incomplete."
+                )
             )
 
         return ProviderStatus(
             name=self.name,
             available=True,
             source=self._client.base_url,
-            detail=f"Connected to AdGuard Home {extra['adguard_version'] or ''}".strip(),
+            detail=(
+                Message("Connected to AdGuard Home {version}", version=extra["adguard_version"])
+                if extra["adguard_version"]
+                else Message("Connected to AdGuard Home")
+            ),
             warnings=warnings,
             extra=extra,
         )

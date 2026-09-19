@@ -15,6 +15,7 @@ from app.categorization.engine import (
     Ruleset,
     load_builtin_ruleset,
 )
+from app.i18n import Message
 from app.services.classification import bump_ruleset_rev, seed_tags
 
 _LOGGER = logging.getLogger(__name__)
@@ -111,7 +112,9 @@ def list_builtin_rules() -> list[dict[str, Any]]:
 def _validated(payload: dict[str, Any]) -> CategoryRule:
     rule = CategoryRule.from_dict({**payload, "builtin": False})
     if rule is None:
-        raise ValueError("A rule needs a name, at least one condition and at least one tag")
+        raise ValueError(
+            Message("A rule needs a name, at least one condition and at least one tag")
+        )
     return rule
 
 

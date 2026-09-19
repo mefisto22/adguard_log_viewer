@@ -16,6 +16,7 @@ from app.config import Settings
 from app.db.database import Database
 from app.db.migrations import migrate
 from app.db.sqlutil import kv_get, kv_set
+from app.i18n import JoinedMessage
 from app.ingest.api_provider import AdGuardApiQueryLogProvider
 from app.ingest.file_provider import AdGuardFileQueryLogProvider
 from app.ingest.provider import ProviderStatus, QueryLogProvider
@@ -126,7 +127,7 @@ class AppState:
         self.provider = AdGuardApiQueryLogProvider(
             client,
             page_size=settings.ingest_batch_size,
-            setup_error=" ".join(self.discovery.warnings),
+            setup_error=JoinedMessage(self.discovery.warnings),
         )
         if self.discovery.url:
             _LOGGER.info("Using the AdGuard API query log provider (%s)", self.discovery.url)

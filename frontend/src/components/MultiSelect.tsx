@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+import { useT } from '../i18n/useT';
+
 export interface Option {
   value: string;
   label: string;
@@ -26,6 +28,7 @@ export function MultiSelect({
   searchable?: boolean;
   width?: number;
 }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [needle, setNeedle] = useState('');
   const container = useRef<HTMLDivElement>(null);
@@ -100,7 +103,7 @@ export function MultiSelect({
               <input
                 type="search"
                 autoFocus
-                placeholder="Filter…"
+                placeholder={t('common.filterPlaceholder')}
                 value={needle}
                 onChange={(event) => setNeedle(event.target.value)}
                 style={{ width: '100%' }}
@@ -111,7 +114,7 @@ export function MultiSelect({
           <div style={{ overflow: 'auto', padding: 4 }}>
             {visible.length === 0 ? (
               <div className="empty small" style={{ padding: 16 }}>
-                Nothing matches
+                {t('common.nothingMatches')}
               </div>
             ) : (
               visible.map((option) => (
@@ -153,7 +156,7 @@ export function MultiSelect({
           {selected.length ? (
             <div style={{ padding: 8, borderTop: '1px solid var(--border)' }}>
               <button type="button" className="btn sm ghost" onClick={onClear}>
-                Clear {selected.length} selected
+                {t('common.clearSelected', { count: selected.length })}
               </button>
             </div>
           ) : null}

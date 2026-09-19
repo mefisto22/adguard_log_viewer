@@ -19,6 +19,7 @@ from dataclasses import field as dataclass_field
 from typing import Any
 
 from app.filters.fields import QUICK_SEARCH_FIELDS, get_field
+from app.i18n import Message
 
 #: Guard rails against a pathological filter arriving over the API.
 MAX_DEPTH = 10
@@ -68,38 +69,42 @@ FilterNode = Group | Predicate
 
 def _parse_node(raw: Any, depth: int, budget: list[int]) -> FilterNode:
     if depth > MAX_DEPTH:
-        raise FilterError(f"Filter is nested deeper than {MAX_DEPTH} levels")
+        raise FilterError(Message("Filter is nested deeper than {max} levels", max=MAX_DEPTH))
     budget[0] -= 1
     if budget[0] < 0:
-        raise FilterError(f"Filter has more than {MAX_NODES} nodes")
+        raise FilterError(Message("Filter has more than {max} nodes", max=MAX_NODES))
 
     if not isinstance(raw, dict):
-        raise FilterError("Each filter node must be an object")
+        raise FilterError(Message("Each filter node must be an object"))
 
     op = str(raw.get("op") or "").strip().lower()
     if op:
         if op not in GROUP_OPS:
-            raise FilterError(f"Unknown group operator {op!r}")
+            raise FilterError(Message("Unknown group operator {op}", op=repr(op)))
         children_raw = raw.get("children")
         if not isinstance(children_raw, list):
-            raise FilterError(f"Group {op!r} needs a 'children' array")
+            raise FilterError(Message("Group {op} needs a 'children' array", op=repr(op)))
         children = [_parse_node(child, depth + 1, budget) for child in children_raw]
         if op == "not" and len(children) != 1:
-            raise FilterError("'not' takes exactly one child")
+            raise FilterError(Message("'not' takes exactly one child"))
         return Group(op=op, children=children)
 
     field_name = str(raw.get("field") or "").strip().lower()
     if not field_name:
-        raise FilterError("A condition needs a 'field'")
+        raise FilterError(Message("A condition needs a 'field'"))
     spec = get_field(field_name)
     if spec is None:
-        raise FilterError(f"Unknown filter field {field_name!r}")
+        raise FilterError(Message("Unknown filter field {field}", field=repr(field_name)))
 
     operator = str(raw.get("operator") or "equals").strip().lower()
     if operator not in spec.operators:
         raise FilterError(
-            f"Operator {operator!r} is not valid for field {spec.name!r}; "
-            f"allowed: {', '.join(spec.operators)}"
+            Message(
+                "Operator {operator} is not valid for field {field}; allowed: {allowed}",
+                operator=repr(operator),
+                field=repr(spec.name),
+                allowed=", ".join(spec.operators),
+            )
         )
 
     if operator in LIST_OPERATORS:
@@ -109,9 +114,13 @@ def _parse_node(raw: Any, depth: int, budget: list[int]) -> FilterNode:
         if isinstance(values, str):
             values = [part.strip() for part in values.split(",") if part.strip()]
         if not isinstance(values, list) or not values:
-            raise FilterError(f"Operator {operator!r} needs a non-empty 'values' array")
+            raise FilterError(
+                Message(
+                    "Operator {operator} needs a non-empty 'values' array", operator=repr(operator)
+                )
+            )
         if len(values) > 500:
-            raise FilterError("A list condition may not hold more than 500 values")
+            raise FilterError(Message("A list condition may not hold more than 500 values"))
         return Predicate(field=spec.name, operator=operator, values=list(values))
 
     if operator in VALUELESS_OPERATORS:
@@ -119,10 +128,13 @@ def _parse_node(raw: Any, depth: int, budget: list[int]) -> FilterNode:
 
     value = raw.get("value")
     if value is None or (isinstance(value, str) and not value.strip()):
-        raise FilterError(f"Condition on {spec.name!r} needs a 'value'")
+        raise FilterError(Message("Condition on {field} needs a 'value'", field=repr(spec.name)))
     if operator in ("regex", "not_regex") and len(str(value)) > MAX_REGEX_LENGTH:
         raise FilterError(
-            f"A regular expression may not be longer than {MAX_REGEX_LENGTH} characters"
+            Message(
+                "A regular expression may not be longer than {max} characters",
+                max=MAX_REGEX_LENGTH,
+            )
         )
     return Predicate(field=spec.name, operator=operator, value=value)
 

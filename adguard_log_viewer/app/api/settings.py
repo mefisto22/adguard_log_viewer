@@ -8,6 +8,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 
 from app.api.deps import DbDep, StateDep, ok
+from app.i18n import detail_of
 from app.schemas.entities import SettingsUpdate
 from app.services import settings_service
 
@@ -30,4 +31,4 @@ async def update_settings(
     try:
         return ok(await db.run_write(_run))
     except settings_service.SettingsError as err:
-        raise HTTPException(status_code=400, detail=str(err)) from err
+        raise HTTPException(status_code=400, detail=detail_of(err)) from err

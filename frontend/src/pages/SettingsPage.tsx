@@ -13,6 +13,15 @@ import { endpoints } from '../api/endpoints';
 import { useAsync } from '../hooks/useAsync';
 import { useAppStore } from '../stores/useAppStore';
 import { formatBytes, formatDateTime, formatNumber, formatRelative } from '../utils/format';
+import { rangeKey, type LanguagePreference } from '../i18n';
+import { useLanguage, useT } from '../i18n/useT';
+
+/**
+ * The language menu. Each language names itself — a Hungarian reader looking
+ * for their language should find "Magyar", not "Hungarian", whichever language
+ * the page happens to be in at the time.
+ */
+const LANGUAGE_NAMES: Record<string, string> = { en: 'English', hu: 'Magyar' };
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -24,10 +33,14 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 }
 
 export function SettingsPage() {
+  const t = useT();
+  const language = useLanguage();
   const app = useAppStore();
+  // The status carries text the backend translated for us — the AdGuard
+  // diagnostics below — so a language change has to fetch it again.
   const { data, error, loading, reload } = useAsync(
     () => Promise.all([endpoints.settings(), endpoints.status()]),
-    [],
+    [language],
   );
   const [busy, setBusy] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -42,10 +55,12 @@ export function SettingsPage() {
       const result = (await action()) as Record<string, unknown>;
       setNotice(
         label === 'cleanup'
-          ? `Removed ${formatNumber(Number(result.deleted_queries ?? 0))} old queries.`
+          ? t('settings.cleanupDone', {
+              count: formatNumber(Number(result.deleted_queries ?? 0)),
+            })
           : label === 'reclassify'
-            ? `${formatNumber(Number(result.marked ?? 0))} domains queued for re-classification.`
-            : 'Done.',
+            ? t('settings.reclassifyDone', { count: formatNumber(Number(result.marked ?? 0)) })
+            : t('settings.done'),
       );
       reload();
       await app.refreshStatus();
@@ -66,12 +81,15 @@ export function SettingsPage() {
   if (!settings || !status)
     return (
       <div className="main">
-        <Spinner label="Loading settings…" />
+        <Spinner label={t('settings.loading')} />
       </div>
     );
 
   const provider = status.provider;
   const discovery = status.discovery;
+
+  const retentionLabel = (days: number) =>
+    days === 0 ? t('settings.unlimited') : days === 1 ? t('settings.day') : t('settings.days', { count: days });
 
   return (
     <div className="main">
@@ -80,7 +98,7 @@ export function SettingsPage() {
       {provider && !provider.available ? (
         <Banner
           kind="error"
-          title="AdGuard Home is not reachable"
+          title={t('settings.adguardNotReachable')}
           action={
             <button
               type="button"
@@ -88,7 +106,7 @@ export function SettingsPage() {
               disabled={busy !== null}
               onClick={() => void run('reconnect', endpoints.reconnect)}
             >
-              Retry discovery
+              {t('settings.retryDiscovery')}
             </button>
           }
         >
@@ -107,57 +125,76 @@ export function SettingsPage() {
         </Banner>
       ))}
       {status.ingest.error ? (
-        <Banner kind="warn" title="The last ingest attempt failed">
+        <Banner kind="warn" title={t('settings.ingestFailed')}>
           {status.ingest.error}
         </Banner>
       ) : null}
 
       <div className="grid" style={{ gap: 12 }}>
-        <Section title="Appearance">
+        <Section title={t('settings.appearance')}>
           <div className="row wrap" style={{ gap: 16 }}>
             <label className="field">
-              Theme
+              {t('settings.language')}
+              <select
+                value={app.languagePreference}
+                onChange={(event) => app.setLanguage(event.target.value as LanguagePreference)}
+              >
+                <option value="auto">{t('settings.languageAuto')}</option>
+                {Object.entries(LANGUAGE_NAMES).map(([code, name]) => (
+                  <option key={code} value={code}>
+                    {name}
+                  </option>
+                ))}
+              </select>
+              <span className="faint">{t('settings.languageHint')}</span>
+            </label>
+
+            <label className="field">
+              {t('settings.theme')}
               <select
                 value={app.theme}
                 onChange={(event) =>
                   app.setTheme(event.target.value as 'system' | 'light' | 'dark')
                 }
               >
-                <option value="system">Follow the system</option>
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
+                <option value="system">{t('settings.themeSystem')}</option>
+                <option value="light">{t('settings.themeLight')}</option>
+                <option value="dark">{t('settings.themeDark')}</option>
               </select>
             </label>
 
             <label className="field">
-              Row density
+              {t('settings.density')}
               <select
                 value={app.density}
                 onChange={(event) =>
                   app.setDensity(event.target.value as 'comfortable' | 'compact')
                 }
               >
-                <option value="comfortable">Comfortable</option>
-                <option value="compact">Compact</option>
+                <option value="comfortable">{t('settings.densityComfortable')}</option>
+                <option value="compact">{t('settings.densityCompact')}</option>
               </select>
             </label>
 
             <label className="field">
-              Default time range
+              {t('settings.defaultRange')}
               <select
                 value={String(settings.app['ui.default_range'] ?? '24h')}
                 onChange={(event) => void updateSetting('ui.default_range', event.target.value)}
               >
-                {['15m', '1h', '6h', '24h', '7d', '30d', 'all'].map((range) => (
-                  <option key={range} value={range}>
-                    {range}
-                  </option>
-                ))}
+                {['15m', '1h', '6h', '24h', '7d', '30d', 'all'].map((range) => {
+                  const key = rangeKey(range);
+                  return (
+                    <option key={range} value={range}>
+                      {key ? t(key) : range}
+                    </option>
+                  );
+                })}
               </select>
             </label>
 
             <label className="field">
-              Rows per page
+              {t('settings.pageSize')}
               <input
                 type="number"
                 min={25}
@@ -170,23 +207,21 @@ export function SettingsPage() {
           </div>
         </Section>
 
-        <Section title="Data retention">
+        <Section title={t('settings.retention')}>
           <div className="row wrap" style={{ gap: 16, alignItems: 'flex-end' }}>
             <label className="field">
-              Keep query history for
+              {t('settings.keepFor')}
               <select
                 value={String(settings.effective.retention_days)}
                 onChange={(event) => void updateSetting('retention_days', Number(event.target.value))}
               >
                 {settings.choices.retention_days.map((days) => (
                   <option key={days} value={days}>
-                    {days === 0 ? 'Unlimited' : `${days} day${days === 1 ? '' : 's'}`}
+                    {retentionLabel(days)}
                   </option>
                 ))}
               </select>
-              <span className="faint">
-                Overrides the add-on option. Older queries are removed automatically.
-              </span>
+              <span className="faint">{t('settings.retentionHint')}</span>
             </label>
 
             <button
@@ -195,12 +230,12 @@ export function SettingsPage() {
               disabled={busy !== null}
               onClick={() => void run('cleanup', endpoints.runCleanup)}
             >
-              {busy === 'cleanup' ? 'Cleaning…' : 'Run cleanup now'}
+              {busy === 'cleanup' ? t('settings.cleaning') : t('settings.runCleanup')}
             </button>
           </div>
         </Section>
 
-        <Section title="Ingest">
+        <Section title={t('settings.ingest')}>
           <div className="row wrap" style={{ gap: 16, alignItems: 'flex-end' }}>
             <label className="field" style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <input
@@ -208,7 +243,7 @@ export function SettingsPage() {
                 checked={Boolean(settings.app['ingest.enabled'])}
                 onChange={(event) => void updateSetting('ingest.enabled', event.target.checked)}
               />
-              Import new queries from AdGuard
+              {t('settings.importNew')}
             </label>
             <button
               type="button"
@@ -216,7 +251,7 @@ export function SettingsPage() {
               disabled={busy !== null}
               onClick={() => void run('ingest', endpoints.runIngest)}
             >
-              Poll now
+              {t('settings.pollNow')}
             </button>
             <button
               type="button"
@@ -224,38 +259,38 @@ export function SettingsPage() {
               disabled={busy !== null}
               onClick={() => void run('reclassify', endpoints.reclassify)}
             >
-              {busy === 'reclassify' ? 'Queueing…' : 'Re-classify all domains'}
+              {busy === 'reclassify' ? t('settings.queueing') : t('settings.reclassifyAll')}
             </button>
           </div>
 
           <dl className="kv" style={{ marginTop: 14 }}>
-            <Row label="Source">
-              {provider ? `${provider.name} — ${provider.source}` : 'not configured'}
+            <Row label={t('settings.source')}>
+              {provider ? `${provider.name} — ${provider.source}` : t('settings.notConfigured')}
             </Row>
-            <Row label="Status">
+            <Row label={t('settings.status')}>
               {provider?.available ? (
-                <span className="badge allowed">connected</span>
+                <span className="badge allowed">{t('settings.connected')}</span>
               ) : (
-                <span className="badge blocked">unavailable</span>
+                <span className="badge blocked">{t('settings.unavailable')}</span>
               )}{' '}
               <span className="muted">{provider?.detail}</span>
             </Row>
             {discovery ? (
-              <Row label="Address">
+              <Row label={t('settings.address')}>
                 {discovery.url ? (
                   <span className="mono">{discovery.url}</span>
                 ) : (
-                  <span className="muted">could not be determined</span>
+                  <span className="muted">{t('settings.addressUnknown')}</span>
                 )}
                 {discovery.source === 'configuration'
-                  ? ' (from the add-on options)'
+                  ? ` ${t('settings.fromOptions')}`
                   : discovery.slug
-                    ? ` (found as ${discovery.slug})`
+                    ? ` ${t('settings.foundAs', { slug: discovery.slug })}`
                     : ''}
               </Row>
             ) : null}
             {discovery && discovery.source !== 'configuration' ? (
-              <Row label="How it was looked up">
+              <Row label={t('settings.howLookedUp')}>
                 {discovery.steps.length ? (
                   <ol style={{ margin: 0, paddingLeft: '1.1em' }}>
                     {discovery.steps.map((step) => (
@@ -269,83 +304,92 @@ export function SettingsPage() {
                 )}
                 {Object.keys(discovery.ports).length ? (
                   <div className="small muted" style={{ marginTop: 6 }}>
-                    Ports the Supervisor reports for that add-on:{' '}
-                    <span className="mono">
-                      {Object.entries(discovery.ports)
-                        .map(([key, value]) => `${key} → ${value ?? 'not published'}`)
-                        .join(', ')}
-                    </span>
+                    {t('settings.reportedPorts', {
+                      ports: Object.entries(discovery.ports)
+                        .map(
+                          ([key, value]) =>
+                            `${key} → ${value ?? t('settings.portNotPublished')}`,
+                        )
+                        .join(', '),
+                    })}
                   </div>
                 ) : null}
               </Row>
             ) : null}
-            <Row label="Last poll">
+            <Row label={t('settings.lastPoll')}>
               {status.ingest.last.at_ns
                 ? formatRelative(Number(status.ingest.last.at_ns))
-                : 'not yet'}
+                : t('settings.notYet')}
             </Row>
-            <Row label="Last import">
+            <Row label={t('settings.lastImport')}>
               {status.ingest.last_import?.at_ns ? (
-                <>
-                  {formatNumber(Number(status.ingest.last_import.inserted))} record(s),{' '}
-                  {formatRelative(Number(status.ingest.last_import.at_ns))}
-                </>
+                t('settings.records', {
+                  count: formatNumber(Number(status.ingest.last_import.inserted)),
+                  when: formatRelative(Number(status.ingest.last_import.at_ns)),
+                })
               ) : (
-                <span className="muted">nothing imported yet</span>
+                <span className="muted">{t('settings.nothingImported')}</span>
               )}
             </Row>
-            <Row label="Poll interval">{settings.effective.poll_interval}s</Row>
-            <Row label="Live stream">{status.stream.subscribers} subscriber(s)</Row>
+            <Row label={t('settings.pollInterval')}>{settings.effective.poll_interval}s</Row>
+            <Row label={t('settings.liveStream')}>
+              {t('settings.subscribers', { count: status.stream.subscribers })}
+            </Row>
           </dl>
         </Section>
 
-        <Section title="Database">
+        <Section title={t('settings.database')}>
           <dl className="kv">
-            <Row label="Queries stored">{formatNumber(status.database.queries)}</Row>
-            <Row label="Oldest record">{formatDateTime(status.database.oldest_ns)}</Row>
-            <Row label="Newest record">{formatDateTime(status.database.newest_ns)}</Row>
-            <Row label="Domains">{formatNumber(status.database.domains)}</Row>
-            <Row label="Devices">{formatNumber(status.database.clients)}</Row>
-            <Row label="People">{formatNumber(status.database.persons)}</Row>
-            <Row label="Tags">{formatNumber(status.database.tags)}</Row>
-            <Row label="Categorisation rules">{formatNumber(status.ingest.engine_rules)}</Row>
-            <Row label="Pending re-classification">
+            <Row label={t('settings.queriesStored')}>{formatNumber(status.database.queries)}</Row>
+            <Row label={t('settings.oldestRecord')}>{formatDateTime(status.database.oldest_ns)}</Row>
+            <Row label={t('settings.newestRecord')}>{formatDateTime(status.database.newest_ns)}</Row>
+            <Row label={t('settings.domains')}>{formatNumber(status.database.domains)}</Row>
+            <Row label={t('settings.devices')}>{formatNumber(status.database.clients)}</Row>
+            <Row label={t('settings.people')}>{formatNumber(status.database.persons)}</Row>
+            <Row label={t('settings.tags')}>{formatNumber(status.database.tags)}</Row>
+            <Row label={t('settings.categorisationRules')}>
+              {formatNumber(status.ingest.engine_rules)}
+            </Row>
+            <Row label={t('settings.pendingReclassification')}>
               {formatNumber(status.database.pending_reclassification)}
             </Row>
-            <Row label="File size">{formatBytes(status.database.size_bytes)}</Row>
-            <Row label="Location">
+            <Row label={t('settings.fileSize')}>{formatBytes(status.database.size_bytes)}</Row>
+            <Row label={t('settings.location')}>
               <span className="mono small">{status.database.path}</span>
             </Row>
-            <Row label="Schema version">
-              {status.database.schema_version} of {status.schema_target}
+            <Row label={t('settings.schemaVersion')}>
+              {t('settings.schemaOf', {
+                current: status.database.schema_version,
+                target: status.schema_target,
+              })}
             </Row>
           </dl>
         </Section>
 
-        <Section title="Add-on options (read-only)">
+        <Section title={t('settings.addonOptions')}>
           <p className="muted small" style={{ marginTop: 0 }}>
-            These come from Home Assistant. Change them on the add-on's Configuration tab and
-            restart the add-on.
+            {t('settings.addonOptionsIntro')}
           </p>
           <dl className="kv">
             {Object.entries(settings.addon_options).map(([key, value]) => (
               <Row key={key} label={key}>
                 <span className="mono small">
-                  {typeof value === 'boolean' ? (value ? 'yes' : 'no') : String(value)}
+                  {typeof value === 'boolean'
+                    ? value
+                      ? t('common.yes')
+                      : t('common.no')
+                    : String(value)}
                 </span>
               </Row>
             ))}
           </dl>
         </Section>
 
-        <Section title="About">
+        <Section title={t('settings.about')}>
           <dl className="kv">
-            <Row label="Version">{status.version}</Row>
-            <Row label="Started">{formatDateTime(status.started_at_ns)}</Row>
-            <Row label="Privacy">
-              No DNS data leaves this machine. There is no telemetry, no cloud analytics and no
-              external API call other than to AdGuard Home and the Supervisor.
-            </Row>
+            <Row label={t('settings.version')}>{status.version}</Row>
+            <Row label={t('settings.started')}>{formatDateTime(status.started_at_ns)}</Row>
+            <Row label={t('settings.privacy')}>{t('settings.privacyText')}</Row>
           </dl>
         </Section>
       </div>

@@ -6,6 +6,8 @@ import type { TopListItem } from './ui';
 import type { DetailPayload } from '../api/endpoints';
 import { navigate } from '../router';
 import { formatCompact, formatMs, formatNumber, formatPercent } from '../utils/format';
+import { rangeKey } from '../i18n';
+import { useT } from '../i18n/useT';
 import type { TopRow } from '../types/api';
 
 export function domainItems(rows: TopRow[] | undefined): TopListItem[] {
@@ -39,71 +41,77 @@ export function tagItems(rows: TopRow[] | undefined): TopListItem[] {
 }
 
 export function SummaryCards({ detail }: { detail: DetailPayload }) {
+  const t = useT();
   const summary = detail.summary;
   return (
     <div
       className="grid"
       style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', marginBottom: 12 }}
     >
-      <StatCard label="Queries" value={formatNumber(summary.total)} />
+      <StatCard label={t('common.queries')} value={formatNumber(summary.total)} />
       <StatCard
-        label="Blocked"
+        label={t('common.blocked')}
         value={formatNumber(summary.blocked)}
         sub={formatPercent(summary.blocked_percent)}
         accent="var(--danger)"
       />
-      <StatCard label="Allowed" value={formatNumber(summary.allowed)} accent="var(--success)" />
-      <StatCard label="Unique domains" value={formatNumber(summary.unique_domains)} />
       <StatCard
-        label="Avg response"
+        label={t('common.allowed')}
+        value={formatNumber(summary.allowed)}
+        accent="var(--success)"
+      />
+      <StatCard label={t('common.uniqueDomains')} value={formatNumber(summary.unique_domains)} />
+      <StatCard
+        label={t('common.avgResponse')}
         value={formatMs(summary.avg_response_time_ms)}
-        sub={`${formatCompact(summary.cached)} cached`}
+        sub={t('common.cachedSuffix', { count: formatCompact(summary.cached) })}
       />
     </div>
   );
 }
 
 export function DetailSections({ detail }: { detail: DetailPayload }) {
+  const t = useT();
   return (
     <>
       <div style={{ marginBottom: 12 }}>
-        <Section title="Activity">
+        <Section title={t('dashboard.activity')}>
           <TimelineChart timeline={detail.timeline} height={150} />
         </Section>
       </div>
 
       <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
         {detail.top_domains ? (
-          <Section title="Top domains">
+          <Section title={t('dashboard.topDomains')}>
             <TopList items={domainItems(detail.top_domains)} />
           </Section>
         ) : null}
         {detail.top_blocked_domains ? (
-          <Section title="Top blocked domains">
+          <Section title={t('dashboard.topBlockedDomains')}>
             <TopList items={domainItems(detail.top_blocked_domains)} />
           </Section>
         ) : null}
         {detail.top_clients ? (
-          <Section title="Top devices">
+          <Section title={t('dashboard.topDevices')}>
             <TopList items={clientItems(detail.top_clients)} />
           </Section>
         ) : null}
         {detail.top_categories ? (
-          <Section title="Categories">
+          <Section title={t('dashboard.categories')}>
             <TopList items={tagItems(detail.top_categories)} />
           </Section>
         ) : null}
         {detail.top_tags ? (
-          <Section title="Tags">
+          <Section title={t('dashboard.tags')}>
             <TopList items={tagItems(detail.top_tags)} />
           </Section>
         ) : null}
         {detail.top_query_types ? (
-          <Section title="Query types">
+          <Section title={t('dashboard.queryTypes')}>
             <TopList
               items={(detail.top_query_types ?? []).map((row) => ({
                 key: row.query_type ?? '',
-                label: row.query_type || '(none)',
+                label: row.query_type || t('chart.noneLabel'),
                 count: row.count,
                 blocked: row.blocked,
               }))}
@@ -111,11 +119,11 @@ export function DetailSections({ detail }: { detail: DetailPayload }) {
           </Section>
         ) : null}
         {detail.top_upstreams ? (
-          <Section title="Upstream servers">
+          <Section title={t('dashboard.upstreamServers')}>
             <TopList
               items={(detail.top_upstreams ?? []).map((row) => ({
                 key: row.upstream ?? '',
-                label: row.upstream || '(cache)',
+                label: row.upstream || t('chart.cacheLabel'),
                 count: row.count,
                 blocked: row.blocked,
               }))}
@@ -123,7 +131,7 @@ export function DetailSections({ detail }: { detail: DetailPayload }) {
           </Section>
         ) : null}
         {detail.top_persons ? (
-          <Section title="People">
+          <Section title={t('dashboard.people')}>
             <TopList
               items={(detail.top_persons ?? []).map((row) => ({
                 key: String(row.person_id),
@@ -132,7 +140,7 @@ export function DetailSections({ detail }: { detail: DetailPayload }) {
                 blocked: row.blocked,
                 onClick: () => navigate(`/persons/${row.person_id}`),
               }))}
-              emptyLabel="No devices assigned to a person"
+              emptyLabel={t('dashboard.noPersonAssigned')}
             />
           </Section>
         ) : null}
@@ -141,6 +149,8 @@ export function DetailSections({ detail }: { detail: DetailPayload }) {
   );
 }
 
+const DETAIL_RANGES = ['1h', '24h', '7d', '30d', 'all'];
+
 export function RangePicker({
   range,
   onChange,
@@ -148,13 +158,17 @@ export function RangePicker({
   range: string;
   onChange: (range: string) => void;
 }) {
+  const t = useT();
   return (
     <select value={range} onChange={(event) => onChange(event.target.value)}>
-      <option value="1h">Last hour</option>
-      <option value="24h">Last 24 hours</option>
-      <option value="7d">Last 7 days</option>
-      <option value="30d">Last 30 days</option>
-      <option value="all">All time</option>
+      {DETAIL_RANGES.map((value) => {
+        const key = rangeKey(value);
+        return (
+          <option key={value} value={value}>
+            {key ? t(key) : value}
+          </option>
+        );
+      })}
     </select>
   );
 }

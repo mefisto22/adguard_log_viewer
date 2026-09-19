@@ -27,6 +27,7 @@ from typing import Any
 import httpx
 
 from app.config import HASSIO_HOST_GATEWAY, SUPERVISOR_API
+from app.i18n import Message, localize_all
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -88,8 +89,8 @@ class DiscoveredAdGuard:
             "version": self.version,
             "confident": self.confident,
             "resolved": self.resolved,
-            "warnings": list(self.warnings),
-            "steps": list(self.steps),
+            "warnings": localize_all(list(self.warnings)),
+            "steps": localize_all(list(self.steps)),
             "ports": dict(self.ports),
         }
 
@@ -169,11 +170,15 @@ def _web_port(info: dict[str, Any]) -> tuple[int | None, str]:
     """
     network = info.get("network")
     if not isinstance(network, dict):
-        return None, "the Supervisor reported no port mapping for this add-on"
+        return None, Message("the Supervisor reported no port mapping for this add-on")
 
     value = network.get(WEB_CONTAINER_PORT)
     if isinstance(value, int) and value > 0:
-        return value, f"{WEB_CONTAINER_PORT} is published on host port {value}"
+        return value, Message(
+            "{container_port} is published on host port {port}",
+            container_port=WEB_CONTAINER_PORT,
+            port=value,
+        )
 
     published = {
         key: port
@@ -185,16 +190,22 @@ def _web_port(info: dict[str, Any]) -> tuple[int | None, str]:
     }
     if len(published) == 1:
         key, port = next(iter(published.items()))
-        return port, f"{key} is the only published TCP port, using host port {port}"
+        return port, Message(
+            "{container_port} is the only published TCP port, using host port {port}",
+            container_port=key,
+            port=port,
+        )
     if published:
-        return None, (
-            f"several TCP ports are published ({', '.join(sorted(published))}) and none of "
-            f"them is {WEB_CONTAINER_PORT}"
+        return None, Message(
+            "several TCP ports are published ({ports}) and none of them is {container_port}",
+            ports=", ".join(sorted(published)),
+            container_port=WEB_CONTAINER_PORT,
         )
 
-    return None, (
-        f"{WEB_CONTAINER_PORT} has no host port assigned "
-        f"(the Supervisor reported {network or '{}'})"
+    return None, Message(
+        "{container_port} has no host port assigned (the Supervisor reported {network})",
+        container_port=WEB_CONTAINER_PORT,
+        network=network or "{}",
     )
 
 
@@ -220,7 +231,14 @@ def _build_from_info(info: dict[str, Any], source: str, steps: list[str]) -> Dis
     network: dict[str, Any] = raw_network if isinstance(raw_network, dict) else {}
     host = _addon_host(info)
 
-    steps.append(f"'{name or slug}' ({version or 'unknown version'}): {explanation}")
+    steps.append(
+        Message(
+            "'{name}' ({version}): {explanation}",
+            name=name or slug,
+            version=version or Message("unknown version"),
+            explanation=explanation,
+        )
+    )
 
     result = DiscoveredAdGuard(
         url=f"http://{host}:{port}" if port else None,
@@ -235,17 +253,28 @@ def _build_from_info(info: dict[str, Any], source: str, steps: list[str]) -> Dis
     if port is None:
         result.confident = False
         result.warnings.append(
-            f"The '{name or slug}' add-on does not publish its web interface port, so its "
-            f"address cannot be worked out: {explanation}. Either open that add-on's "
-            f"Configuration page and assign a host port to {WEB_CONTAINER_PORT} under "
-            f"Network, or set this add-on's 'AdGuard Home URL' option to the address you "
-            f"already use."
+            Message(
+                "The '{name}' add-on does not publish its web interface port, so its "
+                "address cannot be worked out: {explanation}. Either open that add-on's "
+                "Configuration page and assign a host port to {container_port} under "
+                "Network, or set this add-on's 'AdGuard Home URL' option to the address "
+                "you already use.",
+                name=name or slug,
+                explanation=explanation,
+                container_port=WEB_CONTAINER_PORT,
+            )
         )
 
     state = str(info.get("state") or "")
     if state not in ("started", ""):
         result.confident = False
-        result.warnings.append(f"The '{name or slug}' add-on is not running (state: {state}).")
+        result.warnings.append(
+            Message(
+                "The '{name}' add-on is not running (state: {state}).",
+                name=name or slug,
+                state=state,
+            )
+        )
 
     return result
 
@@ -266,27 +295,29 @@ async def discover_adguard(
 
     if configured_url:
         url = normalize_url(configured_url)
-        steps.append(f"Using the address from the add-on options: {url}")
+        steps.append(Message("Using the address from the add-on options: {url}", url=url))
         return DiscoveredAdGuard(url=url, source="configuration", steps=steps)
 
     supervisor = SupervisorClient(supervisor_token)
     if not supervisor.available:
-        steps.append("No Supervisor token, so the AdGuard add-on cannot be looked up.")
+        steps.append(Message("No Supervisor token, so the AdGuard add-on cannot be looked up."))
         return DiscoveredAdGuard(
             url=None,
             source="unavailable",
             confident=False,
             steps=steps,
             warnings=[
-                "This add-on has no Supervisor token, so it cannot look the AdGuard add-on "
-                "up. Set the 'AdGuard Home URL' option explicitly."
+                Message(
+                    "This add-on has no Supervisor token, so it cannot look the AdGuard "
+                    "add-on up. Set the 'AdGuard Home URL' option explicitly."
+                )
             ],
         )
 
     slugs: list[str] = []
     if configured_slug:
         slugs.append(configured_slug)
-        steps.append(f"Add-on slug from the options: {configured_slug}")
+        steps.append(Message("Add-on slug from the options: {slug}", slug=configured_slug))
 
     services = await supervisor.discovery()
     for service in services:
@@ -294,9 +325,13 @@ async def discover_adguard(
             slug = str(service.get("addon") or "").strip()
             if slug and slug not in slugs:
                 slugs.append(slug)
-                steps.append(f"Supervisor discovery announced AdGuard as '{slug}'")
+                steps.append(
+                    Message("Supervisor discovery announced AdGuard as '{slug}'", slug=slug)
+                )
     if not services:
-        steps.append("Supervisor discovery returned nothing; falling back to known slugs.")
+        steps.append(
+            Message("Supervisor discovery returned nothing; falling back to known slugs.")
+        )
 
     announced = list(slugs)
     slugs.extend(slug for slug in CANDIDATE_SLUGS if slug not in slugs)
@@ -309,7 +344,9 @@ async def discover_adguard(
             continue
         source = "supervisor-discovery" if slug in announced else "supervisor-slug-probe"
         if probed:
-            steps.append(f"No add-on installed under: {', '.join(probed)}")
+            steps.append(
+                Message("No add-on installed under: {slugs}", slugs=", ".join(probed))
+            )
             probed.clear()
         result = _build_from_info(info, source, steps)
         _LOGGER.info(
@@ -323,14 +360,16 @@ async def discover_adguard(
         return result
 
     if probed:
-        steps.append(f"No add-on installed under: {', '.join(probed)}")
+        steps.append(Message("No add-on installed under: {slugs}", slugs=", ".join(probed)))
     return DiscoveredAdGuard(
         url=None,
         source="not-found",
         confident=False,
         steps=steps,
         warnings=[
-            "No AdGuard Home add-on was found through the Supervisor. Set the "
-            "'AdGuard Home URL' option to the address you use to open AdGuard."
+            Message(
+                "No AdGuard Home add-on was found through the Supervisor. Set the "
+                "'AdGuard Home URL' option to the address you use to open AdGuard."
+            )
         ],
     )

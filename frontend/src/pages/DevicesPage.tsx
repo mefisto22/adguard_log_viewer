@@ -7,9 +7,11 @@ import { useAsync } from '../hooks/useAsync';
 import { useAppStore } from '../stores/useAppStore';
 import { Link, navigate } from '../router';
 import { formatCompact, formatRelative } from '../utils/format';
+import { useT } from '../i18n/useT';
 import type { Device } from '../types/api';
 
 export function DevicesPage() {
+  const t = useT();
   const { persons, refreshDevices, refreshPersons } = useAppStore();
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('query_count');
@@ -46,23 +48,23 @@ export function DevicesPage() {
   return (
     <div className="main">
       <Section
-        title="Devices"
+        title={t('devices.title')}
         actions={
           <div className="row wrap" style={{ gap: 8, flex: '1 1 auto', justifyContent: 'flex-end' }}>
             <input
               type="search"
-              placeholder="Search IP, name or person…"
+              placeholder={t('devices.searchPlaceholder')}
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               style={{ flex: '1 1 150px', minWidth: 0, maxWidth: 240 }}
             />
             <select value={sort} onChange={(event) => setSort(event.target.value)}>
-              <option value="query_count">Most queries</option>
-              <option value="blocked">Most blocked</option>
-              <option value="last_seen">Last seen</option>
-              <option value="first_seen">First seen</option>
-              <option value="name">Name</option>
-              <option value="ip">IP address</option>
+              <option value="query_count">{t('devices.sortQueries')}</option>
+              <option value="blocked">{t('devices.sortBlocked')}</option>
+              <option value="last_seen">{t('devices.sortLastSeen')}</option>
+              <option value="first_seen">{t('devices.sortFirstSeen')}</option>
+              <option value="name">{t('devices.sortName')}</option>
+              <option value="ip">{t('devices.sortIp')}</option>
             </select>
           </div>
         }
@@ -71,28 +73,26 @@ export function DevicesPage() {
         {error ? <Banner kind="error">{error}</Banner> : null}
         {loading && !data ? (
           <div style={{ padding: 16 }}>
-            <Spinner label="Loading devices…" />
+            <Spinner label={t('devices.loading')} />
           </div>
         ) : null}
 
         {data && data.items.length === 0 ? (
-          <Empty>
-            No devices yet. They appear as soon as AdGuard logs a query from them.
-          </Empty>
+          <Empty>{t('devices.empty')}</Empty>
         ) : null}
 
         {data && data.items.length > 0 ? (
           <table className="data">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>IP</th>
-                <th>AdGuard name</th>
-                <th>Person</th>
-                <th className="right">Queries</th>
-                <th className="right">Blocked</th>
-                <th>First seen</th>
-                <th>Last seen</th>
+                <th>{t('devices.colName')}</th>
+                <th>{t('devices.colIp')}</th>
+                <th>{t('devices.colAdguardName')}</th>
+                <th>{t('devices.colPerson')}</th>
+                <th className="right">{t('devices.colQueries')}</th>
+                <th className="right">{t('devices.colBlocked')}</th>
+                <th>{t('devices.colFirstSeen')}</th>
+                <th>{t('devices.colLastSeen')}</th>
                 <th />
               </tr>
             </thead>
@@ -108,7 +108,7 @@ export function DevicesPage() {
                     {device.person ? (
                       <Link to={`/persons/${device.person_id}`}>{device.person}</Link>
                     ) : (
-                      <span className="faint">unassigned</span>
+                      <span className="faint">{t('common.unassigned')}</span>
                     )}
                   </td>
                   <td className="right mono">{formatCompact(device.query_count)}</td>
@@ -124,7 +124,7 @@ export function DevicesPage() {
                         openEditor(device);
                       }}
                     >
-                      Edit
+                      {t('common.edit')}
                     </button>
                   </td>
                 </tr>
@@ -136,16 +136,16 @@ export function DevicesPage() {
 
       {editing ? (
         <Modal
-          title={`Edit ${editing.ip}`}
+          title={t('devices.editTitle', { ip: editing.ip })}
           onClose={() => setEditing(null)}
           footer={
             <>
               <span className="spacer" />
               <button type="button" className="btn" onClick={() => setEditing(null)}>
-                Cancel
+                {t('common.cancel')}
               </button>
               <button type="button" className="btn primary" onClick={() => void save()}>
-                Save
+                {t('common.save')}
               </button>
             </>
           }
@@ -153,7 +153,7 @@ export function DevicesPage() {
           {saveError ? <Banner kind="error">{saveError}</Banner> : null}
           <div className="grid" style={{ gap: 12 }}>
             <label className="field">
-              Your name for this device
+              {t('devices.yourName')}
               <input
                 type="text"
                 value={alias}
@@ -162,24 +162,23 @@ export function DevicesPage() {
                 onChange={(event) => setAlias(event.target.value)}
               />
               <span className="faint">
-                Leave empty to use the name AdGuard reports
-                {editing.adguard_name ? ` (“${editing.adguard_name}”)` : ''}.
+                {editing.adguard_name
+                  ? t('devices.yourNameHintWith', { name: editing.adguard_name })
+                  : `${t('devices.yourNameHint')}.`}
               </span>
             </label>
 
             <label className="field">
-              Person
+              {t('devices.colPerson')}
               <select value={personId} onChange={(event) => setPersonId(event.target.value)}>
-                <option value="">— unassigned —</option>
+                <option value="">{t('devices.personUnassigned')}</option>
                 {persons.map((person) => (
                   <option key={person.id} value={person.id}>
                     {person.name}
                   </option>
                 ))}
               </select>
-              <span className="faint">
-                Assigning a person lets you filter every one of their devices at once.
-              </span>
+              <span className="faint">{t('devices.personHint')}</span>
             </label>
           </div>
         </Modal>

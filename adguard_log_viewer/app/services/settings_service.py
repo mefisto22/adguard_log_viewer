@@ -21,9 +21,11 @@ from typing import Any
 
 from app.config import Settings
 from app.db.sqlutil import kv_all, kv_delete, kv_set
+from app.i18n import Message
 
 #: Keys the API will accept, with a validator for each.
 EDITABLE: dict[str, str] = {
+    "ui.language": "language",
     "ui.theme": "theme",
     "ui.default_range": "str",
     "ui.page_size": "page_size",
@@ -35,6 +37,7 @@ EDITABLE: dict[str, str] = {
 }
 
 DEFAULTS: dict[str, Any] = {
+    "ui.language": "auto",
     "ui.theme": "system",
     "ui.default_range": "24h",
     "ui.page_size": 100,
@@ -43,6 +46,10 @@ DEFAULTS: dict[str, Any] = {
     "ui.live_updates": True,
     "ingest.enabled": True,
 }
+
+#: ``auto`` follows the language Home Assistant is showing the user; the rest
+#: override it for this add-on alone.
+LANGUAGES = ("auto", "en", "hu")
 
 THEMES = ("system", "light", "dark")
 DENSITIES = ("compact", "comfortable")
@@ -58,21 +65,31 @@ class SettingsError(ValueError):
 def _validate(key: str, value: Any) -> Any:
     kind = EDITABLE.get(key)
     if kind is None:
-        raise SettingsError(f"{key!r} is not a settable option")
+        raise SettingsError(Message("{key} is not a settable option", key=repr(key)))
 
+    if kind == "language":
+        if value not in LANGUAGES:
+            raise SettingsError(
+                Message("language must be one of {allowed}", allowed=", ".join(LANGUAGES))
+            )
+        return value
     if kind == "theme":
         if value not in THEMES:
-            raise SettingsError(f"theme must be one of {', '.join(THEMES)}")
+            raise SettingsError(
+                Message("theme must be one of {allowed}", allowed=", ".join(THEMES))
+            )
         return value
     if kind == "density":
         if value not in DENSITIES:
-            raise SettingsError(f"density must be one of {', '.join(DENSITIES)}")
+            raise SettingsError(
+                Message("density must be one of {allowed}", allowed=", ".join(DENSITIES))
+            )
         return value
     if kind == "page_size":
         try:
             number = int(value)
         except (TypeError, ValueError) as err:
-            raise SettingsError("page_size must be a number") from err
+            raise SettingsError(Message("page_size must be a number")) from err
         return max(25, min(number, 500))
     if kind == "retention":
         if value is None:
@@ -80,15 +97,15 @@ def _validate(key: str, value: Any) -> Any:
         try:
             number = int(value)
         except (TypeError, ValueError) as err:
-            raise SettingsError("retention_days must be a number") from err
+            raise SettingsError(Message("retention_days must be a number")) from err
         if number < 0:
-            raise SettingsError("retention_days cannot be negative")
+            raise SettingsError(Message("retention_days cannot be negative"))
         return number
     if kind == "bool":
         return bool(value)
     if kind == "list":
         if not isinstance(value, list):
-            raise SettingsError(f"{key} must be a list")
+            raise SettingsError(Message("{key} must be a list", key=key))
         return [str(item) for item in value][:64]
     return str(value)
 
@@ -139,6 +156,7 @@ def describe(conn: sqlite3.Connection, settings: Settings) -> dict[str, Any]:
             "timezone": settings.timezone,
         },
         "choices": {
+            "languages": list(LANGUAGES),
             "themes": list(THEMES),
             "densities": list(DENSITIES),
             "retention_days": list(RETENTION_CHOICES),

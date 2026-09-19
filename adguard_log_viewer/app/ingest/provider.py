@@ -11,6 +11,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
+from app.i18n import localize, localize_all
 from app.ingest.records import QueryRecord
 
 #: Opaque, JSON-serialisable position in the source. Persisted in ``ingest_state``.
@@ -33,8 +34,8 @@ class ProviderStatus:
             "name": self.name,
             "available": self.available,
             "source": self.source,
-            "detail": self.detail,
-            "warnings": list(self.warnings),
+            "detail": localize(self.detail),
+            "warnings": localize_all(list(self.warnings)),
             "extra": dict(self.extra),
         }
 

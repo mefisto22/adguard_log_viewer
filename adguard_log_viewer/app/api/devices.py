@@ -9,6 +9,7 @@ from fastapi import APIRouter, HTTPException, Query
 
 from app.api.deps import DbDep, ok
 from app.common.timeutil import parse_time_expression
+from app.i18n import Message, detail_of
 from app.schemas.entities import DeviceAssign, DeviceUpdate, PersonCreate, PersonUpdate
 from app.services import device_service
 
@@ -44,7 +45,7 @@ async def list_devices(
 async def get_device(client_id: int, db: DbDep) -> dict[str, Any]:
     device = await db.run_read(lambda conn: device_service.get_device(conn, client_id))
     if device is None:
-        raise HTTPException(status_code=404, detail="Device not found")
+        raise HTTPException(status_code=404, detail=Message("Device not found"))
     return device
 
 
@@ -64,7 +65,7 @@ async def device_detail(
         )
     )
     if detail is None:
-        raise HTTPException(status_code=404, detail="Device not found")
+        raise HTTPException(status_code=404, detail=Message("Device not found"))
     return detail
 
 
@@ -80,7 +81,9 @@ async def update_device(client_id: int, payload: DeviceUpdate, db: DbDep) -> dic
         )
     )
     if not changed:
-        raise HTTPException(status_code=404, detail="Device not found or nothing to change")
+        raise HTTPException(
+            status_code=404, detail=Message("Device not found or nothing to change")
+        )
     device = await db.run_read(lambda conn: device_service.get_device(conn, client_id))
     return ok({"device": device})
 
@@ -89,7 +92,7 @@ async def update_device(client_id: int, payload: DeviceUpdate, db: DbDep) -> dic
 async def delete_device(client_id: int, db: DbDep) -> dict[str, Any]:
     removed = await db.run_write(lambda conn: device_service.delete_device(conn, client_id))
     if not removed:
-        raise HTTPException(status_code=404, detail="Device not found")
+        raise HTTPException(status_code=404, detail=Message("Device not found"))
     return ok()
 
 
@@ -120,10 +123,10 @@ async def create_person(payload: PersonCreate, db: DbDep) -> dict[str, Any]:
     try:
         person_id = await db.run_write(_run)
     except ValueError as err:
-        raise HTTPException(status_code=400, detail=str(err)) from err
+        raise HTTPException(status_code=400, detail=detail_of(err)) from err
     except sqlite3.IntegrityError as err:
         raise HTTPException(
-            status_code=409, detail="A person with that name already exists"
+            status_code=409, detail=Message("A person with that name already exists")
         ) from err
     return ok(id=person_id)
 
@@ -138,13 +141,15 @@ async def update_person(person_id: int, payload: PersonUpdate, db: DbDep) -> dic
     try:
         changed = await db.run_write(_run)
     except ValueError as err:
-        raise HTTPException(status_code=400, detail=str(err)) from err
+        raise HTTPException(status_code=400, detail=detail_of(err)) from err
     except sqlite3.IntegrityError as err:
         raise HTTPException(
-            status_code=409, detail="A person with that name already exists"
+            status_code=409, detail=Message("A person with that name already exists")
         ) from err
     if not changed:
-        raise HTTPException(status_code=404, detail="Person not found or nothing to change")
+        raise HTTPException(
+            status_code=404, detail=Message("Person not found or nothing to change")
+        )
     return ok()
 
 
@@ -152,7 +157,7 @@ async def update_person(person_id: int, payload: PersonUpdate, db: DbDep) -> dic
 async def delete_person(person_id: int, db: DbDep) -> dict[str, Any]:
     removed = await db.run_write(lambda conn: device_service.delete_person(conn, person_id))
     if not removed:
-        raise HTTPException(status_code=404, detail="Person not found")
+        raise HTTPException(status_code=404, detail=Message("Person not found"))
     return ok()
 
 
@@ -172,7 +177,7 @@ async def person_detail(
         )
     )
     if detail is None:
-        raise HTTPException(status_code=404, detail="Person not found")
+        raise HTTPException(status_code=404, detail=Message("Person not found"))
     return detail
 
 
