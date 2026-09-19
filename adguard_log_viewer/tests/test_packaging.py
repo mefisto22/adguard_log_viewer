@@ -196,6 +196,30 @@ class TestAddonConfig:
         assert config["version"] == __version__
 
 
+class TestDockerfile:
+    def test_the_entry_point_restores_the_container_environment(self) -> None:
+        """s6-overlay launches CMD with a bare environment.
+
+        The Home Assistant base images use s6 as their init, and it keeps the
+        real container environment in /run/s6/container_environment rather than
+        passing it on. Without `with-contenv` the add-on never sees
+        SUPERVISOR_TOKEN — so it cannot ask the Supervisor where AdGuard Home
+        is — and never sees TZ, so every timestamp is UTC.
+        """
+        dockerfile = (ADDON_ROOT / "Dockerfile").read_text(encoding="utf-8")
+        cmd = [line for line in dockerfile.splitlines() if line.startswith("CMD ")]
+        assert cmd, "the Dockerfile declares no CMD"
+        assert "with-contenv" in cmd[0], (
+            f"CMD must start the app through with-contenv, got: {cmd[0]}"
+        )
+
+    def test_the_image_installs_only_from_wheels(self) -> None:
+        # A missing wheel should fail the build loudly rather than trying to
+        # compile Rust on a Raspberry Pi.
+        dockerfile = (ADDON_ROOT / "Dockerfile").read_text(encoding="utf-8")
+        assert "--only-binary" in dockerfile
+
+
 class TestRepository:
     def test_the_repository_descriptor_is_valid(self) -> None:
         with (REPO_ROOT / "repository.yaml").open(encoding="utf-8") as handle:

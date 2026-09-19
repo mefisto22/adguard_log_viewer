@@ -174,3 +174,44 @@ class TestReasons:
     )
     def test_result_kinds(self, reason: str, kind: str) -> None:
         assert result_kind(reason) == kind
+
+
+class TestErrorSummaries:
+    """AdGuard sits behind nginx, whose error pages are HTML.
+
+    Those used to be pasted into the add-on log verbatim, several lines of
+    markup for what is really a four-word message.
+    """
+
+    @staticmethod
+    def _summary(status: int, text: str, content_type: str = "text/plain") -> str:
+        import httpx
+
+        from app.adguard.client import _short_body
+
+        response = httpx.Response(status, text=text, headers={"content-type": content_type})
+        return _short_body(response)
+
+    def test_an_nginx_error_page_becomes_its_title(self) -> None:
+        page = (
+            "<html>\n<head><title>500 Internal Server Error</title></head>\n"
+            "<body>\n<center><h1>500 Internal Server Error</h1></center>\n"
+            "<hr><center>nginx</center>\n</body>\n</html>"
+        )
+        summary = self._summary(500, page, "text/html")
+        assert summary == " (500 Internal Server Error)"
+        assert "<" not in summary
+
+    def test_html_without_a_title_is_stripped_of_markup(self) -> None:
+        summary = self._summary(502, "<body><h1>Bad Gateway</h1></body>", "text/html")
+        assert "<" not in summary
+        assert "Bad Gateway" in summary
+
+    def test_plain_text_is_kept(self) -> None:
+        assert self._summary(403, "forbidden by policy") == ": forbidden by policy"
+
+    def test_an_empty_body_adds_nothing(self) -> None:
+        assert self._summary(500, "") == ""
+
+    def test_long_bodies_are_truncated(self) -> None:
+        assert len(self._summary(500, "x" * 5000)) < 200

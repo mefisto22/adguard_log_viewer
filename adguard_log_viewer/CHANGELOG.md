@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.1.5
+
+**Az automatikus felderítés eddig soha nem működhetett.**
+
+- A Home Assistant base image s6-overlay-t használ initként, és az s6 a
+  konténer környezeti változóit **nem adja át** az általa indított
+  folyamatnak — külön helyre teszi őket, és `with-contenv`-vel kell
+  visszakérni. Emiatt az add-on soha nem látta a `SUPERVISOR_TOKEN`-t, így nem
+  tudta megkérdezni a Supervisortól, hol van az AdGuard; és nem látta a `TZ`-t
+  sem, így minden időbélyeg UTC szerint jelent meg. A belépési pont mostantól
+  `with-contenv`-en keresztül indul, az `app.config` pedig tartalékként
+  közvetlenül is olvassa az s6 környezetét.
+- Az AdGuard mögötti nginx HTML hibaoldalait nem másoljuk többé nyersen a
+  logba, csak a lényeget: `... returned HTTP 500 for /querylog (500 Internal
+  Server Error)`.
+
 ## 0.1.4
 
 Az AdGuard felderítése.

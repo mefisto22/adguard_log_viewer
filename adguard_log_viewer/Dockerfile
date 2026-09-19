@@ -21,10 +21,12 @@ RUN pip install --no-cache-dir --only-binary :all: -r requirements.txt
 # The application, including the pre-built frontend in app/static.
 COPY app ./app
 
-# The Home Assistant base image's s6-overlay runs this as the container's main
-# process. Options are read from /data/options.json by app.config, so no shell
-# wrapper is needed.
-CMD ["python", "-m", "app.main"]
+# `with-contenv` is what puts the container environment back. s6-overlay hands
+# the process it launches a bare environment — without this the add-on never
+# sees SUPERVISOR_TOKEN (so it cannot ask the Supervisor where AdGuard is) or
+# TZ (so every timestamp is UTC). Everything else comes from /data/options.json,
+# which app.config reads directly, so no shell wrapper is needed beyond this.
+CMD ["with-contenv", "python", "-m", "app.main"]
 
 # Build metadata, filled in by the Supervisor / the build action.
 ARG BUILD_ARCH

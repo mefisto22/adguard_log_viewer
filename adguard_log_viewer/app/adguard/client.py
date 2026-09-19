@@ -8,6 +8,7 @@ accessor falls back to the older spelling instead of raising.
 from __future__ import annotations
 
 import logging
+import re
 from typing import Any
 
 import httpx
@@ -174,12 +175,28 @@ class AdGuardClient:
         return names
 
 
+_TITLE = re.compile(r"<title[^>]*>(.*?)</title>", re.IGNORECASE | re.DOTALL)
+_TAGS = re.compile(r"<[^>]+>")
+
+
 def _short_body(response: httpx.Response) -> str:
+    """A one-line hint about the body, never raw markup.
+
+    AdGuard sits behind nginx, and an nginx error page is several lines of HTML
+    that used to be pasted straight into the add-on log. The page title carries
+    the whole message.
+    """
     try:
         text = response.text.strip()
     except Exception:  # pragma: no cover - defensive
         return ""
     if not text:
         return ""
-    # Never echo more than a hint of the body into the log.
-    return f": {text[:120]}"
+
+    if "html" in response.headers.get("content-type", "").lower() or text.startswith("<"):
+        title = _TITLE.search(text)
+        summary = title.group(1) if title else _TAGS.sub(" ", text)
+        summary = " ".join(summary.split())
+        return f" ({summary[:100]})" if summary else " (an HTML error page)"
+
+    return f": {' '.join(text.split())[:120]}"

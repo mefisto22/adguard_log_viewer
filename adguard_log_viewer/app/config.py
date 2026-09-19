@@ -1,12 +1,15 @@
 """Runtime configuration.
 
-Three layers, in order of precedence:
+Four layers, in order of precedence:
 
 1. **environment variables** — used for development and for overriding a single
    value without touching the add-on options;
-2. **the add-on options file** (``/data/options.json``), which Home Assistant
+2. **the s6-overlay container environment** (``/run/s6/container_environment``),
+   because s6 hands the process it launches a bare environment and keeps the
+   real one there;
+3. **the add-on options file** (``/data/options.json``), which Home Assistant
    writes from the add-on's Configuration tab;
-3. **built-in defaults**.
+4. **built-in defaults**.
 
 Reading ``options.json`` here rather than through a ``bashio`` shell wrapper
 keeps the container entry point a plain ``python -m app.main``, and makes the
@@ -34,6 +37,15 @@ SUPERVISOR_API = "http://supervisor"
 #: Where Home Assistant writes the add-on options.
 DEFAULT_OPTIONS_FILE = "/data/options.json"
 
+#: s6-overlay — which the Home Assistant base images use as their init — does
+#: not pass the container environment to the process it launches. It stashes it
+#: here instead, and expects programs to be started through ``with-contenv``.
+#: The Dockerfile does exactly that, but reading the directory as well means the
+#: add-on still sees SUPERVISOR_TOKEN and TZ if it is ever started another way.
+#: Missing this cost the add-on its Supervisor token entirely: auto-discovery
+#: could never reach the Supervisor, and every timestamp fell back to UTC.
+DEFAULT_S6_ENVIRONMENT_DIR = "/run/s6/container_environment"
+
 _options_cache: dict[str, Any] | None = None
 
 
@@ -60,10 +72,27 @@ def load_options(path: str | Path | None = None) -> dict[str, Any]:
     return options
 
 
+def container_environment(name: str) -> str | None:
+    """Read one variable from the s6-overlay container environment."""
+    directory = os.environ.get("S6_ENVIRONMENT_DIR") or DEFAULT_S6_ENVIRONMENT_DIR
+    try:
+        value = (Path(directory) / name).read_text(encoding="utf-8")
+    except (OSError, ValueError, UnicodeDecodeError):
+        return None
+    # s6 writes the value verbatim, with at most a trailing newline.
+    value = value.removesuffix("\n")
+    return value or None
+
+
 def _raw(env_name: str, option_name: str | None) -> Any:
     value = os.environ.get(env_name)
     if value is not None and value.strip() != "":
         return value.strip()
+
+    stashed = container_environment(env_name)
+    if stashed is not None and stashed.strip() != "":
+        return stashed.strip()
+
     if option_name:
         option = load_options().get(option_name)
         if option is not None and option != "":

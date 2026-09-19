@@ -121,3 +121,85 @@ class TestRedaction:
         redacted = Settings().redacted()
         assert "hunter2" not in json.dumps(redacted)
         assert redacted["adguard_password_set"] is True
+
+
+class TestContainerEnvironment:
+    """s6-overlay strips the environment from the process it launches.
+
+    The Home Assistant base images use s6 as their init, and it hands the
+    launched process a bare environment — ``PATH``, ``PWD`` and little else —
+    keeping the real one in ``/run/s6/container_environment``. Programs are
+    meant to be started through ``with-contenv``; the Dockerfile now does that,
+    and this fallback means the add-on is correct even when it is not.
+
+    Without it the add-on never saw ``SUPERVISOR_TOKEN``, so it could not ask
+    the Supervisor where AdGuard is, and never saw ``TZ``, so every timestamp
+    was UTC.
+    """
+
+    def test_a_variable_is_read_from_the_s6_directory(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        env_dir = tmp_path / "container_environment"
+        env_dir.mkdir()
+        (env_dir / "SUPERVISOR_TOKEN").write_text("abc123", encoding="utf-8")
+        (env_dir / "TZ").write_text("Europe/Budapest\n", encoding="utf-8")
+        monkeypatch.setenv("S6_ENVIRONMENT_DIR", str(env_dir))
+        monkeypatch.delenv("SUPERVISOR_TOKEN", raising=False)
+        monkeypatch.delenv("TZ", raising=False)
+
+        settings = Settings()
+        assert settings.supervisor_token == "abc123"
+        assert settings.has_supervisor is True
+        # A trailing newline is s6's, not part of the value.
+        assert settings.timezone == "Europe/Budapest"
+
+    def test_a_real_environment_variable_still_wins(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        env_dir = tmp_path / "container_environment"
+        env_dir.mkdir()
+        (env_dir / "SUPERVISOR_TOKEN").write_text("from-s6", encoding="utf-8")
+        monkeypatch.setenv("S6_ENVIRONMENT_DIR", str(env_dir))
+        monkeypatch.setenv("SUPERVISOR_TOKEN", "from-env")
+        assert Settings().supervisor_token == "from-env"
+
+    def test_the_options_file_is_still_consulted_after_it(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        env_dir = tmp_path / "container_environment"
+        env_dir.mkdir()
+        monkeypatch.setenv("S6_ENVIRONMENT_DIR", str(env_dir))
+        monkeypatch.delenv("ADGUARD_URL", raising=False)
+        path = write_options(tmp_path, {"adguard_url": "http://from-options"})
+        monkeypatch.setenv("OPTIONS_FILE", str(path))
+        assert Settings().adguard_url == "http://from-options"
+
+    def test_a_missing_directory_is_not_an_error(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv("S6_ENVIRONMENT_DIR", str(tmp_path / "nope"))
+        monkeypatch.delenv("SUPERVISOR_TOKEN", raising=False)
+        assert Settings().supervisor_token == ""
+        assert Settings().has_supervisor is False
+
+    def test_an_unreadable_entry_is_ignored(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        env_dir = tmp_path / "container_environment"
+        env_dir.mkdir()
+        # A directory where a file is expected.
+        (env_dir / "SUPERVISOR_TOKEN").mkdir()
+        monkeypatch.setenv("S6_ENVIRONMENT_DIR", str(env_dir))
+        monkeypatch.delenv("SUPERVISOR_TOKEN", raising=False)
+        assert Settings().supervisor_token == ""
+
+    def test_an_empty_value_does_not_count(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        env_dir = tmp_path / "container_environment"
+        env_dir.mkdir()
+        (env_dir / "ADGUARD_URL").write_text("\n", encoding="utf-8")
+        monkeypatch.setenv("S6_ENVIRONMENT_DIR", str(env_dir))
+        monkeypatch.delenv("ADGUARD_URL", raising=False)
+        assert Settings().adguard_url == ""

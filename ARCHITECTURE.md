@@ -265,6 +265,24 @@ install`-t futtatnia egy Raspberry Pi-n.
 
 ---
 
+## 8.1 s6-overlay és a környezeti változók
+
+A Home Assistant base image **s6-overlay**-t használ initként. Az s6 az általa
+indított folyamatnak **üres környezetet** ad: a konténer valódi környezetét a
+`/run/s6/container_environment/` könyvtárba menti, és `with-contenv`-vel kell
+visszaolvasni.
+
+Ez nem kozmetikai részlet: enélkül az add-on nem látja a `SUPERVISOR_TOKEN`-t,
+tehát **egyáltalán nem tudja megkérdezni a Supervisort**, hol fut az AdGuard —
+az automatikus felderítés csendben minden telepítésen elbukik. A `TZ` sem jut
+át, így minden időbélyeg UTC lesz.
+
+Ezért a `CMD` `with-contenv`-en keresztül indul, és az `app/config.py`
+tartalékként közvetlenül is olvassa a `/run/s6/container_environment/`
+könyvtárat — így a beállítás akkor is helyes, ha az image-et máshogy indítják.
+
+---
+
 ## 9. Biztonság és adatvédelem
 
 * **Semmilyen DNS adat nem hagyja el a gépet.** Nincs telemetria, nincs külső

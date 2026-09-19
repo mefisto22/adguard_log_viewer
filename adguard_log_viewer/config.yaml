@@ -1,6 +1,6 @@
 ---
 name: AdGuard Log Viewer
-version: "0.1.4"
+version: "0.1.5"
 slug: adguard_log_viewer
 description: >-
   Search, filter and analyse the AdGuard Home DNS query log — per device, per
