@@ -62,6 +62,7 @@ async def status(db: DbDep, state: StateDep) -> dict[str, Any]:
         "discovery": state.discovery.as_dict() if state.discovery else None,
         "ingest": {
             "last": state.last_ingest,
+            "last_import": state.last_import,
             "error": state.ingest_error,
             "engine_rules": state.engine.rule_count if state.engine else 0,
             "ruleset_rev": state.ruleset_rev,

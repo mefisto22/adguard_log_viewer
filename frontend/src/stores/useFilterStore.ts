@@ -59,6 +59,17 @@ interface FilterState {
   setSort: (sort: string, direction: 'asc' | 'desc') => void;
   reset: () => void;
   hasFilters: () => boolean;
+  /** The quick-search terms as a filter tree, or null when there are none. */
+  searchNode: () => FilterNode | null;
+  /**
+   * Everything the user can see narrowing the list, as one tree.
+   *
+   * This is what a saved filter has to contain. `activeFilterNode()` leaves
+   * the search terms out because the backend receives them separately, but a
+   * saved filter must stand on its own — otherwise saving "domain contains
+   * youtube" stores nothing at all.
+   */
+  saveableFilterNode: () => FilterNode | null;
   /** Filter + search + range, with no paging or sorting. */
   buildFilterRequest: () => QueryRequest;
   buildRequest: () => QueryRequest;
@@ -97,6 +108,33 @@ function quickToNodes(quick: QuickFilters): FilterNode[] {
     nodes.push({ field: 'result', operator: 'equals', value: quick.result });
   }
   return nodes;
+}
+
+/**
+ * Turn a stored filter into a group, or null when there is nothing usable.
+ *
+ * A filter saved before the search terms were included is an empty object.
+ * Wrapping that in a group produced `{op:'and', children:[{}]}`: the condition
+ * counter saw one child and showed "Advanced (1)", while the SQL builder
+ * correctly dropped it and nothing was filtered.
+ */
+export function asGroup(filter: FilterNode | null | undefined): Group | null {
+  if (!filter || typeof filter !== 'object') return null;
+  if ('op' in filter && Array.isArray((filter as Group).children)) {
+    return pruneGroup(filter as Group);
+  }
+  if ('field' in filter && (filter as Predicate).field) {
+    return pruneGroup({ op: 'and', children: [filter] });
+  }
+  return null;
+}
+
+/** Number of conditions that will actually be sent to the backend. */
+export function countEffectiveConditions(group: Group | null): number {
+  const pruned = group ? pruneGroup(group) : null;
+  const walk = (node: FilterNode): number =>
+    'op' in node ? (node as Group).children.reduce((total, c) => total + walk(c), 0) : 1;
+  return pruned ? walk(pruned) : 0;
 }
 
 /** True when the group has at least one usable condition. */
@@ -194,12 +232,7 @@ export const useFilterStore = create<FilterState>((set, get) => ({
     set((state) => ({
       savedFilterId: id,
       savedFilterName: name,
-      advanced:
-        filter && 'op' in filter
-          ? (filter as Group)
-          : filter
-            ? { op: 'and', children: [filter] }
-            : state.advanced,
+      advanced: id === null ? null : (asGroup(filter) ?? state.advanced),
       revision: state.revision + 1,
     })),
 
@@ -235,6 +268,37 @@ export const useFilterStore = create<FilterState>((set, get) => ({
     if (!nodes.length) return null;
     if (nodes.length === 1) return nodes[0];
     return { op: 'and', children: nodes };
+  },
+
+  searchNode: () => {
+    const state = get();
+    const terms = state.terms.map((term) => term.trim()).filter(Boolean);
+    if (!terms.length) return null;
+    const fields = state.searchFields.length ? state.searchFields : DEFAULT_SEARCH_FIELDS;
+
+    // Mirrors the backend's quick_search_filter: each term matches across the
+    // selected fields, and the terms combine with OR (any) or AND (all).
+    const perTerm: FilterNode[] = terms.map((term) => {
+      const alternatives: FilterNode[] = fields.map((field) => ({
+        field,
+        operator: 'contains',
+        value: term,
+      }));
+      return alternatives.length > 1 ? { op: 'or', children: alternatives } : alternatives[0];
+    });
+
+    if (perTerm.length === 1) return perTerm[0];
+    return { op: state.searchMode === 'any' ? 'or' : 'and', children: perTerm };
+  },
+
+  saveableFilterNode: () => {
+    const state = get();
+    const parts = [state.activeFilterNode(), state.searchNode()].filter(
+      (node): node is FilterNode => node !== null,
+    );
+    if (!parts.length) return null;
+    if (parts.length === 1) return parts[0];
+    return { op: 'and', children: parts };
   },
 
   buildFilterRequest: () => {

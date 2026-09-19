@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.1.2
+
+Hibajavítások a felületen.
+
+- **A mentett szűrő nem szűrt.** A Save gomb a keresőmezőbe írt kifejezésektől
+  jelent meg, de azokat nem mentette el, így üres szűrő került az adatbázisba.
+  A mentés mostantól a keresőkifejezéseket is tartalmazza, a backend pedig
+  visszautasítja az üres szűrőt. A feltételszámláló a *tényleges* feltételeket
+  számolja, így nem mutathat „Advanced (1)"-et olyan szűrőre, ami nem szűr.
+- **Az eszközlista üres maradt a query log szűrősorában.** Az eszközök,
+  személyek és címkék csak induláskor töltődtek be, friss telepítésnél pedig a
+  felület hamarabb állt fel, mint hogy az ingest megtalálta volna az első
+  klienst. Az alkalmazás most egyetlen élő kapcsolatot tart fenn, és frissíti
+  ezeket a listákat, amikor új kliens vagy domain érkezik.
+- **A legördülők magasabbak voltak a gomboknál.** Minden szűrősor-vezérlő
+  közös, rögzített magasságot kapott.
+- A Settings oldal külön mutatja az utolsó lekérdezést és az utolsó tényleges
+  importot — korábban egy üres lekérdezés felülírta a statisztikát, így mindig
+  „0 new record" látszott.
+
 ## 0.1.1
 
 Csomagolási és ingest javítások.

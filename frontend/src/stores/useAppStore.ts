@@ -3,6 +3,7 @@
 import { create } from 'zustand';
 import { endpoints } from '../api/endpoints';
 import type { Device, Meta, Person, SavedFilter, Status, Tag } from '../types/api';
+import type { LiveEvent, StreamMode } from './liveUpdates';
 
 type Theme = 'system' | 'light' | 'dark';
 type Density = 'comfortable' | 'compact';
@@ -21,6 +22,11 @@ interface AppState {
   pageSize: number;
   loaded: boolean;
   error: string | null;
+
+  // Owned by ./liveUpdates, which keeps a single connection for the whole app.
+  lastEvent: LiveEvent | null;
+  streamConnected: boolean;
+  streamMode: StreamMode;
 
   bootstrap: () => Promise<void>;
   refreshStatus: () => Promise<void>;
@@ -59,6 +65,9 @@ export const useAppStore = create<AppState>((set, get) => ({
   pageSize: 100,
   loaded: false,
   error: null,
+  lastEvent: null,
+  streamConnected: false,
+  streamMode: 'off',
 
   bootstrap: async () => {
     try {

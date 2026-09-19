@@ -337,6 +337,76 @@ class TestSavedFilters:
         )
         assert response.status_code == 400
 
+    @pytest.mark.parametrize("payload", [None, {}, [], {"op": "and", "children": []}])
+    def test_an_empty_saved_filter_is_rejected(self, client: TestClient, payload: object) -> None:
+        """An empty filter matches everything.
+
+        Storing one used to be allowed, and the UI then showed a condition
+        count for a filter that narrowed nothing — which looked exactly like a
+        saved filter that had stopped working.
+        """
+        response = client.post("/api/saved-filters", json={"name": "empty", "filter": payload})
+        assert response.status_code == 400
+        assert "at least one condition" in response.json()["detail"]
+
+    def test_an_empty_filter_cannot_be_set_by_update_either(self, client: TestClient) -> None:
+        created = client.post(
+            "/api/saved-filters",
+            json={
+                "name": "real",
+                "filter": {"field": "domain", "operator": "contains", "value": "youtube"},
+            },
+        )
+        assert created.status_code == 201
+        filter_id = created.json()["id"]
+
+        emptied = client.put(f"/api/saved-filters/{filter_id}", json={"filter": {}})
+        assert emptied.status_code == 400
+
+        # A rename must still work without touching the filter.
+        renamed = client.put(f"/api/saved-filters/{filter_id}", json={"name": "renamed"})
+        assert renamed.status_code == 200
+        stored = client.get("/api/saved-filters").json()["items"]
+        assert stored[0]["filter"] == {
+            "field": "domain",
+            "operator": "contains",
+            "value": "youtube",
+        }
+
+    def test_a_term_based_filter_round_trips(self, client: TestClient) -> None:
+        """What the Save button now stores for a multi-term search."""
+        term_filter = {
+            "op": "or",
+            "children": [
+                {"field": "domain", "operator": "contains", "value": "youtube"},
+                {"field": "domain", "operator": "contains", "value": "googlevideo"},
+            ],
+        }
+        created = client.post(
+            "/api/saved-filters", json={"name": "YouTube activity", "filter": term_filter}
+        )
+        assert created.status_code == 201
+
+        direct = _search(
+            client,
+            {
+                "search": {
+                    "terms": ["youtube", "googlevideo"],
+                    "mode": "any",
+                    "fields": ["domain"],
+                },
+                "range": "all",
+                "limit": 50,
+            },
+        )
+        via_saved = _search(
+            client, {"saved_filter_id": created.json()["id"], "range": "all", "limit": 50}
+        )
+        assert {item["domain"] for item in via_saved["items"]} == {
+            item["domain"] for item in direct["items"]
+        }
+        assert via_saved["total"] == direct["total"] > 0
+
 
 class TestSettings:
     def test_read_and_update(self, client: TestClient) -> None:

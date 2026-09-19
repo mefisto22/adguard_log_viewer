@@ -6,19 +6,15 @@ import { MultiSelect } from './MultiSelect';
 import { FilterBuilder, emptyGroup } from './FilterBuilder';
 import { Banner, Modal } from './ui';
 import { useAppStore } from '../stores/useAppStore';
-import { groupHasContent, pruneGroup, useFilterStore } from '../stores/useFilterStore';
+import {
+  countEffectiveConditions,
+  groupHasContent,
+  pruneGroup,
+  useFilterStore,
+} from '../stores/useFilterStore';
 import { endpoints } from '../api/endpoints';
 import { RANGE_LABELS } from '../utils/format';
 import type { ResultKind } from '../types/api';
-
-function countConditions(node: unknown): number {
-  if (!node || typeof node !== 'object') return 0;
-  const record = node as { op?: string; children?: unknown[] };
-  if (record.op && Array.isArray(record.children)) {
-    return record.children.reduce<number>((total, child) => total + countConditions(child), 0);
-  }
-  return 1;
-}
 
 export function FilterBar({ compact = false }: { compact?: boolean }) {
   const { meta, tags, persons, devices, savedFilters, refreshSavedFilters } = useAppStore();
@@ -30,7 +26,9 @@ export function FilterBar({ compact = false }: { compact?: boolean }) {
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const ranges = meta?.ranges ?? ['15m', '1h', '24h', '7d', '30d', 'all'];
-  const advancedCount = countConditions(store.advanced);
+  // Counted after pruning, so the badge can never claim a condition that
+  // the backend would drop.
+  const advancedCount = countEffectiveConditions(store.advanced);
 
   const categoryOptions = useMemo(
     () =>
@@ -82,13 +80,19 @@ export function FilterBar({ compact = false }: { compact?: boolean }) {
     setBuilderOpen(false);
   };
 
+  // The search terms are part of what the user sees narrowing the list, so a
+  // saved filter has to carry them. Saving activeFilterNode() alone stored an
+  // empty filter whenever the only thing set was a search term.
+  const saveable = store.saveableFilterNode();
+
   const saveCurrent = async () => {
     setSaveError(null);
+    if (!saveable) {
+      setSaveError('There is nothing to save yet — add a search term or a condition first.');
+      return;
+    }
     try {
-      await endpoints.createSavedFilter({
-        name: saveName,
-        filter: store.activeFilterNode(),
-      });
+      await endpoints.createSavedFilter({ name: saveName, filter: saveable });
       await refreshSavedFilters();
       setSaveOpen(false);
       setSaveName('');
@@ -215,7 +219,17 @@ export function FilterBar({ compact = false }: { compact?: boolean }) {
 
       {store.hasFilters() ? (
         <>
-          <button type="button" className="btn" onClick={() => setSaveOpen(true)}>
+          <button
+            type="button"
+            className="btn"
+            disabled={!saveable}
+            title={
+              saveable
+                ? 'Save these conditions for later'
+                : 'Add a search term or a condition first'
+            }
+            onClick={() => setSaveOpen(true)}
+          >
             Save
           </button>
           <button type="button" className="btn ghost" onClick={store.reset}>
@@ -285,8 +299,8 @@ export function FilterBar({ compact = false }: { compact?: boolean }) {
             />
           </label>
           <p className="faint small">
-            The quick filters and the advanced filter are saved. The time range and the search terms
-            stay as you set them each time.
+            The search terms, the quick filters and the advanced filter are all saved. The time
+            range is not — it stays as you set it each time.
           </p>
         </Modal>
       ) : null}

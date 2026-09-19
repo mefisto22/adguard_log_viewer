@@ -7,7 +7,6 @@ import { Banner, Section, Spinner, StatCard, TopList } from '../components/ui';
 import type { TopListItem } from '../components/ui';
 import { endpoints } from '../api/endpoints';
 import { useAsync } from '../hooks/useAsync';
-import { useAppStore } from '../stores/useAppStore';
 import { useFilterStore } from '../stores/useFilterStore';
 import { useLiveUpdates } from '../hooks/useLiveUpdates';
 import { formatCompact, formatMs, formatNumber, formatPercent } from '../utils/format';
@@ -17,8 +16,7 @@ import type { TopRow } from '../types/api';
 export function DashboardPage() {
   const revision = useFilterStore((state) => state.revision);
   const buildFilterRequest = useFilterStore((state) => state.buildFilterRequest);
-  const liveUpdates = useAppStore((state) => state.liveUpdates);
-  const { lastEvent } = useLiveUpdates(liveUpdates);
+  const { lastEvent } = useLiveUpdates();
 
   const load = useCallback(
     () => endpoints.dashboard({ ...buildFilterRequest(), top_limit: 10, buckets: 72 }),

@@ -54,10 +54,11 @@ export function MultiSearch() {
         flexWrap: 'wrap',
         flex: '1 1 320px',
         minWidth: 280,
+        minHeight: 'var(--control-height)',
         border: '1px solid var(--border-strong)',
         borderRadius: 'var(--radius-sm)',
         background: 'var(--bg-elevated)',
-        padding: '3px 6px',
+        padding: '0 6px',
       }}
     >
       {terms.map((term) => (
@@ -78,13 +79,8 @@ export function MultiSearch() {
           }
         }}
         onBlur={commit}
-        style={{
-          flex: '1 1 140px',
-          minWidth: 120,
-          border: 0,
-          padding: '3px 2px',
-          background: 'transparent',
-        }}
+        className="inline"
+        style={{ flex: '1 1 140px', minWidth: 120 }}
       />
 
       {terms.length > 1 ? (
@@ -114,7 +110,7 @@ export function MultiSearch() {
           }
         }}
         title="Which field the terms are matched against"
-        style={{ border: 0, background: 'transparent', fontSize: 12, color: 'var(--text-muted)' }}
+        className="inline"
       >
         {SEARCHABLE_FIELDS.map((name) => (
           <option key={name} value={name}>

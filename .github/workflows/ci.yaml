@@ -45,6 +45,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
+      - run: npm test
       - name: Build
         run: npm run build
       - name: The committed build is up to date

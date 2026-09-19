@@ -248,12 +248,19 @@ export function SettingsPage() {
               </Row>
             ) : null}
             <Row label="Last poll">
-              {String(status.ingest.last.at_ns ?? '')
+              {status.ingest.last.at_ns
                 ? formatRelative(Number(status.ingest.last.at_ns))
                 : 'not yet'}
-              {status.ingest.last.inserted !== undefined
-                ? ` · ${formatNumber(Number(status.ingest.last.inserted))} new record(s)`
-                : ''}
+            </Row>
+            <Row label="Last import">
+              {status.ingest.last_import?.at_ns ? (
+                <>
+                  {formatNumber(Number(status.ingest.last_import.inserted))} record(s),{' '}
+                  {formatRelative(Number(status.ingest.last_import.at_ns))}
+                </>
+              ) : (
+                <span className="muted">nothing imported yet</span>
+              )}
             </Row>
             <Row label="Poll interval">{settings.effective.poll_interval}s</Row>
             <Row label="Live stream">{status.stream.subscribers} subscriber(s)</Row>

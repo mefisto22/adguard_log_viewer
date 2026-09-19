@@ -14,6 +14,7 @@ import { TagsPage } from './pages/TagsPage';
 import { SavedFiltersPage } from './pages/SavedFiltersPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { useAppStore } from './stores/useAppStore';
+import { startLiveUpdates, stopLiveUpdates } from './stores/liveUpdates';
 import { useFilterStore } from './stores/useFilterStore';
 
 const NAV = [
@@ -70,7 +71,7 @@ function Page({ path, segments }: { path: string; segments: string[] }) {
 
 export function App() {
   const route = useRoute();
-  const { loaded, error, bootstrap, status, defaultRange } = useAppStore();
+  const { loaded, error, bootstrap, status, defaultRange, liveUpdates } = useAppStore();
   const setRange = useFilterStore((state) => state.setRange);
 
   useEffect(() => {
@@ -80,6 +81,13 @@ export function App() {
   useEffect(() => {
     if (defaultRange) setRange(defaultRange);
   }, [defaultRange, setRange]);
+
+  // One connection for the whole app, started once the initial data is in.
+  useEffect(() => {
+    if (!loaded || !liveUpdates) return;
+    startLiveUpdates();
+    return stopLiveUpdates;
+  }, [loaded, liveUpdates]);
 
   const providerDown = status?.provider && !status.provider.available;
 

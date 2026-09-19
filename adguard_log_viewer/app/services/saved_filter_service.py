@@ -37,9 +37,21 @@ def get_saved_filter(conn: sqlite3.Connection, filter_id: int) -> dict[str, Any]
     return _row(row) if row else None
 
 
+#: An empty filter matches everything, which makes a saved filter pointless and
+#: — worse — indistinguishable from one whose conditions were lost on the way
+#: in. Storing one used to be allowed, and the UI then showed a condition count
+#: for a filter that narrowed nothing.
+EMPTY_FILTER_MESSAGE = (
+    "A saved filter needs at least one condition. An empty filter matches every "
+    "query, which is the same as having no filter at all."
+)
+
+
 def _normalise(payload: Any) -> str:
     node = parse_filter(payload)
-    return json.dumps(node.as_dict() if node else {})
+    if node is None:
+        raise ValueError(EMPTY_FILTER_MESSAGE)
+    return json.dumps(node.as_dict())
 
 
 def create_saved_filter(

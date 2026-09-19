@@ -280,6 +280,7 @@ export interface Status {
   } | null;
   ingest: {
     last: Record<string, unknown>;
+    last_import: Record<string, unknown>;
     error: string;
     engine_rules: number;
     ruleset_rev: number;

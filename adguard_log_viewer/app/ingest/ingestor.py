@@ -140,6 +140,11 @@ class Ingestor:
             "provider": provider.name,
             "more_pending": result.more_available,
         }
+        if stats.inserted:
+            # Most polls import nothing, and overwriting this every time meant
+            # the Settings page always read "0 new records" however healthy
+            # ingest was. Keep the last poll that actually did something.
+            state.last_import = dict(state.last_ingest)
 
         if stats.inserted:
             await state.events.publish(

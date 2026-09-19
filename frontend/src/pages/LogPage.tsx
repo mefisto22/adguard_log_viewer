@@ -44,7 +44,7 @@ export function LogPage() {
   const requestToken = useRef(0);
   const isLiveSort = filters.sort === 'time' && filters.direction === 'desc';
 
-  const { lastEvent, connected, mode } = useLiveUpdates(liveUpdates);
+  const { lastEvent, connected, mode } = useLiveUpdates();
 
   useEffect(() => {
     const raw = localStorage.getItem('aglv.columns');

@@ -51,6 +51,8 @@ class AppState:
     tag_colors: dict[str, str] = field(default_factory=dict)
     ruleset_rev: int = 0
     last_ingest: dict[str, Any] = field(default_factory=dict)
+    #: The most recent poll that actually imported something.
+    last_import: dict[str, Any] = field(default_factory=dict)
     ingest_error: str = ""
     started_at_ns: int = 0
     _provider_status: tuple[float, ProviderStatus] | None = None
