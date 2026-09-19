@@ -2,4 +2,6 @@
 pytest==8.4.2
 pytest-asyncio==1.2.0
 ruff==0.14.2
+# Test-only: reads config.yaml in tests/test_packaging.py.
+PyYAML==6.0.3
 mypy==1.18.2

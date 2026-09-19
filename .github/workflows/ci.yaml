@@ -74,6 +74,44 @@ jobs:
           context: adguard_log_viewer
           platforms: ${{ matrix.arch == 'aarch64' && 'linux/arm64' || 'linux/amd64' }}
           push: false
+          load: true
+          tags: adguard-log-viewer:ci-${{ matrix.arch }}
           build-args: |
             BUILD_FROM=ghcr.io/home-assistant/${{ matrix.arch }}-base-python:3.13-alpine3.21
             BUILD_ARCH=${{ matrix.arch }}
+
+      # The build only proves the image assembles. Starting it proves the
+      # committed repository actually produces a working add-on — which a
+      # .gitignore rule silently excluding app/categorization/data once broke,
+      # with every local check still green.
+      - name: Start the container and check it serves
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/addon-data
+          echo '{"log_level":"info","ingest_enabled":false}' > /tmp/addon-data/options.json
+          docker run -d --name addon \
+            --platform ${{ matrix.arch == 'aarch64' && 'linux/arm64' || 'linux/amd64' }} \
+            -p 8099:8099 -v /tmp/addon-data:/data \
+            adguard-log-viewer:ci-${{ matrix.arch }}
+
+          for _ in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8099/api/health >/dev/null 2>&1; then break; fi
+            sleep 2
+          done
+
+          echo "--- health ---"
+          curl -fsS http://127.0.0.1:8099/api/health
+
+          echo "--- the built-in rule set is in the image ---"
+          docker exec addon python -c 'from app.categorization.engine import load_builtin_ruleset as L; r = L(); assert len(r.rules) > 50, f"only {len(r.rules)} built-in rules in the image"; assert r.tags, "no built-in tags in the image"; print(f"{len(r.rules)} rules, {len(r.tags)} tags")'
+
+          echo "--- the frontend is served ---"
+          curl -fsS http://127.0.0.1:8099/ | grep -q '<div id="root">'
+
+          echo "--- no errors in the log ---"
+          docker logs addon 2>&1 | tail -30
+          ! docker logs addon 2>&1 | grep -qE "Traceback|CRITICAL"
+
+      - name: Container logs on failure
+        if: failure()
+        run: docker logs addon 2>&1 || true

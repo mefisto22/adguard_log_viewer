@@ -146,6 +146,31 @@ címkék a szabályok változásakor **megmaradnak**.
 
 ## 6. Hibakeresés
 
+### Az add-on meg sem jelenik a tároló hozzáadása után
+
+Ha a Kiegészítőtárban megjelenik a tároló, de üres, vagy az add-on hiányzik,
+akkor a Supervisor **elutasította a `config.yaml`-t**, és ezt a felületen nem
+írja ki. A pontos okot a Supervisor logja mondja meg:
+
+**Beállítások → Rendszer → Naplók**, fent a legördülőben válaszd a
+**Supervisor** naplót, és keress rá az add-on nevére. Egy elutasított
+konfiguráció így néz ki:
+
+```
+Can't read config for ... : expected a non-empty string for docker image
+```
+
+Amit érdemes ellenőrizni:
+
+1. **Frissítsd a tárolót.** Kiegészítőtár → ⋮ → *Frissítés*. A Supervisor
+   gyorsítótárazza a tárolókat, ezért egy javítás push után nem jelenik meg
+   azonnal. Parancssorból: `ha addons reload`.
+2. **Architektúra.** Ez az add-on `aarch64` és `amd64` gépeken fut. Ha a
+   Home Assistant `armv7` vagy `i386` (régi Raspberry Pi, 32 bites rendszer),
+   nem fog látszani. Ellenőrzés: **Beállítások → Rendszer → Névjegy**.
+3. **A tároló elérhető-e.** Privát GitHub repónál a Supervisor nem tudja
+   letölteni; publikusnak kell lennie, vagy hitelesítés kell hozzá.
+
 ### „AdGuard Home is not reachable"
 
 A **Settings** oldal megmondja, mit lát az add-on. A gyakori okok:

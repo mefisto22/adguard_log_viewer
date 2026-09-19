@@ -1,0 +1,5919 @@
+{
+ "version": 1,
+ "description": "Built-in domain categorisation rules bundled with the add-on.",
+ "tags": [
+  {
+   "name": "AWS",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Amazon",
+   "kind": "tag",
+   "color": "#ff9900"
+  },
+  {
+   "name": "Anthropic",
+   "kind": "tag",
+   "color": "#d97757"
+  },
+  {
+   "name": "Apple",
+   "kind": "tag",
+   "color": "#555555"
+  },
+  {
+   "name": "Atlassian",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Azure",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Bing",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Bluesky",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Cloudflare",
+   "kind": "tag",
+   "color": "#f38020"
+  },
+  {
+   "name": "Discord",
+   "kind": "tag",
+   "color": "#5865f2"
+  },
+  {
+   "name": "Disney",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "DuckDuckGo",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Epic Games",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Facebook",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "GitHub",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "GitLab",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Google",
+   "kind": "tag",
+   "color": "#4285f4"
+  },
+  {
+   "name": "HBO",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Home Assistant",
+   "kind": "tag",
+   "color": "#41bdf5"
+  },
+  {
+   "name": "Hungary",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Instagram",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "LinkedIn",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Mastodon",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Meta",
+   "kind": "tag",
+   "color": "#0866ff"
+  },
+  {
+   "name": "Microsoft",
+   "kind": "tag",
+   "color": "#00a4ef"
+  },
+  {
+   "name": "Mozilla",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Netflix",
+   "kind": "tag",
+   "color": "#e50914"
+  },
+  {
+   "name": "Nintendo",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Notion",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "OpenAI",
+   "kind": "tag",
+   "color": "#10a37f"
+  },
+  {
+   "name": "Perplexity",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Pinterest",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "PlayStation",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Plex",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Reddit",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Samsung",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Signal",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Slack",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Snapchat",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Sony",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "SoundCloud",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Spotify",
+   "kind": "tag",
+   "color": "#1db954"
+  },
+  {
+   "name": "Steam",
+   "kind": "tag",
+   "color": "#171a21"
+  },
+  {
+   "name": "Telegram",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "TikTok",
+   "kind": "tag",
+   "color": "#010101"
+  },
+  {
+   "name": "Tumblr",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Twitch",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Valve",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Viber",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Vimeo",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "WhatsApp",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "X",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Xbox",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "Xiaomi",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "YouTube",
+   "kind": "tag",
+   "color": "#ff0000"
+  },
+  {
+   "name": "Zoom",
+   "kind": "tag",
+   "color": ""
+  },
+  {
+   "name": "AI",
+   "kind": "category",
+   "color": "#00acc1"
+  },
+  {
+   "name": "Adult",
+   "kind": "category",
+   "color": "#c2185b"
+  },
+  {
+   "name": "Advertising",
+   "kind": "category",
+   "color": "#f57c00"
+  },
+  {
+   "name": "Analytics",
+   "kind": "category",
+   "color": "#fb8c00"
+  },
+  {
+   "name": "CDN",
+   "kind": "category",
+   "color": "#0097a7"
+  },
+  {
+   "name": "Cloud",
+   "kind": "category",
+   "color": "#0288d1"
+  },
+  {
+   "name": "Developer",
+   "kind": "category",
+   "color": "#455a64"
+  },
+  {
+   "name": "Education",
+   "kind": "category",
+   "color": "#4527a0"
+  },
+  {
+   "name": "Email",
+   "kind": "category",
+   "color": "#1565c0"
+  },
+  {
+   "name": "File Sharing",
+   "kind": "category",
+   "color": "#795548"
+  },
+  {
+   "name": "Finance",
+   "kind": "category",
+   "color": "#2e7d32"
+  },
+  {
+   "name": "Food",
+   "kind": "category",
+   "color": "#ef6c00"
+  },
+  {
+   "name": "Gaming",
+   "kind": "category",
+   "color": "#7b1fa2"
+  },
+  {
+   "name": "Government",
+   "kind": "category",
+   "color": "#37474f"
+  },
+  {
+   "name": "Health",
+   "kind": "category",
+   "color": "#ad1457"
+  },
+  {
+   "name": "IoT",
+   "kind": "category",
+   "color": "#00796b"
+  },
+  {
+   "name": "Messaging",
+   "kind": "category",
+   "color": "#25d366"
+  },
+  {
+   "name": "Music",
+   "kind": "category",
+   "color": "#1db954"
+  },
+  {
+   "name": "News",
+   "kind": "category",
+   "color": "#3949ab"
+  },
+  {
+   "name": "OS Service",
+   "kind": "category",
+   "color": "#616161"
+  },
+  {
+   "name": "Search",
+   "kind": "category",
+   "color": "#4285f4"
+  },
+  {
+   "name": "Security",
+   "kind": "category",
+   "color": "#283593"
+  },
+  {
+   "name": "Shopping",
+   "kind": "category",
+   "color": "#00897b"
+  },
+  {
+   "name": "Social",
+   "kind": "category",
+   "color": "#1877f2"
+  },
+  {
+   "name": "Software Update",
+   "kind": "category",
+   "color": "#546e7a"
+  },
+  {
+   "name": "Sports",
+   "kind": "category",
+   "color": "#2e7d32"
+  },
+  {
+   "name": "Streaming",
+   "kind": "category",
+   "color": "#8e24aa"
+  },
+  {
+   "name": "Telemetry",
+   "kind": "category",
+   "color": "#6d4c41"
+  },
+  {
+   "name": "Tracking",
+   "kind": "category",
+   "color": "#d84315"
+  },
+  {
+   "name": "Travel",
+   "kind": "category",
+   "color": "#00838f"
+  },
+  {
+   "name": "Video",
+   "kind": "category",
+   "color": "#e53935"
+  },
+  {
+   "name": "Weather",
+   "kind": "category",
+   "color": "#0277bd"
+  },
+  {
+   "name": "Work",
+   "kind": "category",
+   "color": "#5e35b1"
+  }
+ ],
+ "rules": [
+  {
+   "name": "YouTube",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "youtube.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "youtu.be"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ytimg.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "googlevideo.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "youtube-nocookie.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "yt3.ggpht.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ytimg.l.google.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "youtubei.googleapis.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "youtubekids.com"
+    },
+    {
+     "field": "domain",
+     "operator": "contains",
+     "value": "googlevideo"
+    },
+    {
+     "field": "domain",
+     "operator": "contains",
+     "value": "youtube"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Google",
+     "kind": "tag"
+    },
+    {
+     "name": "YouTube",
+     "kind": "tag"
+    },
+    {
+     "name": "Video",
+     "kind": "category"
+    },
+    {
+     "name": "Streaming",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Google Search",
+   "priority": 20,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "google.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "google.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "google.co.uk"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "google.de"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "google.at"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "google.sk"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "googleapis.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "gstatic.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "googleusercontent.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "googletagmanager.com"
+    },
+    {
+     "field": "domain",
+     "operator": "regex",
+     "value": "^www\\.google\\.[a-z.]{2,6}$"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Google",
+     "kind": "tag"
+    },
+    {
+     "name": "Search",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Google Ads",
+   "priority": 15,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "doubleclick.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "googlesyndication.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "googleadservices.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "admob.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "google-analytics.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "googletagservices.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "2mdn.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "adservice.google.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Google",
+     "kind": "tag"
+    },
+    {
+     "name": "Advertising",
+     "kind": "category"
+    },
+    {
+     "name": "Tracking",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Google Services",
+   "priority": 30,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "gmail.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "googlemail.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "google-play.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "play.google.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "gvt1.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "gvt2.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "gvt3.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ggpht.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "googlezip.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "withgoogle.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "firebaseio.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "firebaseinstallations.googleapis.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "crashlytics.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "google.co"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "chromium.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "chrome.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "googledomains.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Google",
+     "kind": "tag"
+    },
+    {
+     "name": "Cloud",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Google Drive & Docs",
+   "priority": 30,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "drive.google.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "docs.google.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "googledrive.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "gsuite.google.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Google",
+     "kind": "tag"
+    },
+    {
+     "name": "Work",
+     "kind": "category"
+    },
+    {
+     "name": "Cloud",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Android",
+   "priority": 35,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "android.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "android.clients.google.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "dl.google.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "connectivitycheck.gstatic.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "clients3.google.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "clients4.google.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Google",
+     "kind": "tag"
+    },
+    {
+     "name": "OS Service",
+     "kind": "category"
+    },
+    {
+     "name": "Software Update",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Gemini",
+   "priority": 15,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "gemini.google.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bard.google.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "generativelanguage.googleapis.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "aistudio.google.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Google",
+     "kind": "tag"
+    },
+    {
+     "name": "AI",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Facebook",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "facebook.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "fbcdn.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "fbsbx.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "fb.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "fb.me"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "facebook.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "messenger.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "m.me"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Meta",
+     "kind": "tag"
+    },
+    {
+     "name": "Facebook",
+     "kind": "tag"
+    },
+    {
+     "name": "Social",
+     "kind": "category"
+    },
+    {
+     "name": "Tracking",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Instagram",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "instagram.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "cdninstagram.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ig.me"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Meta",
+     "kind": "tag"
+    },
+    {
+     "name": "Instagram",
+     "kind": "tag"
+    },
+    {
+     "name": "Social",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "WhatsApp",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "whatsapp.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "whatsapp.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "wa.me"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Meta",
+     "kind": "tag"
+    },
+    {
+     "name": "WhatsApp",
+     "kind": "tag"
+    },
+    {
+     "name": "Messaging",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Threads",
+   "priority": 12,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "threads.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "threads.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Meta",
+     "kind": "tag"
+    },
+    {
+     "name": "Social",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "TikTok",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tiktok.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tiktokcdn.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tiktokv.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "byteoversea.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "musical.ly"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ibytedtos.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bytedance.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tiktokcdn-us.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "TikTok",
+     "kind": "tag"
+    },
+    {
+     "name": "Social",
+     "kind": "category"
+    },
+    {
+     "name": "Video",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "X / Twitter",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "twitter.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "x.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "twimg.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "t.co"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "twitpic.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "periscope.tv"
+    }
+   ],
+   "tags": [
+    {
+     "name": "X",
+     "kind": "tag"
+    },
+    {
+     "name": "Social",
+     "kind": "category"
+    },
+    {
+     "name": "News",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Reddit",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "reddit.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "redd.it"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "redditmedia.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "redditstatic.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Reddit",
+     "kind": "tag"
+    },
+    {
+     "name": "Social",
+     "kind": "category"
+    },
+    {
+     "name": "News",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Snapchat",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "snapchat.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "sc-cdn.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "snap.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "snapads.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Snapchat",
+     "kind": "tag"
+    },
+    {
+     "name": "Social",
+     "kind": "category"
+    },
+    {
+     "name": "Messaging",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "LinkedIn",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "linkedin.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "licdn.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "lnkd.in"
+    }
+   ],
+   "tags": [
+    {
+     "name": "LinkedIn",
+     "kind": "tag"
+    },
+    {
+     "name": "Social",
+     "kind": "category"
+    },
+    {
+     "name": "Work",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Pinterest",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "pinterest.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "pinimg.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Pinterest",
+     "kind": "tag"
+    },
+    {
+     "name": "Social",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Tumblr",
+   "priority": 12,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tumblr.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tumblr.co"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Tumblr",
+     "kind": "tag"
+    },
+    {
+     "name": "Social",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Mastodon",
+   "priority": 15,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mastodon.social"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "joinmastodon.org"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Mastodon",
+     "kind": "tag"
+    },
+    {
+     "name": "Social",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Bluesky",
+   "priority": 15,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bsky.app"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bsky.social"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bsky.network"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Bluesky",
+     "kind": "tag"
+    },
+    {
+     "name": "Social",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Discord",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "discord.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "discordapp.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "discord.gg"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "discordapp.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "discord.media"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Discord",
+     "kind": "tag"
+    },
+    {
+     "name": "Messaging",
+     "kind": "category"
+    },
+    {
+     "name": "Gaming",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Telegram",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "telegram.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "telegram.me"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "t.me"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "telesco.pe"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tdesktop.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Telegram",
+     "kind": "tag"
+    },
+    {
+     "name": "Messaging",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Signal",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "signal.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "whispersystems.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "signal.art"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Signal",
+     "kind": "tag"
+    },
+    {
+     "name": "Messaging",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Viber",
+   "priority": 12,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "viber.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "viber.net"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Viber",
+     "kind": "tag"
+    },
+    {
+     "name": "Messaging",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Slack",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "slack.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "slack-edge.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "slack-msgs.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "slackb.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Slack",
+     "kind": "tag"
+    },
+    {
+     "name": "Messaging",
+     "kind": "category"
+    },
+    {
+     "name": "Work",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Netflix",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "netflix.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "nflxvideo.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "nflximg.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "nflxext.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "nflxso.net"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Netflix",
+     "kind": "tag"
+    },
+    {
+     "name": "Streaming",
+     "kind": "category"
+    },
+    {
+     "name": "Video",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Disney+",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "disneyplus.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "disney-plus.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "dssott.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bamgrid.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "disney.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Disney",
+     "kind": "tag"
+    },
+    {
+     "name": "Streaming",
+     "kind": "category"
+    },
+    {
+     "name": "Video",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "HBO Max",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "hbomax.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "max.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "hbo.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "hbomaxcdn.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "HBO",
+     "kind": "tag"
+    },
+    {
+     "name": "Streaming",
+     "kind": "category"
+    },
+    {
+     "name": "Video",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Amazon Prime Video",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "primevideo.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "aiv-cdn.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "aiv-delivery.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "media-amazon.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Amazon",
+     "kind": "tag"
+    },
+    {
+     "name": "Streaming",
+     "kind": "category"
+    },
+    {
+     "name": "Video",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Twitch",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "twitch.tv"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ttvnw.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "jtvnw.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "twitchcdn.net"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Twitch",
+     "kind": "tag"
+    },
+    {
+     "name": "Streaming",
+     "kind": "category"
+    },
+    {
+     "name": "Video",
+     "kind": "category"
+    },
+    {
+     "name": "Gaming",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Spotify",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "spotify.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "scdn.co"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "spotifycdn.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "spotilocal.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Spotify",
+     "kind": "tag"
+    },
+    {
+     "name": "Music",
+     "kind": "category"
+    },
+    {
+     "name": "Streaming",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Apple Music",
+   "priority": 12,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "music.apple.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mzstatic.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "itunes.apple.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Apple",
+     "kind": "tag"
+    },
+    {
+     "name": "Music",
+     "kind": "category"
+    },
+    {
+     "name": "Streaming",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "SoundCloud",
+   "priority": 15,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "soundcloud.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "sndcdn.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "SoundCloud",
+     "kind": "tag"
+    },
+    {
+     "name": "Music",
+     "kind": "category"
+    },
+    {
+     "name": "Streaming",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Plex",
+   "priority": 15,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "plex.tv"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "plex.direct"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Plex",
+     "kind": "tag"
+    },
+    {
+     "name": "Streaming",
+     "kind": "category"
+    },
+    {
+     "name": "Video",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Vimeo",
+   "priority": 15,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "vimeo.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "vimeocdn.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Vimeo",
+     "kind": "tag"
+    },
+    {
+     "name": "Video",
+     "kind": "category"
+    },
+    {
+     "name": "Streaming",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Apple Services",
+   "priority": 20,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "apple.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "icloud.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "icloud-content.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "cdn-apple.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "apple-cloudkit.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "push.apple.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "aaplimg.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "me.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mac.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "appleid.apple.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Apple",
+     "kind": "tag"
+    },
+    {
+     "name": "OS Service",
+     "kind": "category"
+    },
+    {
+     "name": "Cloud",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Apple Software Update",
+   "priority": 15,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "swcdn.apple.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "swscan.apple.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "swquery.apple.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "appldnld.apple.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "updates.cdn-apple.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "gs.apple.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Apple",
+     "kind": "tag"
+    },
+    {
+     "name": "Software Update",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Apple Telemetry",
+   "priority": 14,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "metrics.apple.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "iadsdk.apple.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "app-measurement.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "securemetrics.apple.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "xp.apple.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Apple",
+     "kind": "tag"
+    },
+    {
+     "name": "Telemetry",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Microsoft Services",
+   "priority": 20,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "microsoft.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "microsoftonline.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "live.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "outlook.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "office.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "office365.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "sharepoint.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "onedrive.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "msn.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bing.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "microsoftedge.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "azureedge.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "msauth.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "msftauth.net"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Microsoft",
+     "kind": "tag"
+    },
+    {
+     "name": "Cloud",
+     "kind": "category"
+    },
+    {
+     "name": "Work",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Windows Update",
+   "priority": 15,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "windowsupdate.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "update.microsoft.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "delivery.mp.microsoft.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tlu.dl.delivery.mp.microsoft.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "windowsupdate.microsoft.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "do.dsp.mp.microsoft.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Microsoft",
+     "kind": "tag"
+    },
+    {
+     "name": "Software Update",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Microsoft Telemetry",
+   "priority": 14,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "vortex.data.microsoft.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "telemetry.microsoft.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "watson.telemetry.microsoft.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "settings-win.data.microsoft.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "events.data.microsoft.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "telecommand.telemetry.microsoft.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Microsoft",
+     "kind": "tag"
+    },
+    {
+     "name": "Telemetry",
+     "kind": "category"
+    },
+    {
+     "name": "Tracking",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Microsoft Teams",
+   "priority": 12,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "teams.microsoft.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "teams.live.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "skype.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "skypeassets.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Microsoft",
+     "kind": "tag"
+    },
+    {
+     "name": "Work",
+     "kind": "category"
+    },
+    {
+     "name": "Messaging",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Xbox",
+   "priority": 12,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "xbox.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "xboxlive.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "xboxservices.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Microsoft",
+     "kind": "tag"
+    },
+    {
+     "name": "Xbox",
+     "kind": "tag"
+    },
+    {
+     "name": "Gaming",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Copilot",
+   "priority": 12,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "copilot.microsoft.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "githubcopilot.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "copilot.github.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Microsoft",
+     "kind": "tag"
+    },
+    {
+     "name": "AI",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "OpenAI",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "openai.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "chatgpt.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "oaistatic.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "oaiusercontent.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "chat.openai.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "OpenAI",
+     "kind": "tag"
+    },
+    {
+     "name": "AI",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Anthropic",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "anthropic.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "claude.ai"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "claudeusercontent.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Anthropic",
+     "kind": "tag"
+    },
+    {
+     "name": "AI",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Perplexity",
+   "priority": 12,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "perplexity.ai"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Perplexity",
+     "kind": "tag"
+    },
+    {
+     "name": "AI",
+     "kind": "category"
+    },
+    {
+     "name": "Search",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Other AI services",
+   "priority": 25,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mistral.ai"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "huggingface.co"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "midjourney.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "stability.ai"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "cohere.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "deepseek.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "x.ai"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "grok.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "runwayml.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "elevenlabs.io"
+    }
+   ],
+   "tags": [
+    {
+     "name": "AI",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Bing",
+   "priority": 20,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bing.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bingapis.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Microsoft",
+     "kind": "tag"
+    },
+    {
+     "name": "Bing",
+     "kind": "tag"
+    },
+    {
+     "name": "Search",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "DuckDuckGo",
+   "priority": 15,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "duckduckgo.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "duck.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "improving.duckduckgo.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "DuckDuckGo",
+     "kind": "tag"
+    },
+    {
+     "name": "Search",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Other search engines",
+   "priority": 25,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "yandex.ru"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "yandex.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "baidu.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ecosia.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "startpage.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "brave.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "qwant.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "search.marginalia.nu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mojeek.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Search",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Ad networks",
+   "priority": 20,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "adnxs.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "adsrvr.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "criteo.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "criteo.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "taboola.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "outbrain.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "pubmatic.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "rubiconproject.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "openx.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "casalemedia.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "smartadserver.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "adform.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "adcolony.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "applovin.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "unityads.unity3d.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "inmobi.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "moatads.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "scorecardresearch.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "zemanta.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "sharethrough.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "teads.tv"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "yieldmo.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "media.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "revcontent.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mgid.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "adsafeprotected.com"
+    },
+    {
+     "field": "domain",
+     "operator": "contains",
+     "value": "adservice"
+    },
+    {
+     "field": "domain",
+     "operator": "contains",
+     "value": "adserver"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Advertising",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Analytics",
+   "priority": 20,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "google-analytics.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "analytics.google.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "segment.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "segment.io"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mixpanel.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "amplitude.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "hotjar.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "fullstory.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "heap.io"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "matomo.cloud"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "plausible.io"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "statcounter.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "quantserve.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "chartbeat.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "newrelic.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "nr-data.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bugsnag.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "sentry.io"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "logrocket.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "clarity.ms"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mouseflow.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "crazyegg.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "optimizely.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Analytics",
+     "kind": "category"
+    },
+    {
+     "name": "Tracking",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Trackers",
+   "priority": 22,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "branch.io"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "adjust.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "appsflyer.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "kochava.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "singular.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "onesignal.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "urbanairship.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "airship.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "braze.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "iterable.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "clevertap.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "leanplum.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "swrve.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mparticle.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tealiumiq.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "krxd.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "demdex.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "everesttech.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "omtrdc.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "adobedtm.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bluekai.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "exelator.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "rlcdn.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "crwdcntrl.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "agkn.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Tracking",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Telemetry endpoints",
+   "priority": 24,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "crashlytics.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "app-measurement.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "firebase-settings.crashlytics.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "device-metrics-us.amazon.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "metrics.roku.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "logs.netflix.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "telemetry.mozilla.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "incoming.telemetry.mozilla.org"
+    },
+    {
+     "field": "domain",
+     "operator": "contains",
+     "value": "telemetry"
+    },
+    {
+     "field": "domain",
+     "operator": "startswith",
+     "value": "metrics."
+    }
+   ],
+   "tags": [
+    {
+     "name": "Telemetry",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Amazon",
+   "priority": 15,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "amazon.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "amazon.de"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "amazon.co.uk"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "amazon.it"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "amazon.fr"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "amazon.es"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "amazon.pl"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ssl-images-amazon.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "amazonpay.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Amazon",
+     "kind": "tag"
+    },
+    {
+     "name": "Shopping",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Online marketplaces",
+   "priority": 20,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ebay.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ebay.de"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "aliexpress.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "alibaba.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "temu.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "shein.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "etsy.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "wish.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "asos.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "zalando.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "zalando.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ikea.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "decathlon.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mediamarkt.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "alza.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "emag.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "arukereso.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "jofogas.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "vatera.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "hardverapro.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "notebook.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "edigital.hu"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Shopping",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Steam",
+   "priority": 12,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "steampowered.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "steamcommunity.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "steamstatic.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "steamcontent.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "valvesoftware.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "steamserver.net"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Steam",
+     "kind": "tag"
+    },
+    {
+     "name": "Valve",
+     "kind": "tag"
+    },
+    {
+     "name": "Gaming",
+     "kind": "category"
+    },
+    {
+     "name": "Software Update",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Epic Games",
+   "priority": 12,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "epicgames.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "unrealengine.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "fortnite.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "epicgames.dev"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "helpshift.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Epic Games",
+     "kind": "tag"
+    },
+    {
+     "name": "Gaming",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "PlayStation",
+   "priority": 12,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "playstation.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "playstation.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "sonyentertainmentnetwork.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "sony.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Sony",
+     "kind": "tag"
+    },
+    {
+     "name": "PlayStation",
+     "kind": "tag"
+    },
+    {
+     "name": "Gaming",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Nintendo",
+   "priority": 12,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "nintendo.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "nintendo.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "nintendo-europe.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "nintendowifi.net"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Nintendo",
+     "kind": "tag"
+    },
+    {
+     "name": "Gaming",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Other game services",
+   "priority": 22,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "riotgames.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "leagueoflegends.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "blizzard.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "battle.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ea.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "origin.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ubisoft.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ubi.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "roblox.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "rbxcdn.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "minecraft.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mojang.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "gog.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "itch.io"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "curseforge.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "supercell.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "king.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "rockstargames.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Gaming",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "GitHub",
+   "priority": 12,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "github.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "githubusercontent.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "github.io"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "githubassets.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ghcr.io"
+    }
+   ],
+   "tags": [
+    {
+     "name": "GitHub",
+     "kind": "tag"
+    },
+    {
+     "name": "Developer",
+     "kind": "category"
+    },
+    {
+     "name": "Work",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "GitLab",
+   "priority": 15,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "gitlab.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "gitlab.io"
+    }
+   ],
+   "tags": [
+    {
+     "name": "GitLab",
+     "kind": "tag"
+    },
+    {
+     "name": "Developer",
+     "kind": "category"
+    },
+    {
+     "name": "Work",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Atlassian",
+   "priority": 15,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "atlassian.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "atlassian.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "jira.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bitbucket.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "trello.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Atlassian",
+     "kind": "tag"
+    },
+    {
+     "name": "Work",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Zoom",
+   "priority": 12,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "zoom.us"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "zoomgov.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "zoom.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Zoom",
+     "kind": "tag"
+    },
+    {
+     "name": "Work",
+     "kind": "category"
+    },
+    {
+     "name": "Video",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Notion",
+   "priority": 15,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "notion.so"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "notion.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "notion-static.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Notion",
+     "kind": "tag"
+    },
+    {
+     "name": "Work",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Developer services",
+   "priority": 25,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "npmjs.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "npmjs.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "pypi.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "pythonhosted.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "docker.io"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "docker.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "rubygems.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "packagist.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "maven.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "crates.io"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "stackoverflow.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "stackexchange.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "readthedocs.io"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "jsdelivr.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "unpkg.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "cdnjs.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "vercel.app"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "netlify.app"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "heroku.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "digitalocean.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Developer",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Amazon Web Services",
+   "priority": 30,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "amazonaws.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "awsstatic.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "aws.amazon.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "cloudfront.net"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Amazon",
+     "kind": "tag"
+    },
+    {
+     "name": "AWS",
+     "kind": "tag"
+    },
+    {
+     "name": "Cloud",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Microsoft Azure",
+   "priority": 30,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "azure.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "azurewebsites.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "windows.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "azure-api.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "azurefd.net"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Microsoft",
+     "kind": "tag"
+    },
+    {
+     "name": "Azure",
+     "kind": "tag"
+    },
+    {
+     "name": "Cloud",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Cloudflare",
+   "priority": 30,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "cloudflare.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "cloudflare.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "cloudflare-dns.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "cf-ipfs.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "workers.dev"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "pages.dev"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "cloudflareinsights.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Cloudflare",
+     "kind": "tag"
+    },
+    {
+     "name": "CDN",
+     "kind": "category"
+    },
+    {
+     "name": "Cloud",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Other CDNs",
+   "priority": 32,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "akamai.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "akamaized.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "akamaiedge.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "akamaihd.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "edgekey.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "edgesuite.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "fastly.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "fastlylb.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "llnwd.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "stackpathdns.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "b-cdn.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bunnycdn.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "cdn77.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "kxcdn.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "cachefly.net"
+    }
+   ],
+   "tags": [
+    {
+     "name": "CDN",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "File sync & sharing",
+   "priority": 25,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "dropbox.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "dropboxusercontent.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "box.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mega.nz"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mediafire.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "wetransfer.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "pcloud.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "sync.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "backblaze.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "b2-api.backblazeb2.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "File Sharing",
+     "kind": "category"
+    },
+    {
+     "name": "Cloud",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "International news",
+   "priority": 25,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bbc.co.uk"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bbc.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "cnn.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "nytimes.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "theguardian.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "reuters.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "apnews.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bloomberg.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ft.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "wsj.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "aljazeera.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "dw.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "spiegel.de"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "lemonde.fr"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "economist.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "npr.org"
+    }
+   ],
+   "tags": [
+    {
+     "name": "News",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Hungarian news",
+   "priority": 25,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "index.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "telex.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "hvg.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "444.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "24.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "origo.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "portfolio.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "nepszava.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "magyarnemzet.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "rtl.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "blikk.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "hirado.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "atv.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "napi.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "penzcentrum.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "hwsw.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "pcworld.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "sg.hu"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Hungary",
+     "kind": "tag"
+    },
+    {
+     "name": "News",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Payment providers",
+   "priority": 20,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "paypal.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "paypalobjects.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "stripe.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "stripecdn.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "revolut.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "wise.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "transferwise.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "klarna.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "adyen.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "barion.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "simplepay.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "otpbank.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "otpportalok.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "kh.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "erstebank.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "raiffeisen.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mbhbank.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "unicreditbank.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "gránitbank.hu"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Finance",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Crypto",
+   "priority": 25,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "coinbase.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "binance.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "kraken.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "blockchain.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "crypto.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "coingecko.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "coinmarketcap.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Finance",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Home Assistant",
+   "priority": 10,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "home-assistant.io"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "hass.io"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "nabucasa.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ui.nabu.casa"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "home-assistant.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "hacs.xyz"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Home Assistant",
+     "kind": "tag"
+    },
+    {
+     "name": "IoT",
+     "kind": "category"
+    },
+    {
+     "name": "Work",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Smart home vendors",
+   "priority": 20,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tuya.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tuyaeu.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tuyaus.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "shelly.cloud"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "shelly.cloud.allterco.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "sonoff.tech"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "coolkit.cc"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ewelink.cc"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "meethue.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "philips-hue.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "hue.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ring.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "nest.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "wyze.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tp-link.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tplinkcloud.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "kasasmart.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ubnt.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ui.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "reolink.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "dahuasecurity.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "hikvision.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ezvizlife.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "arlo.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "sonos.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ikea.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "shelly.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tasmota.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "esphome.io"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "zigbee2mqtt.io"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "netatmo.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "daikin.eu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "midea.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bosch-smarthome.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "IoT",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Network time & connectivity",
+   "priority": 22,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "pool.ntp.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ntp.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "time.windows.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "time.apple.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "time.google.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "time.cloudflare.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "msftconnecttest.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "msftncsi.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "connectivity-check.ubuntu.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "detectportal.firefox.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "captive.apple.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "network-test.debian.org"
+    }
+   ],
+   "tags": [
+    {
+     "name": "OS Service",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Samsung",
+   "priority": 20,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "samsung.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "samsungcloud.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "samsungqbe.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "samsungrm.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "samsungosp.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "samsungdm.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "samsungacr.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Samsung",
+     "kind": "tag"
+    },
+    {
+     "name": "OS Service",
+     "kind": "category"
+    },
+    {
+     "name": "Telemetry",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Xiaomi",
+   "priority": 20,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mi.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "xiaomi.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "miui.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "xiaomi.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "aliyuncs.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Xiaomi",
+     "kind": "tag"
+    },
+    {
+     "name": "OS Service",
+     "kind": "category"
+    },
+    {
+     "name": "Telemetry",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Linux distributions",
+   "priority": 25,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ubuntu.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "canonical.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "debian.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "archlinux.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "fedoraproject.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "opensuse.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "alpinelinux.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "raspberrypi.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "raspbian.org"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Software Update",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Mozilla",
+   "priority": 20,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mozilla.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mozilla.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mozilla.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "firefox.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "services.mozilla.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Mozilla",
+     "kind": "tag"
+    },
+    {
+     "name": "OS Service",
+     "kind": "category"
+    },
+    {
+     "name": "Software Update",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Travel",
+   "priority": 25,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "booking.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "airbnb.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "expedia.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tripadvisor.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ryanair.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "wizzair.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "lufthansa.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "skyscanner.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "kayak.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mav.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "volanbusz.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bkk.hu"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Travel",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Food delivery",
+   "priority": 25,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "wolt.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "foodpanda.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "foodora.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ubereats.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bolt.eu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "deliveryhero.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Food",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Maps & navigation",
+   "priority": 25,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "waze.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "openstreetmap.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mapbox.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "here.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tomtom.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "maps.google.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "maps.gstatic.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Travel",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Weather",
+   "priority": 25,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "openweathermap.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "weather.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "accuweather.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "met.no"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "idokep.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "koponyeg.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "metnet.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "weatherapi.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tomorrow.io"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Weather",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Education",
+   "priority": 25,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "wikipedia.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "wikimedia.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "wiktionary.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "khanacademy.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "coursera.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "udemy.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "edx.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "duolingo.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "brilliant.org"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Education",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Sports",
+   "priority": 25,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "espn.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "uefa.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "fifa.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "formula1.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "nemzetisport.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "eurosport.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "flashscore.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "sofascore.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Sports",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Email providers",
+   "priority": 25,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "protonmail.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "proton.me"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tutanota.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "fastmail.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "zoho.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mailchimp.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "sendgrid.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mailgun.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "postmarkapp.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "freemail.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "citromail.hu"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Email",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Security & VPN",
+   "priority": 25,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "nordvpn.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "expressvpn.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mullvad.net"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "protonvpn.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "wireguard.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "tailscale.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "1password.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bitwarden.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "lastpass.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "malwarebytes.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "virustotal.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "eset.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "kaspersky.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "bitdefender.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "avast.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "avg.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Security",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Health",
+   "priority": 25,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "webmd.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "mayoclinic.org"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "nhs.uk"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "hazipatika.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "webbeteg.hu"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Health",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Hungarian government",
+   "priority": 20,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "gov.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "magyarorszag.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "nav.gov.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "ekozig.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "kormany.hu"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Hungary",
+     "kind": "tag"
+    },
+    {
+     "name": "Government",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Hungarian telecom",
+   "priority": 22,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "telekom.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "vodafone.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "yettel.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "digi.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "invitel.hu"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "upc.hu"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Hungary",
+     "kind": "tag"
+    },
+    {
+     "name": "OS Service",
+     "kind": "category"
+    }
+   ]
+  },
+  {
+   "name": "Adult content",
+   "priority": 18,
+   "match_mode": "any",
+   "enabled": true,
+   "conditions": [
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "pornhub.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "xvideos.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "xhamster.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "redtube.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "youporn.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "onlyfans.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "stripchat.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "chaturbate.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "xnxx.com"
+    },
+    {
+     "field": "domain",
+     "operator": "suffix",
+     "value": "brazzers.com"
+    }
+   ],
+   "tags": [
+    {
+     "name": "Adult",
+     "kind": "category"
+    }
+   ]
+  }
+ ]
+}

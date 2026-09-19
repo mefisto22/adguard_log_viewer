@@ -1,12 +1,11 @@
 ---
 name: AdGuard Log Viewer
-version: "0.1.0"
+version: "0.1.1"
 slug: adguard_log_viewer
 description: >-
   Search, filter and analyse the AdGuard Home DNS query log — per device, per
   person, per category.
 url: https://github.com/energysmarthome/adguard-log-viewer
-codenotary: ""
 arch:
   - aarch64
   - amd64
@@ -41,9 +40,11 @@ hassio_api: true
 hassio_role: default
 
 # Read-only access to /share, so the file provider can be pointed at a query log
-# copied there. Not needed for the normal, API-based setup.
+# copied there. Not needed for the normal, API-based setup. The explicit
+# type/read_only form skips the Supervisor's legacy "share:ro" string coercion.
 map:
-  - share:ro
+  - type: share
+    read_only: true
 
 options:
   adguard_url: ""
@@ -71,4 +72,3 @@ schema:
   retention_days: int(0,3650)
   log_level: list(trace|debug|info|notice|warning|error|fatal)?
 
-image: null

@@ -11,13 +11,22 @@ __pycache__/
 node_modules/
 .vite/
 
-# Local data
+# Local data. These patterns are root-anchored on purpose: an unanchored
+# `data/` would also swallow app/categorization/data/, which holds the
+# built-in rule set the add-on ships with.
+/data/
+/dev-data/
+/adguard_log_viewer/data/
+/adguard_log_viewer/dev-data/
 *.db
 *.db-wal
 *.db-shm
-data/
 
 # Editors / OS
 .DS_Store
 .idea/
 .vscode/
+
+# macOS/iCloud conflict copies ("file 2.txt"), which have shown up in
+# app/static before and must never reach the image.
+* [0-9].*

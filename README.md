@@ -242,7 +242,7 @@ cd adguard_log_viewer
 
 ```bash
 cd adguard_log_viewer
-.venv/bin/python -m pytest -q          # 268 teszt
+.venv/bin/python -m pytest -q          # 291 teszt
 .venv/bin/ruff check app tests tools
 .venv/bin/mypy app
 ```
@@ -257,9 +257,17 @@ Lefedett területek: AdGuard API és fájl parser (a base64-es DNS wire formátu
 dekódolásával együtt), deduplikáció, checkpoint és backfill logika, filter engine
 (parse, AND/OR/NOT, minden operátor, SQL injection), domain matching, regex,
 címke- és kategória-szabályok, IP → eszköz és eszköz → személy hozzárendelés,
-retention cleanup, konfiguráció-rétegek, a teljes HTTP API, valamint a
-biztonsági korlátok: SQL injection kísérletek minden szöveges mezőn, path
-traversal a statikus fájlkiszolgálón, lekérdezés-időkorlát és regex hossz.
+retention cleanup, konfiguráció-rétegek, a teljes HTTP API, a biztonsági
+korlátok (SQL injection minden szöveges mezőn, path traversal a statikus
+kiszolgálón, lekérdezés-időkorlát, regex hossz), valamint a **csomagolás**:
+hogy a beépített szabálykészlet verziókövetve van-e, hogy a `config.yaml`
+átmegy-e a Supervisor megkötésein, és hogy a lefordított frontend jelen van-e.
+
+A csomagolási tesztek azért vannak, mert két hiba csak telepítéskor derült ki:
+egy horgonyozatlan `data/` minta a `.gitignore`-ban kizárta a beépített
+szabályfájlt a repóból (lokálisan minden zöld volt, CI-ben 18 teszt bukott),
+és egy `image: null` kulcs érvénytelenné tette a `config.yaml`-t, amitől az
+add-on meg sem jelent a Kiegészítőtárban.
 
 Teljesítménymérés szintetikus adaton:
 

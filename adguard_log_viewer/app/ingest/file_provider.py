@@ -14,10 +14,12 @@ response is a base64-encoded wire message (decoded by :mod:`app.ingest.dns_wire`
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import os
 from pathlib import Path
+from typing import BinaryIO
 
 import anyio
 
@@ -32,9 +34,28 @@ _LOGGER = logging.getLogger(__name__)
 KEY_FILE_KEY = "file_key"
 KEY_OFFSET = "offset"
 KEY_LAST_TS = "last_ts_ns"
+KEY_HEAD = "head"
+KEY_HEAD_LEN = "head_len"
 
 #: Bytes read per page. One page is roughly 2000-4000 query log lines.
 CHUNK_BYTES = 1 << 20
+
+#: Largest prefix fingerprinted for rotation detection. A few hundred bytes is
+#: several query log lines — more than enough to tell two files apart, and
+#: cheap to re-read on every poll.
+HEAD_BYTES = 4096
+
+
+def _fingerprint(handle: BinaryIO, length: int) -> str:
+    """Digest of the first *length* bytes. Restores the file position."""
+    if length <= 0:
+        return ""
+    position = handle.tell()
+    try:
+        handle.seek(0)
+        return hashlib.blake2b(handle.read(length), digest_size=16).hexdigest()
+    finally:
+        handle.seek(position)
 
 
 def parse_file_record(line: str) -> QueryRecord | None:
@@ -163,32 +184,65 @@ class AdGuardFileQueryLogProvider(QueryLogProvider):
 
         return await anyio.to_thread.run_sync(_read)
 
+    def _rotation_reason(
+        self, state: Checkpoint, handle: BinaryIO, size: int, key: str
+    ) -> str | None:
+        """Why the file must be re-read from the start, if it must.
+
+        Three signals, because no single one is enough:
+
+        * a different ``(device, inode)`` — the usual rotation;
+        * a file shorter than the offset already consumed — truncation;
+        * a changed fingerprint of the bytes already consumed — the file was
+          replaced by one that happens to land on the same inode (Linux reuses
+          a freshly freed inode readily) or was rewritten in place. Without
+          this check the provider seeks past the new content and reports
+          nothing, which is exactly what a same-size replacement looks like.
+        """
+        if not state:
+            return None  # first run: there is nothing to compare against
+        if state.get(KEY_FILE_KEY) != key:
+            return "it was replaced"
+        if int(state.get(KEY_OFFSET) or 0) > size:
+            return "it was truncated"
+
+        head_len = int(state.get(KEY_HEAD_LEN) or 0)
+        stored = state.get(KEY_HEAD)
+        if head_len and stored:
+            if size < head_len:
+                return "it got shorter"
+            if _fingerprint(handle, head_len) != stored:
+                return "its contents were rewritten"
+        return None
+
     def _read_sync(
         self, state: Checkpoint, max_pages: int, floor_ts_ns: int | None
     ) -> FetchResult:
-        if not self.path.exists():
+        try:
+            handle = self.path.open("rb")
+        except (FileNotFoundError, NotADirectoryError, PermissionError):
             return FetchResult(records=[], checkpoint=state)
-
-        stat = self.path.stat()
-        key = _file_key(stat)
-        offset = int(state.get(KEY_OFFSET) or 0)
-
-        if state.get(KEY_FILE_KEY) != key:
-            # First run, or AdGuard rotated the log into querylog.json.1.
-            if state.get(KEY_FILE_KEY):
-                _LOGGER.info("Query log rotated, restarting from the beginning of %s", self.path)
-            offset = 0
-            state[KEY_FILE_KEY] = key
-        elif offset > stat.st_size:
-            _LOGGER.info("Query log truncated, restarting from the beginning of %s", self.path)
-            offset = 0
 
         records: list[QueryRecord] = []
         last_ts = int(state.get(KEY_LAST_TS) or 0)
         more = False
         remainder = b""
 
-        with self.path.open("rb") as handle:
+        with handle:
+            stat = os.fstat(handle.fileno())
+            key = _file_key(stat)
+            offset = int(state.get(KEY_OFFSET) or 0)
+
+            reason = self._rotation_reason(state, handle, stat.st_size, key)
+            if reason is not None:
+                _LOGGER.info(
+                    "Query log %s: %s. Reading it from the beginning.", self.path, reason
+                )
+                offset = 0
+            elif not state:
+                offset = 0
+
+            state[KEY_FILE_KEY] = key
             handle.seek(offset)
             for _ in range(max_pages):
                 chunk = handle.read(CHUNK_BYTES)
@@ -208,6 +262,14 @@ class AdGuardFileQueryLogProvider(QueryLogProvider):
                     records.append(record)
             else:
                 more = bool(handle.read(1))
+
+            # Fingerprint what has been consumed, so a replacement file that
+            # lands on the same inode with the same size is still detected.
+            # The window only ever grows, which keeps the comparison stable
+            # while the file is appended to.
+            head_len = min(HEAD_BYTES, offset) if offset else 0
+            state[KEY_HEAD_LEN] = head_len
+            state[KEY_HEAD] = _fingerprint(handle, head_len) if head_len else ""
 
         state[KEY_OFFSET] = offset
         state[KEY_LAST_TS] = last_ts

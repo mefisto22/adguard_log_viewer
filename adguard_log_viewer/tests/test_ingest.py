@@ -274,6 +274,67 @@ class TestFileProviderTailing:
         assert [record.domain for record in second.records] == ["fresh.com"]
 
     @pytest.mark.anyio
+    async def test_replacement_with_the_same_inode_and_size(self, tmp_path: Path) -> None:
+        """The hard case: same inode, same byte count, different content.
+
+        Linux hands a freshly freed inode straight back, so a rotated log can
+        land on the same ``(device, inode)`` as the one just consumed. If the
+        sizes also match, neither the inode nor a length check notices, and a
+        provider that trusts its byte offset seeks past the new content and
+        reports nothing at all.
+        """
+        path = tmp_path / "querylog.json"
+        path.write_text(querylog_line(domain="aaaaaaa.com") + "\n")
+        provider = AdGuardFileQueryLogProvider(path)
+
+        first = await provider.fetch({}, max_pages=4)
+        assert [record.domain for record in first.records] == ["aaaaaaa.com"]
+        inode, size = path.stat().st_ino, path.stat().st_size
+
+        # Same length on purpose, so only the content differs.
+        path.write_text(querylog_line(domain="bbbbbbb.com") + "\n")
+        assert path.stat().st_ino == inode
+        assert path.stat().st_size == size
+
+        second = await provider.fetch(first.checkpoint, max_pages=4)
+        assert [record.domain for record in second.records] == ["bbbbbbb.com"]
+
+    @pytest.mark.anyio
+    async def test_truncation_restarts_from_the_beginning(self, tmp_path: Path) -> None:
+        path = tmp_path / "querylog.json"
+        path.write_text(querylog_line(domain="one.com") + "\n")
+        provider = AdGuardFileQueryLogProvider(path)
+        first = await provider.fetch({}, max_pages=4)
+
+        path.write_text("")
+        emptied = await provider.fetch(first.checkpoint, max_pages=4)
+        assert emptied.records == []
+
+        path.write_text(querylog_line(domain="after.com") + "\n")
+        third = await provider.fetch(emptied.checkpoint, max_pages=4)
+        assert [record.domain for record in third.records] == ["after.com"]
+
+    @pytest.mark.anyio
+    async def test_appending_does_not_look_like_a_rotation(self, tmp_path: Path) -> None:
+        """The fingerprint window must not grow into content it has not read."""
+        path = tmp_path / "querylog.json"
+        path.write_text(querylog_line(domain="one.com") + "\n")
+        provider = AdGuardFileQueryLogProvider(path)
+
+        checkpoint: dict[str, Any] = {}
+        seen: list[str] = []
+        for index in range(6):
+            result = await provider.fetch(checkpoint, max_pages=4)
+            checkpoint = result.checkpoint
+            seen.extend(record.domain for record in result.records)
+            with path.open("a") as handle:
+                handle.write(querylog_line(domain=f"d{index}.com") + "\n")
+
+        result = await provider.fetch(checkpoint, max_pages=4)
+        seen.extend(record.domain for record in result.records)
+        assert seen == ["one.com", *[f"d{index}.com" for index in range(6)]]
+
+    @pytest.mark.anyio
     async def test_ignores_a_partial_trailing_line(self, tmp_path: Path) -> None:
         path = tmp_path / "querylog.json"
         path.write_text(querylog_line(domain="one.com") + "\n" + '{"T":"2024')
