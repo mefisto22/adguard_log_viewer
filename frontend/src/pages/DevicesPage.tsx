@@ -48,13 +48,13 @@ export function DevicesPage() {
       <Section
         title="Devices"
         actions={
-          <div className="row" style={{ gap: 8 }}>
+          <div className="row wrap" style={{ gap: 8, flex: '1 1 auto', justifyContent: 'flex-end' }}>
             <input
               type="search"
               placeholder="Search IP, name or person…"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              style={{ width: 240 }}
+              style={{ flex: '1 1 150px', minWidth: 0, maxWidth: 240 }}
             />
             <select value={sort} onChange={(event) => setSort(event.target.value)}>
               <option value="query_count">Most queries</option>

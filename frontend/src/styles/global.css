@@ -206,18 +206,33 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  /* A title plus a search box plus a sort control does not fit on a phone.
+     Wrapping is what keeps them inside the card frame. */
+  flex-wrap: wrap;
+  gap: 8px 12px;
   padding: 12px 14px;
   border-bottom: 1px solid var(--border);
 }
 
 .card-body {
   padding: 14px;
+  /* A data table is wider than a phone screen by nature. Give it a scroll area
+     inside the card rather than letting it escape the frame. Nothing inside a
+     card body is absolutely positioned, so this clips nothing that matters. */
+  overflow-x: auto;
 }
 
 .grid {
   display: grid;
   gap: 12px;
+}
+
+/* A grid item's min-width defaults to `auto`, so an auto-sized track grows to
+   its content's min-content width and happily overflows the container. One
+   long unbreakable string — a DoH upstream URL — was enough to push a whole
+   row, and the progress bar sized at 100% of it, outside the card. */
+.grid > * {
+  min-width: 0;
 }
 
 .row {
@@ -349,6 +364,12 @@ label.field {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  /* A flex item's min-width defaults to `auto`, which refuses to shrink below
+     the content's intrinsic width. Without this, a long unbreakable string —
+     a DoH upstream URL, a deep subdomain — never ellipsises: it pushes the
+     flex row open instead, and anything sized at 100% of that row (a progress
+     bar, for one) then overflows its card. */
+  min-width: 0;
 }
 .small { font-size: 12px; }
 .center { text-align: center; }

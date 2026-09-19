@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.1.4
+
+Az AdGuard felderítése.
+
+- **Nem találjuk ki a portot.** A `80/tcp` az AdGuard *konténer* oldali portja;
+  a hoszt port a felhasználó választása, amire nincs értelmes alapérték.
+  Korábban, ha a felderítés nem járt sikerrel, az add-on a
+  `http://172.30.32.1:3000` címet találta ki — így minden hiba egy olyan portra
+  mutatott, aminek semmi köze a beállításhoz. Mostantól ilyenkor azt mondja meg,
+  mit nézett meg és mit talált.
+- A Settings oldal **How it was looked up** sora lépésről lépésre mutatja a
+  felderítést, és kiírja, milyen portokat jelent a Supervisor az AdGuard
+  add-onra — így látszik, miért nem jött ki cím.
+- Az **AdGuard Home URL** opció leírása átírva: a cím megadása ugyanolyan
+  támogatott út, nem kerülőmegoldás. Egy önmagában álló port is elég
+  (`9000` → a Home Assistant hoszt 9000-es portja), és `host:port`, illetve
+  séma nélküli cím is elfogadott.
+- A felderítés elfogad egyetlen egyéb publikált TCP portot is, ha a `80/tcp`
+  nincs kiadva — ez AdGuard forkoknál számít.
+
+## 0.1.3
+
+Elrendezési javítások.
+
+- **A kék sáv kilógott a kártya keretéből.** Egy hosszú, törhetetlen felirat —
+  egy DoH upstream URL — szétfeszítette a sorát, a sor a rácsoszlopát, a sor
+  szélességének 100%-ára méretezett sáv pedig 161 pixellel a kártyán kívülre
+  került. A felirat mostantól három ponttal záródik, ahogy eddig is kellett
+  volna.
+- A táblázatok telefonméretben a kártyán belül görgethetők, nem lógnak ki.
+- A kártyafejlécek keskeny képernyőn tördelnek.
+
 ## 0.1.2
 
 Hibajavítások a felületen.

@@ -72,7 +72,7 @@ Mindkét eset ugyanaz a kódút: Basic auth opcionális felhasználónévvel/jel
 ### 2.3 Amit a felhasználónak egyszer be kell állítania
 
 Az AdGuard Home add-on „Network" szekciójában a **Web interface (80/tcp)** porthoz
-kell egy hoszt port (pl. `3000`). Ez a HA add-on UI-ból támogatott, dokumentált
+kell egy hoszt port — bármelyik szabad. Ez a HA add-on UI-ból támogatott, dokumentált
 beállítás — nem hack, nem módosítja az add-on működését. A README `Telepítés`
 fejezete végigvezet rajta.
 
@@ -89,11 +89,20 @@ sorrendje (`adguard_log_viewer/app/adguard/discovery.py`):
    Ez a végpont a Supervisor `api_bypass` listáján van, tehát `hassio_role: default`
    mellett is elérhető.
 3. `GET http://supervisor/addons/<slug>/info` → `ip_address` (host_network add-on
-   esetén `172.30.32.1`) és `network` (pl. `{"80/tcp": 3000}`).
+   esetén `172.30.32.1`) és `network` (pl. `{"53/udp": 53, "80/tcp": 9876}`), ahonnan a
+   felhasználó által választott **hoszt** port derül ki.
 4. Ha a discovery nem ad találatot, végigpróbáljuk a jelöltek listáját
    (`a0d7b954_adguard`, `adguard`, `core_adguard`, …) a `/addons/<slug>/info`
    végponton — ez `ROLE_DEFAULT` mellett is engedélyezett (`^/.+/info$`).
-5. Végső fallback: `http://172.30.32.1:3000`.
+5. Ha a port így sem derül ki, **nem tippelünk**. A `80/tcp` az AdGuard
+   *konténer* oldali portja; a hoszt port a felhasználó választása, amire nincs
+   értelmes alapérték. Korábban ide `http://172.30.32.1:3000` került, ami minden
+   hibát egy olyan portra mutató üzenetté alakított, aminek semmi köze a
+   beállításhoz. Helyette az `url` `None` lesz, a felderítés lépései pedig
+   megjelennek a Settings oldalon.
+
+A `normalize_url` elfogadja a rövidítéseket is: egy önmagában álló port a
+hassio gateway adott portját jelenti (`9000` → `http://172.30.32.1:9000`).
 
 Így az add-on újratelepítés/átnevezés/frissítés után is megtalálja az AdGuardot.
 

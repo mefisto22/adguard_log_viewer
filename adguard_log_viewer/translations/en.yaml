@@ -3,9 +3,13 @@ configuration:
   adguard_url:
     name: AdGuard Home URL
     description: >-
-      Leave empty to find the AdGuard Home add-on automatically through the
-      Supervisor. Set it only when AdGuard runs somewhere the add-on cannot
-      discover, for example http://192.168.1.2:3000.
+      The address you use to open AdGuard Home. Leave it empty and the add-on
+      asks the Supervisor for it — that works when the AdGuard Home add-on
+      publishes a host port for its web interface (80/tcp). If it does not, or
+      AdGuard runs elsewhere, put the address here; that is a normal setup, not
+      a workaround. A bare port such as 9000 is understood and means that port
+      on the Home Assistant host. The Settings page shows exactly what the
+      lookup found.
   adguard_username:
     name: Username
     description: >-

@@ -166,8 +166,8 @@ export function TopList({
           style={{ gap: 10, cursor: item.onClick ? 'pointer' : undefined }}
           onClick={item.onClick}
         >
-          <div style={{ flex: '1 1 auto', minWidth: 0 }}>
-            <div className="row" style={{ gap: 6 }}>
+          <div style={{ flex: '1 1 auto', minWidth: 0, overflow: 'hidden' }}>
+            <div className="row" style={{ gap: 6, minWidth: 0 }}>
               {item.color ? (
                 <span
                   className="dot"
@@ -181,6 +181,7 @@ export function TopList({
             <div
               style={{
                 height: 4,
+                maxWidth: '100%',
                 borderRadius: 2,
                 background: 'var(--bg-sunken)',
                 marginTop: 3,

@@ -145,6 +145,10 @@ fájl nem elérhető.
   `GET /discovery` → AdGuard slug → `GET /addons/<slug>/info` → `ip_address` +
   `network["80/tcp"]`. Mindkét végpont elérhető a legkisebb jogosultsággal
   (`hassio_role: default`).
+* **Portot nem tippelünk.** A `80/tcp` az AdGuard konténer oldali portja; a
+  hoszt port a felhasználó választása. Ha nem derül ki, az add-on nem talál ki
+  egy címet, hanem a Settings oldalon lépésről lépésre megmutatja, mit nézett
+  meg — és az `adguard_url` opcióval egy önmagában álló port is megadható.
 * Az add-on **nem módosítja** az AdGuard add-on fájljait, konfigját vagy
   konténerét, és csak az AdGuard **verziózott HTTP API-ját** használja, nem a
   belső fájlformátumot — így egy AdGuard frissítés nem töri el.

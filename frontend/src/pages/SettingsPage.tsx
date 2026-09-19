@@ -241,10 +241,42 @@ export function SettingsPage() {
               <span className="muted">{provider?.detail}</span>
             </Row>
             {discovery ? (
-              <Row label="Discovered via">
-                {discovery.source}
-                {discovery.slug ? ` (${discovery.slug})` : ''}
-                {discovery.version ? ` · AdGuard add-on ${discovery.version}` : ''}
+              <Row label="Address">
+                {discovery.url ? (
+                  <span className="mono">{discovery.url}</span>
+                ) : (
+                  <span className="muted">could not be determined</span>
+                )}
+                {discovery.source === 'configuration'
+                  ? ' (from the add-on options)'
+                  : discovery.slug
+                    ? ` (found as ${discovery.slug})`
+                    : ''}
+              </Row>
+            ) : null}
+            {discovery && discovery.source !== 'configuration' ? (
+              <Row label="How it was looked up">
+                {discovery.steps.length ? (
+                  <ol style={{ margin: 0, paddingLeft: '1.1em' }}>
+                    {discovery.steps.map((step) => (
+                      <li key={step} className="small">
+                        {step}
+                      </li>
+                    ))}
+                  </ol>
+                ) : (
+                  <span className="muted">—</span>
+                )}
+                {Object.keys(discovery.ports).length ? (
+                  <div className="small muted" style={{ marginTop: 6 }}>
+                    Ports the Supervisor reports for that add-on:{' '}
+                    <span className="mono">
+                      {Object.entries(discovery.ports)
+                        .map(([key, value]) => `${key} → ${value ?? 'not published'}`)
+                        .join(', ')}
+                    </span>
+                  </div>
+                ) : null}
               </Row>
             ) : null}
             <Row label="Last poll">

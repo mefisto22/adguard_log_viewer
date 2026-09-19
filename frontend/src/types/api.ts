@@ -270,13 +270,16 @@ export interface Status {
   };
   provider: ProviderStatus | null;
   discovery: {
-    url: string;
+    url: string | null;
     source: string;
     slug: string;
     addon_name: string;
     version: string;
     confident: boolean;
+    resolved: boolean;
     warnings: string[];
+    steps: string[];
+    ports: Record<string, number | null>;
   } | null;
   ingest: {
     last: Record<string, unknown>;

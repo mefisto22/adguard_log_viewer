@@ -113,14 +113,27 @@ class AppState:
         for warning in self.discovery.warnings:
             _LOGGER.warning("%s", warning)
 
-        client = AdGuardClient(
-            self.discovery.url,
-            username=settings.adguard_username,
-            password=settings.adguard_password,
-            verify_ssl=settings.adguard_verify_ssl,
+        client = (
+            AdGuardClient(
+                self.discovery.url,
+                username=settings.adguard_username,
+                password=settings.adguard_password,
+                verify_ssl=settings.adguard_verify_ssl,
+            )
+            if self.discovery.url
+            else None
         )
-        self.provider = AdGuardApiQueryLogProvider(client, page_size=settings.ingest_batch_size)
-        _LOGGER.info("Using the AdGuard API query log provider (%s)", self.discovery.url)
+        self.provider = AdGuardApiQueryLogProvider(
+            client,
+            page_size=settings.ingest_batch_size,
+            setup_error=" ".join(self.discovery.warnings),
+        )
+        if self.discovery.url:
+            _LOGGER.info("Using the AdGuard API query log provider (%s)", self.discovery.url)
+        else:
+            _LOGGER.warning(
+                "AdGuard Home's address could not be determined; set the 'adguard_url' option."
+            )
 
     async def provider_status(self, *, force: bool = False) -> ProviderStatus | None:
         """Health of the query log source, cached for :data:`PROVIDER_STATUS_TTL`."""

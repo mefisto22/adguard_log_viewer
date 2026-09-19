@@ -27,7 +27,7 @@ export function DomainsPage() {
       <Section
         title="Domains"
         actions={
-          <div className="row" style={{ gap: 8 }}>
+          <div className="row wrap" style={{ gap: 8, flex: '1 1 auto', justifyContent: 'flex-end' }}>
             <input
               type="search"
               placeholder="Search domains…"
@@ -36,7 +36,7 @@ export function DomainsPage() {
                 setSearch(event.target.value);
                 setPage(0);
               }}
-              style={{ width: 240 }}
+              style={{ flex: '1 1 150px', minWidth: 0, maxWidth: 240 }}
             />
             <select
               value={sort}

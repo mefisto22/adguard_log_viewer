@@ -23,11 +23,29 @@ részletesen: `ARCHITECTURE.md`.)
 
 1. Home Assistant → **Beállítások → Kiegészítők → AdGuard Home**.
 2. **Konfiguráció** fül → **Hálózat** szekció.
-3. A **Web interface** (`80/tcp`) sorba írj be egy szabad portot, például `3000`.
+3. A **Web interface** (`80/tcp`) sorba írj be egy szabad hoszt portot.
 4. **Mentés**, majd az AdGuard Home add-on **újraindítása**.
+
+> A `80/tcp` az AdGuard **konténer** oldali portja — ez fix. Amit te beírsz
+> mellé, az a **hoszt** port, és bármi lehet. Nincs „alapértelmezett" érték:
+> ez az add-on azt a portot használja, amit te megadtál, mert a Supervisortól
+> kérdezi le. Ha már be van állítva egy port, ne írd át — használd azt.
 
 Ez támogatott, dokumentált Home Assistant beállítás — nem módosítja az AdGuard
 add-on működését, és frissítés után is megmarad.
+
+### Vagy add meg a címet közvetlenül
+
+Ha nem akarod publikálni a portot, vagy az AdGuard nem a Home Assistant alatt
+fut, írd be a címet ennek az add-onnak az **AdGuard Home URL** opciójába. **Ez
+nem kerülőmegoldás**, ugyanolyan támogatott út. Elfogadott formák:
+
+| Amit beírsz | Mit jelent |
+|---|---|
+| `9000` vagy `:9000` | a Home Assistant hoszt 9000-es portja |
+| `192.168.1.5:9000` | egy másik gép |
+| `http://adguard.local:9000` | teljes URL |
+| `https://adguard.example` | HTTPS (ehhez lásd az `adguard_verify_ssl` opciót) |
 
 ### Kell felhasználónév és jelszó?
 
@@ -63,7 +81,7 @@ felület már használható, és az adatok folyamatosan jelennek meg.
 
 | Opció | Alapértelmezés | Leírás |
 |---|---|---|
-| `adguard_url` | *(üres)* | Hagyd üresen: az add-on a Supervisoron keresztül megkeresi az AdGuard add-ont. Csak akkor töltsd ki, ha az AdGuard máshol fut (pl. `http://192.168.1.2:3000`). |
+| `adguard_url` | *(üres)* | Az a cím, amin az AdGuardot megnyitod. Üresen hagyva a Supervisortól kérdezi le — ehhez az AdGuard add-onnak publikálnia kell a `80/tcp` portot. Ha nem publikálja, írd ide a címet; elég egy önmagában álló port is (pl. `9000`). |
 | `adguard_username` | *(üres)* | Home Assistant felhasználónév (lásd 2. pont). |
 | `adguard_password` | *(üres)* | A hozzá tartozó jelszó. A HA maszkolja, az add-on soha nem logolja. |
 | `adguard_verify_ssl` | `false` | Csak akkor kapcsold be, ha az AdGuard HTTPS-en, érvényes tanúsítvánnyal érhető el. |
@@ -177,7 +195,8 @@ A **Settings** oldal megmondja, mit lát az add-on. A gyakori okok:
 
 | Tünet | Ok | Megoldás |
 |---|---|---|
-| `Cannot reach AdGuard Home at http://172.30.32.1:3000` | Az AdGuard webes portja nincs publikálva | 2. pont: állíts be portot a `80/tcp`-hez, és indítsd újra az AdGuardot |
+| `The AdGuard Home address could not be worked out` | Az AdGuard add-on nem publikál hoszt portot a `80/tcp`-hez | 2. pont: állíts be portot, **vagy** add meg az `adguard_url`-t. A Settings oldal **How it was looked up** sora lépésről lépésre megmutatja, mit talált, és hogy a Supervisor milyen portokat jelent az AdGuard add-onra |
+| `Cannot reach AdGuard Home at <cím>` | A cím megvan, de nem válaszol | Ellenőrizd, hogy az AdGuard fut-e, és hogy tényleg ezen a porton érhető el |
 | `HTTP 401` vagy `403` | Hiányzó vagy rossz belépési adat | Adj meg érvényes **Home Assistant** felhasználót és jelszót |
 | `returned text/html instead of JSON` | A kérést az nginx bejelentkeztető rétege fogta el | Ugyanaz: a felhasználónév/jelszó nem stimmel |
 | `The AdGuard Home add-on could not be found` | A felderítés nem talált AdGuardot | Add meg kézzel az `adguard_url`-t |

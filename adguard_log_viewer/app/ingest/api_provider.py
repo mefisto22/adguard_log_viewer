@@ -116,18 +116,42 @@ def _elapsed_us(value: Any) -> int:
 class AdGuardApiQueryLogProvider(QueryLogProvider):
     name = "adguard-api"
 
-    def __init__(self, client: AdGuardClient, *, page_size: int = 500) -> None:
+    def __init__(
+        self,
+        client: AdGuardClient | None,
+        *,
+        page_size: int = 500,
+        setup_error: str = "",
+    ) -> None:
+        """``client`` is ``None`` when AdGuard's address could not be worked out.
+
+        The provider still exists in that state so the Settings page has
+        something to report; ``setup_error`` is what it says, instead of a
+        connection failure against an address nobody configured.
+        """
         self._client = client
         self._page_size = max(50, page_size)
+        self._setup_error = setup_error
 
     async def close(self) -> None:
-        await self._client.aclose()
+        if self._client is not None:
+            await self._client.aclose()
 
     # -- status -------------------------------------------------------------
 
     async def status(self) -> ProviderStatus:
         warnings: list[str] = []
         extra: dict[str, Any] = {}
+
+        if self._client is None:
+            return ProviderStatus(
+                name=self.name,
+                available=False,
+                source="(address not determined)",
+                detail=self._setup_error
+                or "The AdGuard Home address could not be worked out.",
+            )
+
         try:
             status = await self._client.status()
         except AdGuardError as err:
@@ -174,6 +198,8 @@ class AdGuardApiQueryLogProvider(QueryLogProvider):
         )
 
     async def client_names(self) -> dict[str, str]:
+        if self._client is None:
+            return {}
         return await self._client.client_names()
 
     # -- fetching -----------------------------------------------------------
@@ -185,6 +211,9 @@ class AdGuardApiQueryLogProvider(QueryLogProvider):
         max_pages: int,
         floor_ts_ns: int | None = None,
     ) -> FetchResult:
+        if self._client is None:
+            return FetchResult(records=[], checkpoint=dict(checkpoint))
+
         state: Checkpoint = dict(checkpoint)
         forward_ts: int = int(state.get(KEY_FORWARD_TS) or 0)
         records: list[QueryRecord] = []

@@ -43,23 +43,41 @@ CANDIDATE_SLUGS: tuple[str, ...] = (
 )
 
 #: The container port the AdGuard add-on's "direct" web interface listens on.
+#: The *host* port it is published on is whatever the user chose, and that is
+#: what we are actually after — there is no sensible default for it, so nothing
+#: here ever guesses one.
 WEB_CONTAINER_PORT = "80/tcp"
 
-#: Used only when every discovery step failed.
-FALLBACK_PORT = 3000
+#: Container ports that are never the web interface, whatever else is published.
+NON_WEB_PORTS = frozenset({"53/tcp", "53/udp", "853/tcp", "784/udp", "8853/udp", "5443/tcp"})
 
 
 @dataclass(slots=True)
 class DiscoveredAdGuard:
-    """Where AdGuard Home was found, and how we got there."""
+    """Where AdGuard Home was found, and how we got there.
 
-    url: str
+    ``url`` is ``None`` when the address could not be worked out. Earlier
+    versions invented ``http://172.30.32.1:3000`` in that case, which sent
+    people chasing a port that was never involved: AdGuard's *container* port
+    is 80, and the *host* port is whatever they picked. Reporting nothing, plus
+    the trace of what was actually looked at, is far more use than a guess.
+    """
+
+    url: str | None
     source: str
     slug: str = ""
     addon_name: str = ""
     version: str = ""
     confident: bool = True
     warnings: list[str] = field(default_factory=list)
+    #: Human-readable record of every step, shown on the Settings page.
+    steps: list[str] = field(default_factory=list)
+    #: The port map the Supervisor reported, so a wrong guess is visible.
+    ports: dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def resolved(self) -> bool:
+        return bool(self.url)
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -69,7 +87,10 @@ class DiscoveredAdGuard:
             "addon_name": self.addon_name,
             "version": self.version,
             "confident": self.confident,
+            "resolved": self.resolved,
             "warnings": list(self.warnings),
+            "steps": list(self.steps),
+            "ports": dict(self.ports),
         }
 
 
@@ -119,16 +140,62 @@ class SupervisorClient:
         return await self.get(f"/addons/{slug}/info")
 
 
-def _web_port(info: dict[str, Any]) -> int | None:
-    """Host port bound to AdGuard's web interface, if the user published one."""
+def normalize_url(value: str) -> str:
+    """Accept the shorthands people actually type.
+
+    ``9000`` and ``:9000`` mean "that port on the Home Assistant host";
+    ``192.168.1.5:9000`` means that host; a full URL is left alone. Rejecting
+    these outright would be pedantry — the port on its own is the only part
+    most people have to think about.
+    """
+    text = value.strip().rstrip("/")
+    if not text:
+        return ""
+    if "://" in text:
+        return text
+    if text.startswith(":"):
+        text = text[1:]
+    if text.isdigit():
+        return f"http://{HASSIO_HOST_GATEWAY}:{text}"
+    return f"http://{text}"
+
+
+def _web_port(info: dict[str, Any]) -> tuple[int | None, str]:
+    """The host port AdGuard's web interface is published on.
+
+    Returns ``(port, explanation)``. The AdGuard add-on declares the interface
+    on container port 80, but a fork or a different repository may not, so any
+    single published TCP port that is not a DNS port is accepted as a fallback.
+    """
     network = info.get("network")
     if not isinstance(network, dict):
-        return None
-    for key in (WEB_CONTAINER_PORT, "80", "3000/tcp", "3000"):
-        value = network.get(key)
-        if isinstance(value, int) and value > 0:
-            return value
-    return None
+        return None, "the Supervisor reported no port mapping for this add-on"
+
+    value = network.get(WEB_CONTAINER_PORT)
+    if isinstance(value, int) and value > 0:
+        return value, f"{WEB_CONTAINER_PORT} is published on host port {value}"
+
+    published = {
+        key: port
+        for key, port in network.items()
+        if key not in NON_WEB_PORTS
+        and str(key).endswith("/tcp")
+        and isinstance(port, int)
+        and port > 0
+    }
+    if len(published) == 1:
+        key, port = next(iter(published.items()))
+        return port, f"{key} is the only published TCP port, using host port {port}"
+    if published:
+        return None, (
+            f"several TCP ports are published ({', '.join(sorted(published))}) and none of "
+            f"them is {WEB_CONTAINER_PORT}"
+        )
+
+    return None, (
+        f"{WEB_CONTAINER_PORT} has no host port assigned "
+        f"(the Supervisor reported {network or '{}'})"
+    )
 
 
 def _addon_host(info: dict[str, Any]) -> str:
@@ -139,40 +206,48 @@ def _addon_host(info: dict[str, Any]) -> str:
     instead, and that is exactly where its host ports are reachable.
     """
     ip = str(info.get("ip_address") or "").strip()
-    if ip and ip != "0.0.0.0":
+    if ip and ip not in ("0.0.0.0", "None"):
         return ip
     return HASSIO_HOST_GATEWAY
 
 
-def _build_from_info(info: dict[str, Any], source: str) -> DiscoveredAdGuard | None:
-    port = _web_port(info)
+def _build_from_info(info: dict[str, Any], source: str, steps: list[str]) -> DiscoveredAdGuard:
+    port, explanation = _web_port(info)
     slug = str(info.get("slug") or "")
     name = str(info.get("name") or "")
     version = str(info.get("version") or "")
+    raw_network = info.get("network")
+    network: dict[str, Any] = raw_network if isinstance(raw_network, dict) else {}
+    host = _addon_host(info)
 
-    if port is None:
-        warning = (
-            f"The '{name or slug}' add-on has no host port assigned to its web interface "
-            f"({WEB_CONTAINER_PORT}). Open the AdGuard Home add-on's Configuration page, "
-            f"set a port under Network, and restart it."
-        )
-        return DiscoveredAdGuard(
-            url=f"http://{_addon_host(info)}:{FALLBACK_PORT}",
-            source=source,
-            slug=slug,
-            addon_name=name,
-            version=version,
-            confident=False,
-            warnings=[warning],
-        )
+    steps.append(f"'{name or slug}' ({version or 'unknown version'}): {explanation}")
 
-    return DiscoveredAdGuard(
-        url=f"http://{_addon_host(info)}:{port}",
+    result = DiscoveredAdGuard(
+        url=f"http://{host}:{port}" if port else None,
         source=source,
         slug=slug,
         addon_name=name,
         version=version,
+        steps=steps,
+        ports=dict(network),
     )
+
+    if port is None:
+        result.confident = False
+        result.warnings.append(
+            f"The '{name or slug}' add-on does not publish its web interface port, so its "
+            f"address cannot be worked out: {explanation}. Either open that add-on's "
+            f"Configuration page and assign a host port to {WEB_CONTAINER_PORT} under "
+            f"Network, or set this add-on's 'AdGuard Home URL' option to the address you "
+            f"already use."
+        )
+
+    state = str(info.get("state") or "")
+    if state not in ("started", ""):
+        result.confident = False
+        result.warnings.append(f"The '{name or slug}' add-on is not running (state: {state}).")
+
+    return result
 
 
 async def discover_adguard(
@@ -181,64 +256,81 @@ async def discover_adguard(
     configured_url: str = "",
     configured_slug: str = "",
 ) -> DiscoveredAdGuard:
-    """Resolve the AdGuard Home base URL. Never raises."""
+    """Resolve the AdGuard Home base URL. Never raises.
+
+    When the address cannot be worked out, ``url`` comes back ``None`` and
+    ``steps`` records what was looked at, so the Settings page can say why
+    rather than reporting a failure against an address nobody configured.
+    """
+    steps: list[str] = []
+
     if configured_url:
-        return DiscoveredAdGuard(url=configured_url.rstrip("/"), source="configuration")
+        url = normalize_url(configured_url)
+        steps.append(f"Using the address from the add-on options: {url}")
+        return DiscoveredAdGuard(url=url, source="configuration", steps=steps)
 
     supervisor = SupervisorClient(supervisor_token)
     if not supervisor.available:
+        steps.append("No Supervisor token, so the AdGuard add-on cannot be looked up.")
         return DiscoveredAdGuard(
-            url=f"http://{HASSIO_HOST_GATEWAY}:{FALLBACK_PORT}",
-            source="fallback",
+            url=None,
+            source="unavailable",
             confident=False,
+            steps=steps,
             warnings=[
-                "No Supervisor token available, so the AdGuard add-on could not be "
-                "discovered. Set the AdGuard URL explicitly in the add-on options."
+                "This add-on has no Supervisor token, so it cannot look the AdGuard add-on "
+                "up. Set the 'AdGuard Home URL' option explicitly."
             ],
         )
 
     slugs: list[str] = []
     if configured_slug:
         slugs.append(configured_slug)
+        steps.append(f"Add-on slug from the options: {configured_slug}")
 
-    for service in await supervisor.discovery():
+    services = await supervisor.discovery()
+    for service in services:
         if str(service.get("service") or "").lower() == DISCOVERY_SERVICE:
             slug = str(service.get("addon") or "").strip()
             if slug and slug not in slugs:
                 slugs.append(slug)
+                steps.append(f"Supervisor discovery announced AdGuard as '{slug}'")
+    if not services:
+        steps.append("Supervisor discovery returned nothing; falling back to known slugs.")
 
-    discovered_slugs = list(slugs)
+    announced = list(slugs)
     slugs.extend(slug for slug in CANDIDATE_SLUGS if slug not in slugs)
 
+    probed: list[str] = []
     for slug in slugs:
         info = await supervisor.addon_info(slug)
         if not info:
+            probed.append(slug)
             continue
-        source = "supervisor-discovery" if slug in discovered_slugs else "supervisor-slug-probe"
-        result = _build_from_info(info, source)
-        if result is None:
-            continue
-        if str(info.get("state") or "") not in ("started", ""):
-            result.warnings.append(
-                f"The '{result.addon_name or slug}' add-on is not running "
-                f"(state: {info.get('state')})."
-            )
-            result.confident = False
+        source = "supervisor-discovery" if slug in announced else "supervisor-slug-probe"
+        if probed:
+            steps.append(f"No add-on installed under: {', '.join(probed)}")
+            probed.clear()
+        result = _build_from_info(info, source, steps)
         _LOGGER.info(
-            "Discovered AdGuard Home add-on '%s' (%s) at %s via %s",
+            "AdGuard Home add-on '%s' (%s): %s",
             result.addon_name or slug,
             result.version or "unknown version",
-            result.url,
-            source,
+            result.url or "address could not be determined",
         )
+        for warning in result.warnings:
+            _LOGGER.warning("%s", warning)
         return result
 
+    if probed:
+        steps.append(f"No add-on installed under: {', '.join(probed)}")
     return DiscoveredAdGuard(
-        url=f"http://{HASSIO_HOST_GATEWAY}:{FALLBACK_PORT}",
-        source="fallback",
+        url=None,
+        source="not-found",
         confident=False,
+        steps=steps,
         warnings=[
-            "The AdGuard Home add-on could not be found through the Supervisor. "
-            "Set the AdGuard URL explicitly in the add-on options."
+            "No AdGuard Home add-on was found through the Supervisor. Set the "
+            "'AdGuard Home URL' option to the address you use to open AdGuard."
         ],
     )

@@ -3,9 +3,13 @@ configuration:
   adguard_url:
     name: AdGuard Home URL
     description: >-
-      Hagyd üresen, ha az AdGuard Home add-ont automatikusan kell megtalálni a
-      Supervisoron keresztül. Csak akkor add meg, ha az AdGuard máshol fut,
-      például http://192.168.1.2:3000.
+      Az a cím, amin az AdGuard Home-ot megnyitod. Üresen hagyva az add-on a
+      Supervisortól kérdezi meg — ez akkor működik, ha az AdGuard Home add-on
+      publikál hoszt portot a webfelületéhez (80/tcp). Ha nem publikál, vagy az
+      AdGuard máshol fut, írd ide a címet; ez teljesen normális beállítás, nem
+      kerülőmegoldás. Egy önmagában megadott port (pl. 9000) is elég, az a
+      Home Assistant hoszt adott portját jelenti. A Settings oldalon látszik,
+      mit talált pontosan a felderítés.
   adguard_username:
     name: Felhasználónév
     description: >-
