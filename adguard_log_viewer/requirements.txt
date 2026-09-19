@@ -1,0 +1,8 @@
+# Runtime dependencies.
+# Pinned for reproducible multi-arch add-on builds. All of these ship
+# pure-python or musllinux (aarch64 + x86_64) wheels, so no compiler is
+# needed inside the Docker build.
+fastapi==0.141.1
+pydantic==2.13.5
+uvicorn==0.53.0
+httpx==0.28.1

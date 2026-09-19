@@ -1,0 +1,63 @@
+---
+configuration:
+  adguard_url:
+    name: AdGuard Home URL
+    description: >-
+      Leave empty to find the AdGuard Home add-on automatically through the
+      Supervisor. Set it only when AdGuard runs somewhere the add-on cannot
+      discover, for example http://192.168.1.2:3000.
+  adguard_username:
+    name: Username
+    description: >-
+      A Home Assistant user name. The AdGuard Home add-on protects its web port
+      with Home Assistant login, so these are Home Assistant credentials — not
+      AdGuard's own, unless you turned on "leave_front_door_open" there.
+  adguard_password:
+    name: Password
+    description: The password belonging to the user above. Stored by Home Assistant, never logged.
+  adguard_verify_ssl:
+    name: Verify the TLS certificate
+    description: >-
+      Turn on only when AdGuard Home is reached over HTTPS with a certificate
+      this add-on can validate. Local traffic normally uses plain HTTP.
+  adguard_slug:
+    name: AdGuard add-on slug
+    description: >-
+      Only needed if automatic discovery picks the wrong add-on, for example
+      a0d7b954_adguard.
+  provider:
+    name: Query log source
+    description: >-
+      auto follows the configuration, api reads AdGuard's HTTP API (the only
+      option that works on Home Assistant OS), file tails querylog.json directly.
+  querylog_path:
+    name: Query log file
+    description: >-
+      Only used by the file source. On Home Assistant OS an add-on cannot read
+      another add-on's data directory, so leave this empty there.
+  poll_interval:
+    name: Poll interval (seconds)
+    description: How often new DNS queries are fetched from AdGuard Home.
+  ingest_batch_size:
+    name: Records per request
+    description: How many query log records are asked for in one API call.
+  max_pages_per_poll:
+    name: Pages per poll
+    description: >-
+      Upper bound on the work one poll may do. Historic records beyond this are
+      imported by the following polls.
+  ingest_enabled:
+    name: Import new queries
+    description: Turn off to stop importing without stopping the add-on.
+  retention_days:
+    name: Keep history for (days)
+    description: Older queries are deleted automatically. 0 keeps everything.
+  log_level:
+    name: Log level
+    description: >-
+      The add-on never writes queried domain names to its own log above debug
+      level.
+network:
+  8099/tcp: >-
+    Direct web access. Not needed: the add-on opens from the Home Assistant
+    sidebar. A port published here is NOT protected by Home Assistant login.

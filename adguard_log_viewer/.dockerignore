@@ -1,0 +1,14 @@
+# Keep the image to the application and its dependencies.
+.venv/
+tests/
+tools/
+**/__pycache__/
+**/*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+pyproject.toml
+requirements-dev.txt
+DOCS.md
+README.md
+CHANGELOG.md

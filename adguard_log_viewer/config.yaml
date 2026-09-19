@@ -1,0 +1,74 @@
+---
+name: AdGuard Log Viewer
+version: "0.1.0"
+slug: adguard_log_viewer
+description: >-
+  Search, filter and analyse the AdGuard Home DNS query log — per device, per
+  person, per category.
+url: https://github.com/energysmarthome/adguard-log-viewer
+codenotary: ""
+arch:
+  - aarch64
+  - amd64
+
+# The Home Assistant base image brings its own s6-overlay init.
+init: false
+startup: application
+
+# The UI is served through Home Assistant ingress, so no port has to be opened.
+ingress: true
+ingress_port: 8099
+# Server-Sent Events are used for live updates; without this the Supervisor
+# buffers the stream and new rows only appear when the connection closes.
+ingress_stream: true
+panel_icon: mdi:dns
+panel_title: DNS Log
+panel_admin: true
+
+# Optional direct access for people who want to reach the UI without going
+# through Home Assistant. Left unset, nothing is published.
+ports:
+  8099/tcp: null
+ports_description:
+  8099/tcp: >-
+    Direct web access (not required — the add-on is reachable through the Home
+    Assistant sidebar). Anything reachable on this port is NOT protected by
+    Home Assistant authentication.
+
+# `default` is the least privileged role that still allows GET /addons/<slug>/info,
+# which is how the AdGuard add-on's address and port are discovered at runtime.
+hassio_api: true
+hassio_role: default
+
+# Read-only access to /share, so the file provider can be pointed at a query log
+# copied there. Not needed for the normal, API-based setup.
+map:
+  - share:ro
+
+options:
+  adguard_url: ""
+  adguard_username: ""
+  adguard_password: ""
+  poll_interval: 10
+  retention_days: 30
+  log_level: info
+
+schema:
+  # Leave empty to discover the AdGuard Home add-on through the Supervisor.
+  adguard_url: str?
+  # A Home Assistant user's credentials, unless the AdGuard add-on has
+  # `leave_front_door_open` turned on. See DOCS.md.
+  adguard_username: str?
+  adguard_password: password?
+  adguard_verify_ssl: bool?
+  adguard_slug: str?
+  provider: list(auto|api|file)?
+  querylog_path: str?
+  poll_interval: int(2,3600)
+  ingest_batch_size: int(50,5000)?
+  max_pages_per_poll: int(1,200)?
+  ingest_enabled: bool?
+  retention_days: int(0,3650)
+  log_level: list(trace|debug|info|notice|warning|error|fatal)?
+
+image: null

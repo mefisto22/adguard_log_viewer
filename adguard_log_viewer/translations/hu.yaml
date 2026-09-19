@@ -1,0 +1,64 @@
+---
+configuration:
+  adguard_url:
+    name: AdGuard Home URL
+    description: >-
+      Hagyd üresen, ha az AdGuard Home add-ont automatikusan kell megtalálni a
+      Supervisoron keresztül. Csak akkor add meg, ha az AdGuard máshol fut,
+      például http://192.168.1.2:3000.
+  adguard_username:
+    name: Felhasználónév
+    description: >-
+      Egy Home Assistant felhasználó neve. Az AdGuard Home add-on a webes portot
+      Home Assistant bejelentkezéssel védi, tehát ide HA belépési adat kell —
+      nem az AdGuard sajátja, hacsak ott nem kapcsoltad be a
+      "leave_front_door_open" opciót.
+  adguard_password:
+    name: Jelszó
+    description: A fenti felhasználó jelszava. A Home Assistant tárolja, logba sosem kerül.
+  adguard_verify_ssl:
+    name: TLS tanúsítvány ellenőrzése
+    description: >-
+      Csak akkor kapcsold be, ha az AdGuard HTTPS-en érhető el érvényes
+      tanúsítvánnyal. Helyi hálózaton általában sima HTTP van.
+  adguard_slug:
+    name: AdGuard add-on azonosító
+    description: >-
+      Csak akkor kell, ha az automatikus felderítés rossz add-ont találna,
+      például a0d7b954_adguard.
+  provider:
+    name: Query log forrás
+    description: >-
+      auto: a beállítás szerint; api: az AdGuard HTTP API-ja (Home Assistant OS
+      alatt egyedül ez működik); file: a querylog.json közvetlen olvasása.
+  querylog_path:
+    name: Query log fájl
+    description: >-
+      Csak a file forráshoz. Home Assistant OS alatt egy add-on nem tudja olvasni
+      egy másik add-on adatkönyvtárát, ott hagyd üresen.
+  poll_interval:
+    name: Lekérdezési időköz (másodperc)
+    description: Milyen gyakran kérje le az új DNS kéréseket az AdGuard Home-ból.
+  ingest_batch_size:
+    name: Rekordok kérésenként
+    description: Hány query log rekordot kérjen le egy API hívásban.
+  max_pages_per_poll:
+    name: Oldalak lekérdezésenként
+    description: >-
+      Felső korlát arra, mennyit dolgozhat egy lekérdezés. Az ennél régebbi
+      rekordokat a következő körök hozzák be.
+  ingest_enabled:
+    name: Új kérések importálása
+    description: Kikapcsolva az importálás leáll, de az add-on tovább fut.
+  retention_days:
+    name: Előzmények megőrzése (nap)
+    description: A régebbi kérések automatikusan törlődnek. A 0 korlátlan.
+  log_level:
+    name: Naplózási szint
+    description: >-
+      Az add-on debug szint felett soha nem írja ki a lekérdezett domaineket a
+      saját logjába.
+network:
+  8099/tcp: >-
+    Közvetlen webes elérés. Nem szükséges: az add-on a Home Assistant
+    oldalsávjából nyílik. Az itt publikált portot NEM védi a HA bejelentkezés.
