@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.3.0
+
+**Resizable columns, and a timestamp that fits.** *(Magyarul lentebb.)*
+
+- Drag the edge of any column header to set its width. Double-click the edge to
+  put one column back to its default; **Columns → Reset to defaults** puts them
+  all back. Widths are remembered per browser, because a width that suits a
+  large monitor is wrong on a laptop.
+- The Time column was 108px wide, which fits a clock but not a whole date. Rows
+  from an earlier day therefore rendered as `2026. 09. 19. 1` — the time cut
+  off. The column is now sized for the longest stamp either language produces
+  (Hungarian's `2026. 09. 19. 17:28:06` is the wider of the two).
+- The header and the rows now share one scroll area, so a table wider than the
+  card scrolls sideways as a unit instead of the columns being squeezed to fit.
+  On a phone this is what the log table needed anyway.
+- The edge can also be moved from the keyboard: focus it and use the arrow keys
+  (hold Shift for larger steps), Backspace to reset.
+
+---
+
+**Állítható oszlopszélesség, és egy időpont, ami kifér.**
+
+- Az oszlopfejlécek szélét húzva állítható a szélesség. A szélre duplán kattintva
+  egy oszlop visszaáll az alapértelmezettre, az **Oszlopok → Alapértelmezés
+  visszaállítása** pedig az összeset visszaállítja. A szélességeket böngészőnként
+  jegyezzük meg, mert ami egy nagy monitoron jó, az egy laptopon nem.
+- Az Időpont oszlop 108 képpont széles volt: az óra kifért benne, a teljes dátum
+  nem. A korábbi napokból származó sorok így `2026. 09. 19. 1` alakban jelentek
+  meg — az idő levágva. Az oszlop mostantól a leghosszabb időbélyeghez van
+  méretezve, amit a két nyelv előállít (a magyar `2026. 09. 19. 17:28:06` a
+  hosszabb).
+- A fejléc és a sorok közös görgetőfelületen vannak, így a kártyánál szélesebb
+  táblázat egyben csúszik oldalra, ahelyett hogy az oszlopok összenyomódnának.
+  Telefonon amúgy is erre volt szüksége a naplótáblának.
+- A szél billentyűzetről is mozgatható: ráállva a nyilakkal (Shifttel nagyobb
+  lépésekben), Backspace-szel vissza az alapértelmezettre.
+
 ## 0.2.2
 
 **Two links that pointed somewhere else.** *(Magyarul lentebb.)*

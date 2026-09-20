@@ -192,6 +192,7 @@ export const en = {
   'log.liveOff': 'Live updates paused',
   'log.updated': 'updated {when}',
   'log.columns': 'Columns',
+  'log.resizeColumn': 'Resize the {column} column',
   'log.resetColumns': 'Reset to defaults',
   'log.loadFailed': 'Could not load the query log',
   'log.loadingLog': 'Loading query log…',

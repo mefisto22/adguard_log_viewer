@@ -198,6 +198,7 @@ export const hu: Record<keyof typeof en, string> = {
   'log.liveOff': 'Élő frissítés szünetel',
   'log.updated': 'frissítve: {when}',
   'log.columns': 'Oszlopok',
+  'log.resizeColumn': 'A(z) {column} oszlop szélessége',
   'log.resetColumns': 'Alapértelmezés visszaállítása',
   'log.loadFailed': 'A napló betöltése nem sikerült',
   'log.loadingLog': 'Napló betöltése…',

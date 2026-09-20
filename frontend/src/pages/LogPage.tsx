@@ -16,6 +16,7 @@ import { endpoints } from '../api/endpoints';
 import type { QueryRequest } from '../api/endpoints';
 import { useAppStore } from '../stores/useAppStore';
 import { useFilterStore } from '../stores/useFilterStore';
+import { useColumnWidths } from '../hooks/useColumnWidths';
 import { useLiveUpdates } from '../hooks/useLiveUpdates';
 import { formatCompact, formatRelative } from '../utils/format';
 import { useT } from '../i18n/useT';
@@ -37,6 +38,7 @@ export function LogPage() {
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<QueryRow | null>(null);
   const [columns, setColumns] = useState<string[]>(DEFAULT_COLUMNS);
+  const { widths, setWidth, clearWidth, resetWidths } = useColumnWidths();
   const [columnsOpen, setColumnsOpen] = useState(false);
   const [newCount, setNewCount] = useState(0);
   // 0 until the first successful load; `formatRelative` renders that as 'never'.
@@ -285,7 +287,10 @@ export function LogPage() {
                 type="button"
                 className="btn sm ghost"
                 style={{ width: '100%', marginTop: 4 }}
-                onClick={() => persistColumns(DEFAULT_COLUMNS)}
+                onClick={() => {
+                  persistColumns(DEFAULT_COLUMNS);
+                  resetWidths();
+                }}
               >
                 {t('log.resetColumns')}
               </button>
@@ -318,6 +323,9 @@ export function LogPage() {
         <QueryTable
           rows={rows}
           columns={columns}
+          widths={widths}
+          onResizeColumn={setWidth}
+          onResetColumn={clearWidth}
           sort={filters.sort}
           direction={filters.direction}
           onSort={onSort}

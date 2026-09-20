@@ -585,3 +585,49 @@ dl.kv dd { margin: 0; overflow-wrap: anywhere; }
 .query-row:hover {
   background: var(--bg-hover) !important;
 }
+
+/* The draggable edge between two columns. It sits in the grid gap and reaches
+   past it on both sides, because a 1px target is not a target. */
+.col-resize {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: -9px;
+  width: 14px;
+  cursor: col-resize;
+  /* Without this the pointer drag is interpreted as a text selection, and the
+     whole header highlights while the column is being sized. */
+  user-select: none;
+  touch-action: none;
+  z-index: 1;
+}
+
+.col-resize::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: 6px;
+  width: 2px;
+  border-radius: 1px;
+  background: transparent;
+  transition: background 120ms ease;
+}
+
+.col-resize:hover::after,
+.col-resize:focus-visible::after,
+.col-resize.dragging::after {
+  background: var(--primary);
+}
+
+/* While a column is being dragged the pointer is outside the handle most of
+   the time; without this the cursor flickers back to the default over the
+   rows, and text under it gets selected. */
+body:has(.col-resize.dragging) {
+  cursor: col-resize;
+  user-select: none;
+}
+
+.col-resize:focus-visible {
+  outline: none;
+}
