@@ -14,7 +14,7 @@ export const hu: Record<keyof typeof en, string> = {
   // -- alkalmazás váza ----------------------------------------------------
   'app.title': 'AdGuard Log Viewer',
   'app.starting': 'Indulás…',
-  'app.backendUnreachable': 'Az add-on háttérszolgáltatása nem érhető el',
+  'app.backendUnreachable': 'Az alkalmazás háttérszolgáltatása nem érhető el',
   'app.adguardUnreachable': 'AdGuard nem érhető el',
   'app.pageNotFound': 'Nincs ilyen oldal',
   'app.backToDashboard': 'Vissza az áttekintéshez',
@@ -31,7 +31,7 @@ export const hu: Record<keyof typeof en, string> = {
 
   // -- közös műveletek és állapotok ---------------------------------------
   'app.loadFailed': 'Az alkalmazás nem tölthető be',
-  'error.unreachable': 'A bővítmény nem érhető el',
+  'error.unreachable': 'Az alkalmazás nem érhető el',
   'error.http': 'A kérés HTTP {status} hibával elszállt',
   'common.save': 'Mentés',
   'common.cancel': 'Mégse',
@@ -356,7 +356,7 @@ export const hu: Record<keyof typeof en, string> = {
   'rules.hide': 'Elrejt',
   'rules.colMatches': 'Mire illeszkedik',
   'rules.builtinIntro':
-    'Az add-on beépített szabálykészlettel érkezik: Google, Meta, streaming, hirdetés, telemetria, IoT gyártók és társaik. Az image része, futásidőben semmit nem tölt le.',
+    'Az alkalmazás beépített szabálykészlettel érkezik: Google, Meta, streaming, hirdetés, telemetria, IoT gyártók és társaik. Az image része, futásidőben semmit nem tölt le.',
   'rules.pending':
     '{count} domain még régebbi szabálykészlettel van felcímkézve. Az újraosztályozás a háttérben zajlik, ahogy az importálás halad.',
   'rules.reclassifyNow': 'Újraosztályozás most',
@@ -414,7 +414,7 @@ export const hu: Record<keyof typeof en, string> = {
   'settings.language': 'Nyelv',
   'settings.languageAuto': 'Home Assistant szerint',
   'settings.languageHint':
-    'A „Home Assistant szerint” beállítás azt a nyelvet használja, amit a Home Assistant is mutat neked. Itt felülírhatod, kizárólag erre az add-onra.',
+    'A „Home Assistant szerint” beállítás azt a nyelvet használja, amit a Home Assistant is mutat neked. Itt felülírhatod, kizárólag erre az alkalmazásra.',
   'settings.theme': 'Téma',
   'settings.themeSystem': 'Rendszer szerint',
   'settings.themeLight': 'Világos',
@@ -430,7 +430,7 @@ export const hu: Record<keyof typeof en, string> = {
   'settings.day': '1 nap',
   'settings.unlimited': 'Korlátlan',
   'settings.retentionHint':
-    'Felülírja az add-on beállítását. A régebbi kérések automatikusan törlődnek.',
+    'Felülírja az alkalmazás beállítását. A régebbi kérések automatikusan törlődnek.',
   'settings.runCleanup': 'Tisztítás most',
   'settings.cleaning': 'Tisztítás…',
   'settings.ingest': 'Importálás',
@@ -445,10 +445,10 @@ export const hu: Record<keyof typeof en, string> = {
   'settings.unavailable': 'nem érhető el',
   'settings.address': 'Cím',
   'settings.addressUnknown': 'nem sikerült megállapítani',
-  'settings.fromOptions': '(az add-on beállításaiból)',
+  'settings.fromOptions': '(az alkalmazás beállításaiból)',
   'settings.foundAs': '(megtalálva: {slug})',
   'settings.howLookedUp': 'Hogyan lett megkeresve',
-  'settings.reportedPorts': 'A Supervisor által jelentett portok ehhez az add-onhoz: {ports}',
+  'settings.reportedPorts': 'A Supervisor által jelentett portok ehhez az alkalmazáshoz: {ports}',
   'settings.portNotPublished': 'nincs publikálva',
   'settings.lastPoll': 'Utolsó lekérdezés',
   'settings.notYet': 'még nem volt',
@@ -472,9 +472,9 @@ export const hu: Record<keyof typeof en, string> = {
   'settings.location': 'Hely',
   'settings.schemaVersion': 'Séma verzió',
   'settings.schemaOf': '{current} a(z) {target}-ból',
-  'settings.addonOptions': 'Add-on beállítások (csak olvasható)',
+  'settings.addonOptions': 'Alkalmazásbeállítások (csak olvasható)',
   'settings.addonOptionsIntro':
-    'Ezek a Home Assistantból jönnek. Az add-on Konfiguráció fülén módosíthatók, utána indítsd újra az add-ont.',
+    'Ezek a Home Assistantból jönnek. Az alkalmazás Konfiguráció fülén módosíthatók, utána indítsd újra az alkalmazást.',
   'settings.about': 'Névjegy',
   'settings.version': 'Verzió',
   'settings.started': 'Elindult',

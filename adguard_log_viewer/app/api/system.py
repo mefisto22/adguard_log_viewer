@@ -24,7 +24,7 @@ router = APIRouter(tags=["system"])
 
 @router.get("/health")
 async def health() -> dict[str, Any]:
-    """Cheap liveness probe, also used as the add-on watchdog target."""
+    """Cheap liveness probe, also used as the app watchdog target."""
     return {"status": "ok", "version": __version__, "at_ns": now_ns()}
 
 

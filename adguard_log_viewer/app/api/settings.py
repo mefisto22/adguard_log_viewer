@@ -1,4 +1,4 @@
-"""Settings, both the read-only add-on options and the editable app settings."""
+"""Settings, both the read-only app options and the editable app settings."""
 
 from __future__ import annotations
 

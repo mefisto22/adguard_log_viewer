@@ -1,4 +1,4 @@
-"""Configuration layering: environment > add-on options > defaults."""
+"""Configuration layering: environment > app options > defaults."""
 
 from __future__ import annotations
 
@@ -130,9 +130,9 @@ class TestContainerEnvironment:
     launched process a bare environment — ``PATH``, ``PWD`` and little else —
     keeping the real one in ``/run/s6/container_environment``. Programs are
     meant to be started through ``with-contenv``; the Dockerfile now does that,
-    and this fallback means the add-on is correct even when it is not.
+    and this fallback means the app is correct even when it is not.
 
-    Without it the add-on never saw ``SUPERVISOR_TOKEN``, so it could not ask
+    Without it the app never saw ``SUPERVISOR_TOKEN``, so it could not ask
     the Supervisor where AdGuard is, and never saw ``TZ``, so every timestamp
     was UTC.
     """

@@ -179,7 +179,7 @@ class TestReasons:
 class TestErrorSummaries:
     """AdGuard sits behind nginx, whose error pages are HTML.
 
-    Those used to be pasted into the add-on log verbatim, several lines of
+    Those used to be pasted into the app log verbatim, several lines of
     markup for what is really a four-word message.
     """
 

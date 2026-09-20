@@ -16,8 +16,8 @@ export default tseslint.config(
 
       // This app fetches in effects on purpose: it has no data-fetching
       // library, and the requests it makes are genuinely a subscription to an
-      // external system (the add-on's API). The rule assumes a React Query
-      // style setup, which would be a dependency this add-on does not need.
+      // external system (the app's API). The rule assumes a React Query
+      // style setup, which would be a dependency this app does not need.
       'react-hooks/set-state-in-effect': 'off',
 
       // TanStack Virtual returns fresh closures by design; the React Compiler

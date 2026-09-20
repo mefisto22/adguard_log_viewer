@@ -3,8 +3,8 @@ configuration:
   adguard_url:
     name: AdGuard Home URL
     description: >-
-      Az a cím, amin az AdGuard Home-ot megnyitod. Üresen hagyva az add-on a
-      Supervisortól kérdezi meg — ez akkor működik, ha az AdGuard Home add-on
+      Az a cím, amin az AdGuard Home-ot megnyitod. Üresen hagyva az alkalmazás a
+      Supervisortól kérdezi meg — ez akkor működik, ha az AdGuard Home alkalmazás
       publikál hoszt portot a webfelületéhez (80/tcp). Ha nem publikál, vagy az
       AdGuard máshol fut, írd ide a címet; ez teljesen normális beállítás, nem
       kerülőmegoldás. Egy önmagában megadott port (pl. 9000) is elég, az a
@@ -13,7 +13,7 @@ configuration:
   adguard_username:
     name: Felhasználónév
     description: >-
-      Egy Home Assistant felhasználó neve. Az AdGuard Home add-on a webes portot
+      Egy Home Assistant felhasználó neve. Az AdGuard Home alkalmazás a webes portot
       Home Assistant bejelentkezéssel védi, tehát ide HA belépési adat kell —
       nem az AdGuard sajátja, hacsak ott nem kapcsoltad be a
       "leave_front_door_open" opciót.
@@ -26,9 +26,9 @@ configuration:
       Csak akkor kapcsold be, ha az AdGuard HTTPS-en érhető el érvényes
       tanúsítvánnyal. Helyi hálózaton általában sima HTTP van.
   adguard_slug:
-    name: AdGuard add-on azonosító
+    name: AdGuard alkalmazásazonosító
     description: >-
-      Csak akkor kell, ha az automatikus felderítés rossz add-ont találna,
+      Csak akkor kell, ha az automatikus felderítés rossz alkalmazást találna,
       például a0d7b954_adguard.
   provider:
     name: Query log forrás
@@ -38,8 +38,8 @@ configuration:
   querylog_path:
     name: Query log fájl
     description: >-
-      Csak a file forráshoz. Home Assistant OS alatt egy add-on nem tudja olvasni
-      egy másik add-on adatkönyvtárát, ott hagyd üresen.
+      Csak a file forráshoz. Home Assistant OS alatt egy alkalmazás nem tudja olvasni
+      egy másik alkalmazás adatkönyvtárát, ott hagyd üresen.
   poll_interval:
     name: Lekérdezési időköz (másodperc)
     description: Milyen gyakran kérje le az új DNS kéréseket az AdGuard Home-ból.
@@ -53,16 +53,16 @@ configuration:
       rekordokat a következő körök hozzák be.
   ingest_enabled:
     name: Új kérések importálása
-    description: Kikapcsolva az importálás leáll, de az add-on tovább fut.
+    description: Kikapcsolva az importálás leáll, de az alkalmazás tovább fut.
   retention_days:
     name: Előzmények megőrzése (nap)
     description: A régebbi kérések automatikusan törlődnek. A 0 korlátlan.
   log_level:
     name: Naplózási szint
     description: >-
-      Az add-on debug szint felett soha nem írja ki a lekérdezett domaineket a
+      Az alkalmazás debug szint felett soha nem írja ki a lekérdezett domaineket a
       saját logjába.
 network:
   8099/tcp: >-
-    Közvetlen webes elérés. Nem szükséges: az add-on a Home Assistant
+    Közvetlen webes elérés. Nem szükséges: az alkalmazás a Home Assistant
     oldalsávjából nyílik. Az itt publikált portot NEM védi a HA bejelentkezés.

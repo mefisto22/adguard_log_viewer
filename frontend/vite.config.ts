@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// The app is served both from the add-on's own root and from behind Home
+// The app is served both from the app's own root and from behind Home
 // Assistant ingress, where the path prefix is generated per session. Relative
 // asset URLs plus hash routing keep the same build working in both places.
 export default defineConfig({

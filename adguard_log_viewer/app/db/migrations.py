@@ -3,7 +3,7 @@
 Every migration is a ``(version, name, statements)`` triple applied in order
 inside one transaction, with ``PRAGMA user_version`` acting as the bookkeeping.
 Migrations are append-only: never edit a released one, add a new one instead.
-That keeps upgrades of an installed add-on lossless.
+That keeps upgrades of an installed app lossless.
 """
 
 from __future__ import annotations

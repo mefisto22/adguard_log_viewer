@@ -257,7 +257,7 @@ def _load_json(path: Path) -> dict[str, Any]:
 
 
 def load_builtin_ruleset(path: Path | None = None) -> Ruleset:
-    """Load the rule set shipped with the add-on.
+    """Load the rule set shipped with the app.
 
     The file is bundled in the image; nothing is downloaded at runtime.
     """

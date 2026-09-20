@@ -1,6 +1,6 @@
 ---
 name: AdGuard Log Viewer
-version: "0.2.0"
+version: "0.2.1"
 slug: adguard_log_viewer
 description: >-
   Search, filter and analyse the AdGuard Home DNS query log — per device, per
@@ -30,12 +30,12 @@ ports:
   8099/tcp: null
 ports_description:
   8099/tcp: >-
-    Direct web access (not required — the add-on is reachable through the Home
+    Direct web access (not required — the app is reachable through the Home
     Assistant sidebar). Anything reachable on this port is NOT protected by
     Home Assistant authentication.
 
 # `default` is the least privileged role that still allows GET /addons/<slug>/info,
-# which is how the AdGuard add-on's address and port are discovered at runtime.
+# which is how the AdGuard app's address and port are discovered at runtime.
 hassio_api: true
 hassio_role: default
 
@@ -55,9 +55,9 @@ options:
   log_level: info
 
 schema:
-  # Leave empty to discover the AdGuard Home add-on through the Supervisor.
+  # Leave empty to discover the AdGuard Home app through the Supervisor.
   adguard_url: str?
-  # A Home Assistant user's credentials, unless the AdGuard add-on has
+  # A Home Assistant user's credentials, unless the AdGuard app has
   # `leave_front_door_open` turned on. See DOCS.md.
   adguard_username: str?
   adguard_password: password?

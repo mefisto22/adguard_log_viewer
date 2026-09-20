@@ -22,7 +22,7 @@ RUN pip install --no-cache-dir --only-binary :all: -r requirements.txt
 COPY app ./app
 
 # `with-contenv` is what puts the container environment back. s6-overlay hands
-# the process it launches a bare environment — without this the add-on never
+# the process it launches a bare environment — without this the app never
 # sees SUPERVISOR_TOKEN (so it cannot ask the Supervisor where AdGuard is) or
 # TZ (so every timestamp is UTC). Everything else comes from /data/options.json,
 # which app.config reads directly, so no shell wrapper is needed beyond this.
@@ -37,11 +37,14 @@ ARG BUILD_REF
 ARG BUILD_REPOSITORY
 ARG BUILD_VERSION
 
+# `io.hass.type` is "app" because Home Assistant renamed add-ons to apps and its
+# own documentation now writes the label that way. The Supervisor never reads
+# it, so the value cannot affect an install either way.
 LABEL \
     io.hass.name="${BUILD_NAME}" \
     io.hass.description="${BUILD_DESCRIPTION}" \
     io.hass.arch="${BUILD_ARCH}" \
-    io.hass.type="addon" \
+    io.hass.type="app" \
     io.hass.version="${BUILD_VERSION}" \
     org.opencontainers.image.title="${BUILD_NAME}" \
     org.opencontainers.image.description="${BUILD_DESCRIPTION}" \

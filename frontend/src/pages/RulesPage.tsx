@@ -2,7 +2,7 @@
  * Tags, categories and the rules that apply them automatically.
  *
  * A rule is a name, a match mode, a list of conditions and the tags to apply.
- * The built-in set ships with the add-on and is read-only; anything the user
+ * The built-in set ships with the app and is read-only; anything the user
  * adds sits alongside it and wins at equal priority.
  */
 

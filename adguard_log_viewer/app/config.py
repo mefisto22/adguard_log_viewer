@@ -3,12 +3,12 @@
 Four layers, in order of precedence:
 
 1. **environment variables** — used for development and for overriding a single
-   value without touching the add-on options;
+   value without touching the app options;
 2. **the s6-overlay container environment** (``/run/s6/container_environment``),
    because s6 hands the process it launches a bare environment and keeps the
    real one there;
-3. **the add-on options file** (``/data/options.json``), which Home Assistant
-   writes from the add-on's Configuration tab;
+3. **the app options file** (``/data/options.json``), which Home Assistant
+   writes from the app's Configuration tab;
 4. **built-in defaults**.
 
 Reading ``options.json`` here rather than through a ``bashio`` shell wrapper
@@ -27,22 +27,22 @@ from typing import Any
 
 _LOGGER = logging.getLogger(__name__)
 
-#: Gateway of the ``hassio`` docker bridge network. Add-ons reach the host — and
-#: therefore every ``host_network: true`` add-on such as AdGuard Home — here.
+#: Gateway of the ``hassio`` docker bridge network. Apps reach the host — and
+#: therefore every ``host_network: true`` app such as AdGuard Home — here.
 HASSIO_HOST_GATEWAY = "172.30.32.1"
 
-#: Base URL of the Supervisor REST API as seen from inside an add-on.
+#: Base URL of the Supervisor REST API as seen from inside an app.
 SUPERVISOR_API = "http://supervisor"
 
-#: Where Home Assistant writes the add-on options.
+#: Where Home Assistant writes the app options.
 DEFAULT_OPTIONS_FILE = "/data/options.json"
 
 #: s6-overlay — which the Home Assistant base images use as their init — does
 #: not pass the container environment to the process it launches. It stashes it
 #: here instead, and expects programs to be started through ``with-contenv``.
 #: The Dockerfile does exactly that, but reading the directory as well means the
-#: add-on still sees SUPERVISOR_TOKEN and TZ if it is ever started another way.
-#: Missing this cost the add-on its Supervisor token entirely: auto-discovery
+#: app still sees SUPERVISOR_TOKEN and TZ if it is ever started another way.
+#: Missing this cost the app its Supervisor token entirely: auto-discovery
 #: could never reach the Supervisor, and every timestamp fell back to UTC.
 DEFAULT_S6_ENVIRONMENT_DIR = "/run/s6/container_environment"
 
@@ -50,7 +50,7 @@ _options_cache: dict[str, Any] | None = None
 
 
 def load_options(path: str | Path | None = None) -> dict[str, Any]:
-    """Read the add-on options file. Missing or broken files yield ``{}``."""
+    """Read the app options file. Missing or broken files yield ``{}``."""
     global _options_cache
     if path is None and _options_cache is not None:
         return _options_cache
@@ -65,7 +65,7 @@ def load_options(path: str | Path | None = None) -> dict[str, Any]:
     except FileNotFoundError:
         pass
     except (OSError, ValueError) as err:
-        _LOGGER.warning("Could not read the add-on options at %s: %s", target, err)
+        _LOGGER.warning("Could not read the app options at %s: %s", target, err)
 
     if path is None:
         _options_cache = options

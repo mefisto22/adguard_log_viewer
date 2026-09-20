@@ -120,7 +120,7 @@ class TestMessage:
             "'{name}' ({version}): {explanation}",
             name="AdGuard Home",
             version=inner,
-            explanation=Message("the Supervisor reported no port mapping for this add-on"),
+            explanation=Message("the Supervisor reported no port mapping for this app"),
         )
         assert "unknown version" in outer
         localized = outer.localized("hu")

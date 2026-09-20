@@ -13,7 +13,7 @@ node_modules/
 
 # Local data. These patterns are root-anchored on purpose: an unanchored
 # `data/` would also swallow app/categorization/data/, which holds the
-# built-in rule set the add-on ships with.
+# built-in rule set the app ships with.
 /data/
 /dev-data/
 /adguard_log_viewer/data/

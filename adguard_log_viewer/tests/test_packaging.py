@@ -1,7 +1,7 @@
-"""The add-on ships correctly.
+"""The app ships correctly.
 
 These tests guard the things that are invisible until Home Assistant refuses to
-show the add-on, or until the container starts with a feature silently missing.
+show the app, or until the container starts with a feature silently missing.
 Both failure modes have happened:
 
 * ``.gitignore`` had an unanchored ``data/`` rule, which quietly excluded
@@ -9,7 +9,7 @@ Both failure modes have happened:
   against the working tree and every categorisation test failed in CI;
 * ``config.yaml`` carried ``image: null``, which fails the Supervisor's
   ``docker_image`` validator ("expected a non-empty string"). A rejected
-  ``config.yaml`` means the add-on never appears in the store at all.
+  ``config.yaml`` means the app never appears in the store at all.
 """
 
 from __future__ import annotations
@@ -54,7 +54,7 @@ def config() -> dict:
 
 class TestBuiltinRuleSet:
     def test_the_file_is_present_and_parses(self) -> None:
-        assert BUILTIN_PATH.is_file(), f"{BUILTIN_PATH} is missing from the add-on"
+        assert BUILTIN_PATH.is_file(), f"{BUILTIN_PATH} is missing from the app"
         with BUILTIN_PATH.open(encoding="utf-8") as handle:
             payload = json.load(handle)
         assert payload["rules"]
@@ -130,7 +130,7 @@ class TestAddonConfig:
             assert config.get(key), f"config.yaml is missing '{key}'"
 
     def test_the_slug_matches_the_directory(self, config: dict) -> None:
-        # The Supervisor keys the add-on's data directory off the slug.
+        # The Supervisor keys the app's data directory off the slug.
         assert config["slug"] == ADDON_ROOT.name
 
     def test_architectures_are_ones_the_supervisor_accepts(self, config: dict) -> None:
@@ -141,9 +141,9 @@ class TestAddonConfig:
     def test_no_empty_valued_keys_that_fail_validation(self, config: dict, key: str) -> None:
         """``image: null`` fails ``docker_image`` and invalidates the whole file.
 
-        A rejected config.yaml makes the add-on invisible in the store, with
+        A rejected config.yaml makes the app invisible in the store, with
         nothing in the UI to say why. Omitting the key means "build locally",
-        which is what this add-on wants.
+        which is what this app wants.
         """
         if key in config:
             assert config[key], f"'{key}' is present but empty — omit it instead"
@@ -202,7 +202,7 @@ class TestDockerfile:
 
         The Home Assistant base images use s6 as their init, and it keeps the
         real container environment in /run/s6/container_environment rather than
-        passing it on. Without `with-contenv` the add-on never sees
+        passing it on. Without `with-contenv` the app never sees
         SUPERVISOR_TOKEN — so it cannot ask the Supervisor where AdGuard Home
         is — and never sees TZ, so every timestamp is UTC.
         """
@@ -262,7 +262,7 @@ class TestRepository:
 
 
 class TestOptionTranslations:
-    """Home Assistant renders the add-on's Configuration tab from these.
+    """Home Assistant renders the app's Configuration tab from these.
 
     The Supervisor picks the file matching the user's own language, so a missing
     entry shows the raw option key — ``adguard_url`` instead of a label and an

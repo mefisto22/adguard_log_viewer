@@ -3,8 +3,8 @@ configuration:
   adguard_url:
     name: AdGuard Home URL
     description: >-
-      The address you use to open AdGuard Home. Leave it empty and the add-on
-      asks the Supervisor for it — that works when the AdGuard Home add-on
+      The address you use to open AdGuard Home. Leave it empty and the app
+      asks the Supervisor for it — that works when the AdGuard Home app
       publishes a host port for its web interface (80/tcp). If it does not, or
       AdGuard runs elsewhere, put the address here; that is a normal setup, not
       a workaround. A bare port such as 9000 is understood and means that port
@@ -13,7 +13,7 @@ configuration:
   adguard_username:
     name: Username
     description: >-
-      A Home Assistant user name. The AdGuard Home add-on protects its web port
+      A Home Assistant user name. The AdGuard Home app protects its web port
       with Home Assistant login, so these are Home Assistant credentials — not
       AdGuard's own, unless you turned on "leave_front_door_open" there.
   adguard_password:
@@ -23,11 +23,11 @@ configuration:
     name: Verify the TLS certificate
     description: >-
       Turn on only when AdGuard Home is reached over HTTPS with a certificate
-      this add-on can validate. Local traffic normally uses plain HTTP.
+      this app can validate. Local traffic normally uses plain HTTP.
   adguard_slug:
-    name: AdGuard add-on slug
+    name: AdGuard app slug
     description: >-
-      Only needed if automatic discovery picks the wrong add-on, for example
+      Only needed if automatic discovery picks the wrong app, for example
       a0d7b954_adguard.
   provider:
     name: Query log source
@@ -37,8 +37,8 @@ configuration:
   querylog_path:
     name: Query log file
     description: >-
-      Only used by the file source. On Home Assistant OS an add-on cannot read
-      another add-on's data directory, so leave this empty there.
+      Only used by the file source. On Home Assistant OS an app cannot read
+      another app's data directory, so leave this empty there.
   poll_interval:
     name: Poll interval (seconds)
     description: How often new DNS queries are fetched from AdGuard Home.
@@ -52,16 +52,16 @@ configuration:
       imported by the following polls.
   ingest_enabled:
     name: Import new queries
-    description: Turn off to stop importing without stopping the add-on.
+    description: Turn off to stop importing without stopping the app.
   retention_days:
     name: Keep history for (days)
     description: Older queries are deleted automatically. 0 keeps everything.
   log_level:
     name: Log level
     description: >-
-      The add-on never writes queried domain names to its own log above debug
+      The app never writes queried domain names to its own log above debug
       level.
 network:
   8099/tcp: >-
-    Direct web access. Not needed: the add-on opens from the Home Assistant
+    Direct web access. Not needed: the app opens from the Home Assistant
     sidebar. A port published here is NOT protected by Home Assistant login.

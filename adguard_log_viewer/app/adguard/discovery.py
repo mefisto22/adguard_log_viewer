@@ -1,4 +1,4 @@
-"""Locate the AdGuard Home add-on at runtime.
+"""Locate the AdGuard Home app at runtime.
 
 Nothing about AdGuard's installation is hardcoded into the rest of the
 application. The slug, the IP address and the port are all resolved through the
@@ -7,7 +7,7 @@ reinstall, or an install from a different repository.
 
 Resolution order (see ARCHITECTURE.md §3):
 
-1. an explicit ``adguard_url`` from the add-on options;
+1. an explicit ``adguard_url`` from the app options;
 2. ``GET /discovery`` — AdGuard announces itself, which gives us its slug;
 3. ``GET /addons/<slug>/info`` — gives ``ip_address`` and the published ports;
 4. the same info call against a small list of well-known slugs;
@@ -31,7 +31,7 @@ from app.i18n import Message, localize_all
 
 _LOGGER = logging.getLogger(__name__)
 
-#: Discovery service name announced by the AdGuard Home add-on.
+#: Discovery service name announced by the AdGuard Home app.
 DISCOVERY_SERVICE = "adguard"
 
 #: Fallback slugs, tried only when discovery returns nothing. Not authoritative:
@@ -43,7 +43,7 @@ CANDIDATE_SLUGS: tuple[str, ...] = (
     "local_adguard",
 )
 
-#: The container port the AdGuard add-on's "direct" web interface listens on.
+#: The container port the AdGuard app's "direct" web interface listens on.
 #: The *host* port it is published on is whatever the user chose, and that is
 #: what we are actually after — there is no sensible default for it, so nothing
 #: here ever guesses one.
@@ -164,13 +164,13 @@ def normalize_url(value: str) -> str:
 def _web_port(info: dict[str, Any]) -> tuple[int | None, str]:
     """The host port AdGuard's web interface is published on.
 
-    Returns ``(port, explanation)``. The AdGuard add-on declares the interface
+    Returns ``(port, explanation)``. The AdGuard app declares the interface
     on container port 80, but a fork or a different repository may not, so any
     single published TCP port that is not a DNS port is accepted as a fallback.
     """
     network = info.get("network")
     if not isinstance(network, dict):
-        return None, Message("the Supervisor reported no port mapping for this add-on")
+        return None, Message("the Supervisor reported no port mapping for this app")
 
     value = network.get(WEB_CONTAINER_PORT)
     if isinstance(value, int) and value > 0:
@@ -210,9 +210,9 @@ def _web_port(info: dict[str, Any]) -> tuple[int | None, str]:
 
 
 def _addon_host(info: dict[str, Any]) -> str:
-    """Address at which this add-on can reach the AdGuard add-on.
+    """Address at which this app can reach the AdGuard app.
 
-    A ``host_network: true`` add-on — which AdGuard Home is — has no address of
+    A ``host_network: true`` app — which AdGuard Home is — has no address of
     its own on the hassio bridge; the Supervisor reports the bridge gateway
     instead, and that is exactly where its host ports are reachable.
     """
@@ -254,10 +254,10 @@ def _build_from_info(info: dict[str, Any], source: str, steps: list[str]) -> Dis
         result.confident = False
         result.warnings.append(
             Message(
-                "The '{name}' add-on does not publish its web interface port, so its "
-                "address cannot be worked out: {explanation}. Either open that add-on's "
+                "The '{name}' app does not publish its web interface port, so its "
+                "address cannot be worked out: {explanation}. Either open that app's "
                 "Configuration page and assign a host port to {container_port} under "
-                "Network, or set this add-on's 'AdGuard Home URL' option to the address "
+                "Network, or set this app's 'AdGuard Home URL' option to the address "
                 "you already use.",
                 name=name or slug,
                 explanation=explanation,
@@ -270,7 +270,7 @@ def _build_from_info(info: dict[str, Any], source: str, steps: list[str]) -> Dis
         result.confident = False
         result.warnings.append(
             Message(
-                "The '{name}' add-on is not running (state: {state}).",
+                "The '{name}' app is not running (state: {state}).",
                 name=name or slug,
                 state=state,
             )
@@ -295,12 +295,12 @@ async def discover_adguard(
 
     if configured_url:
         url = normalize_url(configured_url)
-        steps.append(Message("Using the address from the add-on options: {url}", url=url))
+        steps.append(Message("Using the address from the app options: {url}", url=url))
         return DiscoveredAdGuard(url=url, source="configuration", steps=steps)
 
     supervisor = SupervisorClient(supervisor_token)
     if not supervisor.available:
-        steps.append(Message("No Supervisor token, so the AdGuard add-on cannot be looked up."))
+        steps.append(Message("No Supervisor token, so the AdGuard app cannot be looked up."))
         return DiscoveredAdGuard(
             url=None,
             source="unavailable",
@@ -308,8 +308,8 @@ async def discover_adguard(
             steps=steps,
             warnings=[
                 Message(
-                    "This add-on has no Supervisor token, so it cannot look the AdGuard "
-                    "add-on up. Set the 'AdGuard Home URL' option explicitly."
+                    "This app has no Supervisor token, so it cannot look the AdGuard "
+                    "app up. Set the 'AdGuard Home URL' option explicitly."
                 )
             ],
         )
@@ -317,7 +317,7 @@ async def discover_adguard(
     slugs: list[str] = []
     if configured_slug:
         slugs.append(configured_slug)
-        steps.append(Message("Add-on slug from the options: {slug}", slug=configured_slug))
+        steps.append(Message("App slug from the options: {slug}", slug=configured_slug))
 
     services = await supervisor.discovery()
     for service in services:
@@ -345,12 +345,12 @@ async def discover_adguard(
         source = "supervisor-discovery" if slug in announced else "supervisor-slug-probe"
         if probed:
             steps.append(
-                Message("No add-on installed under: {slugs}", slugs=", ".join(probed))
+                Message("No app installed under: {slugs}", slugs=", ".join(probed))
             )
             probed.clear()
         result = _build_from_info(info, source, steps)
         _LOGGER.info(
-            "AdGuard Home add-on '%s' (%s): %s",
+            "AdGuard Home app '%s' (%s): %s",
             result.addon_name or slug,
             result.version or "unknown version",
             result.url or "address could not be determined",
@@ -360,7 +360,7 @@ async def discover_adguard(
         return result
 
     if probed:
-        steps.append(Message("No add-on installed under: {slugs}", slugs=", ".join(probed)))
+        steps.append(Message("No app installed under: {slugs}", slugs=", ".join(probed)))
     return DiscoveredAdGuard(
         url=None,
         source="not-found",
@@ -368,7 +368,7 @@ async def discover_adguard(
         steps=steps,
         warnings=[
             Message(
-                "No AdGuard Home add-on was found through the Supervisor. Set the "
+                "No AdGuard Home app was found through the Supervisor. Set the "
                 "'AdGuard Home URL' option to the address you use to open AdGuard."
             )
         ],

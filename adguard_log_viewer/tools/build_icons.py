@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Generate the add-on's ``icon.png`` and ``logo.png``.
+"""Generate the app's ``icon.png`` and ``logo.png``.
 
-Home Assistant shows ``icon.png`` (square, 128x128) in the add-on list and the
-sidebar, and ``logo.png`` (wide, 250x100) on the add-on page. Both are drawn
+Home Assistant shows ``icon.png`` (square, 128x128) in the app list and the
+sidebar, and ``logo.png`` (wide, 250x100) on the app page. Both are drawn
 here from a few shapes rather than checked in as opaque binaries, so the mark can
 be tweaked without a design tool:
 

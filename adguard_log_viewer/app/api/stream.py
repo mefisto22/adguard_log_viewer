@@ -5,8 +5,8 @@ browser reacts by fetching the delta through the normal filtered query API, so
 the full query log is never streamed and the client stays in charge of what it
 asks for.
 
-Home Assistant's ingress buffers responses unless the add-on sets
-``ingress_stream: true``, which this add-on does.
+Home Assistant's ingress buffers responses unless the app sets
+``ingress_stream: true``, which this app does.
 """
 
 from __future__ import annotations

@@ -1,7 +1,7 @@
 """Query log provider that tails AdGuard's ``querylog.json`` directly.
 
-**Not the default on Home Assistant OS.** A Home Assistant add-on cannot mount
-another add-on's ``/data`` directory — see ARCHITECTURE.md §2 for the full
+**Not the default on Home Assistant OS.** A Home Assistant app cannot mount
+another app's ``/data`` directory — see ARCHITECTURE.md §2 for the full
 analysis. This provider exists for:
 
 * Home Assistant Supervised / Container / plain Docker, where the file can be
@@ -149,7 +149,7 @@ class AdGuardFileQueryLogProvider(QueryLogProvider):
                     source=str(self.path),
                     detail=Message(
                         "{path} does not exist inside this container. On Home "
-                        "Assistant OS an add-on cannot read another add-on's data "
+                        "Assistant OS an app cannot read another app's data "
                         "directory — use the AdGuard API provider instead.",
                         path=self.path,
                     ),
@@ -160,7 +160,7 @@ class AdGuardFileQueryLogProvider(QueryLogProvider):
                     available=False,
                     source=str(self.path),
                     detail=Message(
-                        "{path} exists but is not readable by this add-on.",
+                        "{path} exists but is not readable by this app.",
                         path=self.path,
                     ),
                 )

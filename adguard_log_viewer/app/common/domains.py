@@ -3,7 +3,7 @@
 ``registrable_domain`` approximates the public-suffix + 1 label rule with a
 bundled list of the multi-label suffixes that actually show up in home DNS
 traffic. A full Public Suffix List would mean a runtime download, which this
-add-on deliberately avoids (see ARCHITECTURE.md, security section). The result
+app deliberately avoids (see ARCHITECTURE.md, security section). The result
 is only used for grouping and display, never for a security decision.
 """
 

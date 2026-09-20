@@ -1,7 +1,7 @@
 """Query log provider backed by the AdGuard Home HTTP API.
 
-This is the default on Home Assistant OS, where an add-on cannot read another
-add-on's ``/data`` directory (ARCHITECTURE.md §2).
+This is the default on Home Assistant OS, where an app cannot read another
+app's ``/data`` directory (ARCHITECTURE.md §2).
 
 Paging strategy
 ---------------
@@ -159,9 +159,9 @@ class AdGuardApiQueryLogProvider(QueryLogProvider):
             hint = ""
             if err.is_auth_error:
                 hint = Message(
-                    " The AdGuard Home add-on protects its web port with Home Assistant "
+                    " The AdGuard Home app protects its web port with Home Assistant "
                     "login by default — set a Home Assistant username and password in "
-                    "this add-on's options."
+                    "this app's options."
                 )
             return ProviderStatus(
                 name=self.name,

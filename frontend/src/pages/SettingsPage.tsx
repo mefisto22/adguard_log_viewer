@@ -1,9 +1,9 @@
 /**
  * Settings and diagnostics.
  *
- * Connection details, the poll interval and the log level are add-on options —
+ * Connection details, the poll interval and the log level are app options —
  * Home Assistant owns them, so they are shown read-only with a pointer to where
- * they are changed. Everything else lives in the add-on's own database and is
+ * they are changed. Everything else lives in the app's own database and is
  * editable here.
  */
 

@@ -1,8 +1,8 @@
-# ARCHITECTURE — AdGuard Log Viewer (Home Assistant OS add-on)
+# ARCHITECTURE — AdGuard Log Viewer (Home Assistant OS alkalmazás)
 
 Ez a dokumentum rögzíti, hogyan férünk hozzá az AdGuard Home query loghoz
 **Home Assistant OS** alatt, és miért pont úgy. A döntések nem feltételezésen,
-hanem a Supervisor és a hivatalos AdGuard Home add-on **forráskódjának**
+hanem a Supervisor és a hivatalos AdGuard Home alkalmazás **forráskódjának**
 ellenőrzésén alapulnak (a hivatkozott fájlok a dokumentum végén).
 
 ---
@@ -15,9 +15,9 @@ A felvetett host oldali útvonal:
 /mnt/data/supervisor/apps/data/a0d7b954_adguard/adguard/data/querylog.json
 ```
 
-Ez az AdGuard Home add-on **saját `/data` könyvtára** a HA OS host filesystemén
-(a Supervisor minden add-on `/data`-ját itt tartja). A kérdés: elérheti-e ezt egy
-másik, saját add-on?
+Ez az AdGuard Home alkalmazás **saját `/data` könyvtára** a HA OS host filesystemén
+(a Supervisor minden alkalmazás `/data`-ját itt tartja). A kérdés: elérheti-e ezt egy
+másik, saját alkalmazás?
 
 **Rövid válasz: nem, támogatott módon nem.** Az alábbi táblázat a HA OS alatt
 ténylegesen létező összes hozzáférési utat végigveszi.
@@ -28,33 +28,33 @@ ténylegesen létező összes hozzáférési utat végigveszi.
 
 | # | Út | Működik HA OS alatt? | Indoklás |
 |---|----|----------------------|----------|
-| 1 | Közvetlen fájlolvasás az AdGuard `/data`-jából | ❌ **Nem** | A `config.yaml` `map:` kulcsa csak ezeket a típusokat ismeri: `homeassistant_config`, `addon_config`, `all_addon_configs`, `ssl`, `addons`, `backup`, `share`, `media`, `data`. Egyik sem az *idegen add-on* `/data` könyvtára. A `data` a **saját** perzisztens tárunk, az `all_addon_configs` pedig a `/addon_configs/<slug>` *config* mappákat adja — az AdGuard viszont a `/data/adguard/data/` alá ír, nem a config mappába. Nincs támogatott bind mount erre az útvonalra. |
-| 2 | Supervisor API fájlhozzáférés | ❌ **Nem** | A Supervisor REST API-ban nincs olyan végpont, amely egy add-on `/data`-jából fájlt adna vissza. |
-| 3 | Supervisor **ingress proxy** (`GET /ingress/{token}/...`) | ❌ **Nem** | A handler kötelezően érvényes `ingress_session` cookie-t vár, és a session létrehozása (`POST /ingress/session`) `@require_home_assistant` dekorátorral védett — **kizárólag a Home Assistant Core** hozhat létre ingress sessiont, add-on nem. |
-| 4 | Az AdGuard add-on **ingress nginx** portja közvetlenül | ❌ **Nem** | Az add-on `ingress.gtpl` sablonja `allow 172.30.32.2; deny all;` — csak a Supervisor IP-je engedélyezett. A mi add-onunk a `172.30.32.0/23` hálózat más címét kapja, így elutasításra kerül. |
-| 5 | Az AdGuard **HTTP API közvetlenül** (`45158`) | ❌ **Nem** | Az add-on `AdGuardHome`-ot `--host 127.0.0.1 --port 45158` paraméterrel indítja. A `host_network: true` miatt ez a **host loopbackje**, amely egy másik konténer network namespace-éből elvileg sem érhető el. |
-| 6 | Supervisor backup / partial snapshot + kicsomagolás | ⚠️ Technikailag lehetséges, de **elutasítva** | Teljes add-on backup készítése percenként nem közel valós idejű, nagy I/O terhelés, `hot`/`cold` backup mellékhatásokkal. Nem stabil alap egy log viewerhez. |
+| 1 | Közvetlen fájlolvasás az AdGuard `/data`-jából | ❌ **Nem** | A `config.yaml` `map:` kulcsa csak ezeket a típusokat ismeri: `homeassistant_config`, `addon_config`, `all_addon_configs`, `ssl`, `addons`, `backup`, `share`, `media`, `data`. Egyik sem az *idegen alkalmazás* `/data` könyvtára. A `data` a **saját** perzisztens tárunk, az `all_addon_configs` pedig a `/addon_configs/<slug>` *config* mappákat adja — az AdGuard viszont a `/data/adguard/data/` alá ír, nem a config mappába. Nincs támogatott bind mount erre az útvonalra. |
+| 2 | Supervisor API fájlhozzáférés | ❌ **Nem** | A Supervisor REST API-ban nincs olyan végpont, amely egy alkalmazás `/data`-jából fájlt adna vissza. |
+| 3 | Supervisor **ingress proxy** (`GET /ingress/{token}/...`) | ❌ **Nem** | A handler kötelezően érvényes `ingress_session` cookie-t vár, és a session létrehozása (`POST /ingress/session`) `@require_home_assistant` dekorátorral védett — **kizárólag a Home Assistant Core** hozhat létre ingress sessiont, alkalmazás nem. |
+| 4 | Az AdGuard alkalmazás **ingress nginx** portja közvetlenül | ❌ **Nem** | Az alkalmazás `ingress.gtpl` sablonja `allow 172.30.32.2; deny all;` — csak a Supervisor IP-je engedélyezett. A mi alkalmazásunk a `172.30.32.0/23` hálózat más címét kapja, így elutasításra kerül. |
+| 5 | Az AdGuard **HTTP API közvetlenül** (`45158`) | ❌ **Nem** | Az alkalmazás `AdGuardHome`-ot `--host 127.0.0.1 --port 45158` paraméterrel indítja. A `host_network: true` miatt ez a **host loopbackje**, amely egy másik konténer network namespace-éből elvileg sem érhető el. |
+| 6 | Supervisor backup / partial snapshot + kicsomagolás | ⚠️ Technikailag lehetséges, de **elutasítva** | Teljes alkalmazás backup készítése percenként nem közel valós idejű, nagy I/O terhelés, `hot`/`cold` backup mellékhatásokkal. Nem stabil alap egy log viewerhez. |
 | 7 | HA Core AdGuard **integráció** | ❌ **Nem** | Csak statisztikai szenzorokat (queries/blocked/…) ad, query log rekordokat nem. |
-| 8 | **AdGuard add-on „direct" webfelület portja + AdGuard HTTP API** | ✅ **Igen** | Ez az egyetlen támogatott, stabil út. Részletek alább. |
+| 8 | **AdGuard alkalmazás „direct" webfelület portja + AdGuard HTTP API** | ✅ **Igen** | Ez az egyetlen támogatott, stabil út. Részletek alább. |
 
 ### 2.1 A választott megoldás (8): AdGuard HTTP API a „direct" porton
 
-A hivatalos AdGuard Home add-on nginx-et futtat két server blokkal:
+A hivatalos AdGuard Home alkalmazás nginx-et futtat két server blokkal:
 
 * **ingress server** — csak a Supervisornak (`allow 172.30.32.2`),
 * **direct server** — *csak akkor jön létre*, ha a felhasználó hoszt portot rendel
-  a `80/tcp`-hez az AdGuard add-on „Network" beállításánál (alapból `null`).
+  a `80/tcp`-hez az AdGuard alkalmazás „Network" beállításánál (alapból `null`).
 
 A direct server az AdGuard teljes HTTP API-ját proxyzza (`proxy_pass ... backend`,
-ahol `backend = 127.0.0.1:45158`). Mivel az AdGuard add-on `host_network: true`,
-ez a port a **hoszton** nyílik meg, amit a mi add-onunk a hassio bridge gateway-én
+ahol `backend = 127.0.0.1:45158`). Mivel az AdGuard alkalmazás `host_network: true`,
+ez a port a **hoszton** nyílik meg, amit a mi alkalmazásunk a hassio bridge gateway-én
 (`172.30.32.1`) keresztül elér.
 
 **Hitelesítés.** A direct server alapértelmezésben `auth_request`-tel a Supervisor
 `/auth` végpontjához fordul, amely elfogadja a HTTP **Basic auth** fejlécet, és a
 **Home Assistant felhasználó** nevét/jelszavát ellenőrzi. Ezért:
 
-* ha az AdGuard add-on `leave_front_door_open: false` (alapértelmezés) →
+* ha az AdGuard alkalmazás `leave_front_door_open: false` (alapértelmezés) →
   a `username`/`password` egy **Home Assistant felhasználó** hitelesítő adata;
 * ha `leave_front_door_open: true` → az nginx nem kér HA auth-ot, és csak az
   AdGuard Home saját felhasználói (ha be vannak állítva) számítanak.
@@ -63,7 +63,7 @@ Mindkét eset ugyanaz a kódút: Basic auth opcionális felhasználónévvel/jel
 
 ### 2.2 Miért nem törik el AdGuard frissítéskor
 
-* Nem nyúlunk az AdGuard add-on fájljaihoz, konfigjához, konténeréhez.
+* Nem nyúlunk az AdGuard alkalmazás fájljaihoz, konfigjához, konténeréhez.
 * Csak az AdGuard Home **stabil, verziózott HTTP API-ját** használjuk
   (`GET /control/querylog`), nem a belső fájlformátumot.
 * A slug, IP és port **futásidőben, Supervisor API-ból derül ki** (lásd 3.),
@@ -71,9 +71,9 @@ Mindkét eset ugyanaz a kódút: Basic auth opcionális felhasználónévvel/jel
 
 ### 2.3 Amit a felhasználónak egyszer be kell állítania
 
-Az AdGuard Home add-on „Network" szekciójában a **Web interface (80/tcp)** porthoz
-kell egy hoszt port — bármelyik szabad. Ez a HA add-on UI-ból támogatott, dokumentált
-beállítás — nem hack, nem módosítja az add-on működését. A README `Telepítés`
+Az AdGuard Home alkalmazás „Network" szekciójában a **Web interface (80/tcp)** porthoz
+kell egy hoszt port — bármelyik szabad. Ez a Home Assistant saját felületéről támogatott,
+dokumentált beállítás — nem hack, nem módosítja az alkalmazás működését. A README `Telepítés`
 fejezete végigvezet rajta.
 
 ---
@@ -85,10 +85,10 @@ sorrendje (`adguard_log_viewer/app/adguard/discovery.py`):
 
 1. Ha a felhasználó megadott explicit `adguard_url`-t → azt használjuk.
 2. `GET http://supervisor/discovery` (Bearer `SUPERVISOR_TOKEN`) — az AdGuard
-   add-on `adguard` típusú discovery üzenetet küld, amiből megkapjuk a **slugját**.
+   alkalmazás `adguard` típusú discovery üzenetet küld, amiből megkapjuk a **slugját**.
    Ez a végpont a Supervisor `api_bypass` listáján van, tehát `hassio_role: default`
    mellett is elérhető.
-3. `GET http://supervisor/addons/<slug>/info` → `ip_address` (host_network add-on
+3. `GET http://supervisor/addons/<slug>/info` → `ip_address` (host_network alkalmazás
    esetén `172.30.32.1`) és `network` (pl. `{"53/udp": 53, "80/tcp": 9876}`), ahonnan a
    felhasználó által választott **hoszt** port derül ki.
 4. Ha a discovery nem ad találatot, végigpróbáljuk a jelöltek listáját
@@ -104,7 +104,7 @@ sorrendje (`adguard_log_viewer/app/adguard/discovery.py`):
 A `normalize_url` elfogadja a rövidítéseket is: egy önmagában álló port a
 hassio gateway adott portját jelenti (`9000` → `http://172.30.32.1:9000`).
 
-Így az add-on újratelepítés/átnevezés/frissítés után is megtalálja az AdGuardot.
+Így az alkalmazás újratelepítés/átnevezés/frissítés után is megtalálja az AdGuardot.
 
 ---
 
@@ -233,9 +233,9 @@ A szűrő egy **JSON AST**, amit a backend paraméterezett SQL-re fordít
 
 ---
 
-## 7.1 Miért az add-on könyvtárban van a backend
+## 7.1 Miért az alkalmazás könyvtárban van a backend
 
-A Supervisor az add-on **saját könyvtárát** használja Docker build kontextusként,
+A Supervisor az alkalmazás **saját könyvtárát** használja Docker build kontextusként,
 tehát a `Dockerfile` csak azon belülről tud másolni. Ezért az alkalmazás forrása
 az `adguard_log_viewer/` könyvtárban él, nem egy külön `backend/` mappában — így
 a repó közvetlenül telepíthető Home Assistantba, külön CI vagy registry nélkül.
@@ -251,12 +251,12 @@ install`-t futtatnia egy Raspberry Pi-n.
 
 * **Ingress**: `ingress: true`, `ingress_port: 8099`, `ingress_stream: true`.
   Az alkalmazás a HA oldalsávból nyílik, külön port publikálása nélkül.
-* **Perzisztens tár**: minden adat az add-on `/data` könyvtárában
+* **Perzisztens tár**: minden adat az alkalmazás `/data` könyvtárában
   (`/data/adguard_log_viewer.db`), így frissítés/újraindítás után megmarad,
   és a HA backup automatikusan viszi.
 * **Supervisor API**: `hassio_api: true`, `hassio_role: default` — a lehető
   legkisebb jogosultság, ami a felderítéshez kell.
-* **Konfiguráció**: add-on options (kapcsolat, poll interval, retention, timezone,
+* **Konfiguráció**: alkalmazás options (kapcsolat, poll interval, retention, timezone,
   batch méret) + alkalmazáson belüli Settings oldal (tagek, szabályok, aliasok,
   személyek). A jelszó `password` típusú a sémában, így a HA maszkolja és nem
   írja logba.
@@ -272,7 +272,7 @@ indított folyamatnak **üres környezetet** ad: a konténer valódi környezet�
 `/run/s6/container_environment/` könyvtárba menti, és `with-contenv`-vel kell
 visszaolvasni.
 
-Ez nem kozmetikai részlet: enélkül az add-on nem látja a `SUPERVISOR_TOKEN`-t,
+Ez nem kozmetikai részlet: enélkül az alkalmazás nem látja a `SUPERVISOR_TOKEN`-t,
 tehát **egyáltalán nem tudja megkérdezni a Supervisort**, hol fut az AdGuard —
 az automatikus felderítés csendben minden telepítésen elbukik. A `TZ` sem jut
 át, így minden időbélyeg UTC lesz.
@@ -289,7 +289,7 @@ könyvtárat — így a beállítás akkor is helyes, ha az image-et máshogy in
   analytics, nincs külső AI API, nincs CDN a frontendben (minden asset a
   buildbe fordul).
 * Hálózati kapcsolatot kizárólag két cél felé nyitunk:
-  a Supervisor (`http://supervisor`) és az AdGuard add-on lokális címe.
+  a Supervisor (`http://supervisor`) és az AdGuard alkalmazás lokális címe.
 * A beépített kategória-listák **a repóban, offline** vannak; nincs futásidejű
   letöltés. Opcionális külső lista importja kézi, explicit művelet.
 * Az alkalmazás saját logja alapértelmezésben **nem írja ki a lekérdezett
@@ -308,9 +308,9 @@ könyvtárat — így a beállítás akkor is helyes, ha az image-et máshogy in
 
 ## 10. Hivatkozott források (ellenőrizve)
 
-* HA add-on config referencia (`map`, `ingress`, `hassio_role`, sémák):
-  <https://developers.home-assistant.io/docs/add-ons/configuration/>
-* AdGuard Home add-on `config.yaml` (host_network, ingress, `80/tcp: null`,
+* HA alkalmazás config referencia (`map`, `ingress`, `hassio_role`, sémák):
+  <https://developers.home-assistant.io/docs/alkalmazások/configuration/>
+* AdGuard Home alkalmazás `config.yaml` (host_network, ingress, `80/tcp: null`,
   `backup_exclude: */adguard/data/querylog.*`):
   `hassio-addons/addon-adguard-home` → `adguard/config.yaml`
 * AdGuard indítási paraméterek (`--host 127.0.0.1 --port 45158`):

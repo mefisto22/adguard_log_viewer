@@ -10,7 +10,7 @@ export const en = {
   // -- application shell --------------------------------------------------
   'app.title': 'AdGuard Log Viewer',
   'app.starting': 'Starting…',
-  'app.backendUnreachable': 'The add-on backend could not be reached',
+  'app.backendUnreachable': 'The app backend could not be reached',
   'app.adguardUnreachable': 'AdGuard unreachable',
   'app.pageNotFound': 'Page not found',
   'app.backToDashboard': 'Back to the dashboard',
@@ -27,7 +27,7 @@ export const en = {
 
   // -- shared actions and states ------------------------------------------
   'app.loadFailed': 'Could not load the application',
-  'error.unreachable': 'The add-on could not be reached',
+  'error.unreachable': 'The app could not be reached',
   'error.http': 'Request failed with HTTP {status}',
   'common.save': 'Save',
   'common.cancel': 'Cancel',
@@ -346,7 +346,7 @@ export const en = {
   'rules.hide': 'Hide',
   'rules.colMatches': 'Matches',
   'rules.builtinIntro':
-    'The add-on ships with a rule set covering the common services — Google, Meta, streaming, advertising, telemetry, IoT vendors and more. It is bundled with the image; nothing is downloaded at runtime.',
+    'The app ships with a rule set covering the common services — Google, Meta, streaming, advertising, telemetry, IoT vendors and more. It is bundled with the image; nothing is downloaded at runtime.',
   'rules.pending':
     '{count} domain(s) are still tagged with an older rule set. They are re-classified in the background as ingest runs.',
   'rules.reclassifyNow': 'Re-classify now',
@@ -403,7 +403,7 @@ export const en = {
   'settings.language': 'Language',
   'settings.languageAuto': 'Follow Home Assistant',
   'settings.languageHint':
-    'Left to follow Home Assistant, this uses the language Home Assistant is showing you. Choose one here to override it for this add-on only.',
+    'Left to follow Home Assistant, this uses the language Home Assistant is showing you. Choose one here to override it for this app only.',
   'settings.theme': 'Theme',
   'settings.themeSystem': 'Follow the system',
   'settings.themeLight': 'Light',
@@ -419,7 +419,7 @@ export const en = {
   'settings.day': '1 day',
   'settings.unlimited': 'Unlimited',
   'settings.retentionHint':
-    'Overrides the add-on option. Older queries are removed automatically.',
+    'Overrides the app option. Older queries are removed automatically.',
   'settings.runCleanup': 'Run cleanup now',
   'settings.cleaning': 'Cleaning…',
   'settings.ingest': 'Ingest',
@@ -434,10 +434,10 @@ export const en = {
   'settings.unavailable': 'unavailable',
   'settings.address': 'Address',
   'settings.addressUnknown': 'could not be determined',
-  'settings.fromOptions': '(from the add-on options)',
+  'settings.fromOptions': '(from the app options)',
   'settings.foundAs': '(found as {slug})',
   'settings.howLookedUp': 'How it was looked up',
-  'settings.reportedPorts': 'Ports the Supervisor reports for that add-on: {ports}',
+  'settings.reportedPorts': 'Ports the Supervisor reports for that app: {ports}',
   'settings.portNotPublished': 'not published',
   'settings.lastPoll': 'Last poll',
   'settings.notYet': 'not yet',
@@ -461,9 +461,9 @@ export const en = {
   'settings.location': 'Location',
   'settings.schemaVersion': 'Schema version',
   'settings.schemaOf': '{current} of {target}',
-  'settings.addonOptions': 'Add-on options (read-only)',
+  'settings.addonOptions': 'App options (read-only)',
   'settings.addonOptionsIntro':
-    "These come from Home Assistant. Change them on the add-on's Configuration tab and restart the add-on.",
+    "These come from Home Assistant. Change them on the app's Configuration tab and restart the app.",
   'settings.about': 'About',
   'settings.version': 'Version',
   'settings.started': 'Started',

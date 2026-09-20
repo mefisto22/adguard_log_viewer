@@ -1,4 +1,4 @@
-"""Finding the AdGuard Home add-on, and saying so when it cannot be found.
+"""Finding the AdGuard Home app, and saying so when it cannot be found.
 
 The original version invented ``http://172.30.32.1:3000`` whenever the lookup
 came up short. AdGuard's *container* port is 80 and the *host* port is whatever
@@ -168,7 +168,7 @@ class TestSlugResolution:
         result = await discover()
         assert result.url is None
         assert result.source == "not-found"
-        assert "No AdGuard Home add-on was found" in result.warnings[0]
+        assert "No AdGuard Home app was found" in result.warnings[0]
 
 
 class TestConfiguredUrl:

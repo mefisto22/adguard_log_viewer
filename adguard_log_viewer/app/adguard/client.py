@@ -36,8 +36,8 @@ class AdGuardClient:
     """Async AdGuard Home API client.
 
     ``username``/``password`` are sent as HTTP Basic auth. Depending on the
-    AdGuard Home add-on configuration these are either Home Assistant
-    credentials (the add-on's nginx validates them against the Supervisor
+    AdGuard Home app configuration these are either Home Assistant
+    credentials (the app's nginx validates them against the Supervisor
     ``/auth`` endpoint) or AdGuard Home's own users. See ARCHITECTURE.md §2.1.
     """
 
@@ -102,7 +102,7 @@ class AdGuardClient:
         content_type = response.headers.get("content-type", "")
         if "json" not in content_type:
             # An HTML login page here means the request was intercepted by the
-            # add-on's nginx auth layer rather than answered by AdGuard.
+            # app's nginx auth layer rather than answered by AdGuard.
             raise AdGuardError(
                 Message(
                     "AdGuard Home returned {content_type} instead of JSON for {path}; "
@@ -202,7 +202,7 @@ def _short_body(response: httpx.Response) -> str:
     """A one-line hint about the body, never raw markup.
 
     AdGuard sits behind nginx, and an nginx error page is several lines of HTML
-    that used to be pasted straight into the add-on log. The page title carries
+    that used to be pasted straight into the app log. The page title carries
     the whole message.
     """
     try:

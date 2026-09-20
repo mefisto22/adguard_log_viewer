@@ -2,15 +2,15 @@
 
 Two layers, kept deliberately distinct:
 
-* **Add-on options** (connection details, poll interval, log level, timezone)
+* **App options** (connection details, poll interval, log level, timezone)
   are owned by Home Assistant. They arrive as environment variables and are
   read-only here — the Settings page shows them and says where to change them.
 * **Application settings** (UI preferences, a retention override, whether ingest
   runs) live in the database and can be changed from the Settings page while the
-  add-on is running.
+  app is running.
 
 Where both can express the same thing — retention — the stored override wins
-when it is set, and the add-on option is the default. That is the only overlap,
+when it is set, and the app option is the default. That is the only overlap,
 and it is spelled out in the API response.
 """
 
@@ -48,7 +48,7 @@ DEFAULTS: dict[str, Any] = {
 }
 
 #: ``auto`` follows the language Home Assistant is showing the user; the rest
-#: override it for this add-on alone.
+#: override it for this app alone.
 LANGUAGES = ("auto", "en", "hu")
 
 THEMES = ("system", "light", "dark")

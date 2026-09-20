@@ -6,7 +6,7 @@ into the JSON the engine loads. Run after editing:
 
     python tools/build_builtin_rules.py
 
-Everything is bundled with the add-on — no list is ever downloaded at runtime.
+Everything is bundled with the app — no list is ever downloaded at runtime.
 """
 
 from __future__ import annotations
@@ -446,7 +446,7 @@ def build() -> dict[str, object]:
 
     return {
         "version": 1,
-        "description": "Built-in domain categorisation rules bundled with the add-on.",
+        "description": "Built-in domain categorisation rules bundled with the app.",
         "tags": tags,
         "rules": rules,
     }

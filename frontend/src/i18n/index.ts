@@ -1,7 +1,7 @@
 /**
  * Translation, and working out which language to use.
  *
- * The add-on is shown inside an iframe in the Home Assistant frontend, served
+ * The app is shown inside an iframe in the Home Assistant frontend, served
  * from the same origin as Home Assistant itself. That means the parent
  * document is readable, and its ``lang`` attribute is exactly the language
  * Home Assistant is rendering for this user — including a per-user choice made

@@ -1,5 +1,40 @@
 # Changelog
 
+## 0.2.1
+
+**"Add-on" is now "app".** *(Magyarul lentebb.)*
+
+Home Assistant renamed add-ons to apps, so the wording here follows: the
+interface, both READMEs, the documentation, the option descriptions and the
+messages the backend produces all say "app" now — "alkalmazás" in Hungarian.
+The documented menu paths follow suit: **Settings → Apps → Install app → ⋮ →
+Repositories**.
+
+Nothing that a machine reads changed, because Home Assistant did not rename any
+of it: the Supervisor still serves `/addons/<slug>/info`, `config.yaml` still
+takes `addon_config`, `all_addon_configs` and `hassio_role`, the CLI is still
+`ha addons`, and this app's slug is unchanged. Upgrading needs nothing from you.
+The one identifier that did move is the image label `io.hass.type`, now `app`
+as Home Assistant's own documentation writes it; the Supervisor never reads it.
+
+---
+
+**Az „add-on” mostantól „alkalmazás”.**
+
+A Home Assistant átnevezte az add-onokat alkalmazásra, így itt is ez a szóhasználat:
+a felület, mindkét README, a dokumentáció, az opciók leírásai és a backend üzenetei
+is alkalmazást írnak. A dokumentált menüutak is ehhez igazodnak:
+**Beállítások → Alkalmazások → Alkalmazás telepítése → ⋮ → Tárolók**.
+
+Amit gép olvas, abból semmi nem változott, mert a Home Assistant sem nevezte át:
+a Supervisor továbbra is a `/addons/<slug>/info` végpontot szolgálja ki, a
+`config.yaml` továbbra is `addon_config`, `all_addon_configs` és `hassio_role`
+kulcsokat vár, a parancssor továbbra is `ha addons`, és ennek az alkalmazásnak az
+azonosítója is ugyanaz maradt. A frissítés semmilyen teendőt nem igényel.
+Az egyetlen azonosító, ami tényleg változott, az `io.hass.type` image-címke,
+ami mostantól `app`, ahogy a Home Assistant dokumentációja is írja; ezt a
+Supervisor soha nem olvassa.
+
 ## 0.2.0
 
 **Hungarian and English, following Home Assistant.** *(Magyarul lentebb.)*
@@ -9,7 +44,7 @@
   `lang` attribute of the parent document is readable, and that reflects the
   language chosen in the user's profile rather than just the system default.
   Outside Home Assistant it falls back to the browser's language, then English.
-- The add-on's Configuration page was already translated through
+- The app's Configuration page was already translated through
   `translations/en.yaml` and `translations/hu.yaml`; a packaging test now keeps
   those files in step with the option schema, so a new option cannot ship with
   an untranslated label.
@@ -31,7 +66,7 @@
   ki, így a szülő dokumentum `lang` attribútuma olvasható, az pedig a
   felhasználó profiljában választott nyelvet tükrözi, nem csak a rendszerét.
   Home Assistanton kívül a böngésző nyelvére, majd az angolra esik vissza.
-- Az add-on Konfiguráció lapja eddig is fordítva volt a `translations/en.yaml`
+- Az alkalmazás Konfiguráció lapja eddig is fordítva volt a `translations/en.yaml`
   és `translations/hu.yaml` fájlokból; mostantól egy csomagolási teszt tartja
   szinkronban ezeket az opciósémával, így új opció nem kerülhet ki lefordítatlan
   felirattal.
@@ -51,7 +86,7 @@
 - A Home Assistant base image s6-overlay-t használ initként, és az s6 a
   konténer környezeti változóit **nem adja át** az általa indított
   folyamatnak — külön helyre teszi őket, és `with-contenv`-vel kell
-  visszakérni. Emiatt az add-on soha nem látta a `SUPERVISOR_TOKEN`-t, így nem
+  visszakérni. Emiatt az alkalmazás soha nem látta a `SUPERVISOR_TOKEN`-t, így nem
   tudta megkérdezni a Supervisortól, hol van az AdGuard; és nem látta a `TZ`-t
   sem, így minden időbélyeg UTC szerint jelent meg. A belépési pont mostantól
   `with-contenv`-en keresztül indul, az `app.config` pedig tartalékként
@@ -66,13 +101,13 @@ Az AdGuard felderítése.
 
 - **Nem találjuk ki a portot.** A `80/tcp` az AdGuard *konténer* oldali portja;
   a hoszt port a felhasználó választása, amire nincs értelmes alapérték.
-  Korábban, ha a felderítés nem járt sikerrel, az add-on a
+  Korábban, ha a felderítés nem járt sikerrel, az alkalmazás a
   `http://172.30.32.1:3000` címet találta ki — így minden hiba egy olyan portra
   mutatott, aminek semmi köze a beállításhoz. Mostantól ilyenkor azt mondja meg,
   mit nézett meg és mit talált.
 - A Settings oldal **How it was looked up** sora lépésről lépésre mutatja a
   felderítést, és kiírja, milyen portokat jelent a Supervisor az AdGuard
-  add-onra — így látszik, miért nem jött ki cím.
+  alkalmazásra — így látszik, miért nem jött ki cím.
 - Az **AdGuard Home URL** opció leírása átírva: a cím megadása ugyanolyan
   támogatott út, nem kerülőmegoldás. Egy önmagában álló port is elég
   (`9000` → a Home Assistant hoszt 9000-es portja), és `host:port`, illetve
@@ -117,7 +152,7 @@ Hibajavítások a felületen.
 Csomagolási és ingest javítások.
 
 - A `config.yaml` `image: null` kulcsa miatt a Supervisor elutasította a
-  konfigurációt, így az add-on meg sem jelent a Kiegészítőtárban. A kulcs
+  konfigurációt, így az alkalmazás meg sem jelent a telepíthető alkalmazások között. A kulcs
   törölve; helyben épül az image, ahogy eddig is szándékozott.
 - A `.gitignore` egy horgonyozatlan `data/` mintája kizárta a beépített
   kategorizáló szabálykészletet a repóból, így az image szabályok nélkül épült
@@ -133,7 +168,7 @@ Csomagolási és ingest javítások.
 First release.
 
 - Reads the AdGuard Home query log through its HTTP API, with the AdGuard
-  add-on's address and port discovered through the Supervisor at runtime.
+  alkalmazás's address and port discovered through the Supervisor at runtime.
 - Incremental ingest with deduplication, plus a bounded historic backfill.
 - SQLite storage with schema migrations, indexes and a per-minute activity
   rollup.

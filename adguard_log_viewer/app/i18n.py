@@ -27,8 +27,8 @@ from typing import Any
 
 DEFAULT_LANGUAGE = "en"
 
-#: Languages the add-on speaks. Keep in step with the frontend dictionaries and
-#: with ``translations/*.yaml``, which localise the add-on's own options page.
+#: Languages the app speaks. Keep in step with the frontend dictionaries and
+#: with ``translations/*.yaml``, which localise the app's own options page.
 LANGUAGES: tuple[str, ...] = ("en", "hu")
 
 _current_language: ContextVar[str] = ContextVar("language", default=DEFAULT_LANGUAGE)
@@ -98,7 +98,7 @@ class Message(LocalizedText):
     Built from a template and its parameters so the translation can put them in
     a different order::
 
-        Message("The '{name}' add-on is not running (state: {state}).",
+        Message("The '{name}' app is not running (state: {state}).",
                 name="AdGuard Home", state="stopped")
     """
 
@@ -299,20 +299,20 @@ CATALOG: dict[str, dict[str, str]] = {
         "{key} must be a list": "a(z) {key} csak lista lehet",
         "That name is already taken": "Ez a név már foglalt",
         "Not found": "Nem található",
-        # --- finding the AdGuard add-on --------------------------------------
-        "Using the address from the add-on options: {url}": (
-            "A bővítmény beállításaiban megadott cím használata: {url}"
+        # --- finding the AdGuard app --------------------------------------
+        "Using the address from the app options: {url}": (
+            "Az alkalmazás beállításaiban megadott cím használata: {url}"
         ),
-        "No Supervisor token, so the AdGuard add-on cannot be looked up.": (
-            "Nincs Supervisor token, így az AdGuard bővítmény nem kereshető meg."
+        "No Supervisor token, so the AdGuard app cannot be looked up.": (
+            "Nincs Supervisor token, így az AdGuard alkalmazás nem kereshető meg."
         ),
-        "This add-on has no Supervisor token, so it cannot look the AdGuard "
-        "add-on up. Set the 'AdGuard Home URL' option explicitly.": (
-            "Ennek a bővítménynek nincs Supervisor tokenje, így nem tudja megkeresni az "
-            "AdGuard bővítményt. Add meg kézzel az „AdGuard Home URL” beállítást."
+        "This app has no Supervisor token, so it cannot look the AdGuard "
+        "app up. Set the 'AdGuard Home URL' option explicitly.": (
+            "Ennek az alkalmazásnak nincs Supervisor tokenje, így nem tudja megkeresni az "
+            "AdGuard alkalmazást. Add meg kézzel az „AdGuard Home URL” beállítást."
         ),
-        "Add-on slug from the options: {slug}": (
-            "A beállításokban megadott bővítményazonosító: {slug}"
+        "App slug from the options: {slug}": (
+            "A beállításokban megadott alkalmazásazonosító: {slug}"
         ),
         "Supervisor discovery announced AdGuard as '{slug}'": (
             "A Supervisor felderítése {slug} néven jelentette az AdGuardot"
@@ -321,18 +321,18 @@ CATALOG: dict[str, dict[str, str]] = {
             "A Supervisor felderítése nem adott vissza semmit; ismert azonosítók "
             "próbálása következik."
         ),
-        "No add-on installed under: {slugs}": (
-            "Nincs telepített bővítmény ezekkel az azonosítókkal: {slugs}"
+        "No app installed under: {slugs}": (
+            "Nincs telepített alkalmazás ezekkel az azonosítókkal: {slugs}"
         ),
-        "No AdGuard Home add-on was found through the Supervisor. Set the "
+        "No AdGuard Home app was found through the Supervisor. Set the "
         "'AdGuard Home URL' option to the address you use to open AdGuard.": (
-            "A Supervisoron keresztül nem található AdGuard Home bővítmény. Állítsd be az "
+            "A Supervisoron keresztül nem található AdGuard Home alkalmazás. Állítsd be az "
             "„AdGuard Home URL” beállítást arra a címre, amelyen az AdGuardot eléred."
         ),
         "'{name}' ({version}): {explanation}": "„{name}” ({version}): {explanation}",
         "unknown version": "ismeretlen verzió",
-        "the Supervisor reported no port mapping for this add-on": (
-            "a Supervisor nem jelentett porthozzárendelést ehhez a bővítményhez"
+        "the Supervisor reported no port mapping for this app": (
+            "a Supervisor nem jelentett porthozzárendelést ehhez az alkalmazáshoz"
         ),
         "{container_port} is published on host port {port}": (
             "a(z) {container_port} a gazdagép {port} portján érhető el"
@@ -348,30 +348,30 @@ CATALOG: dict[str, dict[str, str]] = {
             "a(z) {container_port} porthoz nincs gazdagépport rendelve "
             "(a Supervisor ezt jelentette: {network})"
         ),
-        "The '{name}' add-on does not publish its web interface port, so its "
-        "address cannot be worked out: {explanation}. Either open that add-on's "
+        "The '{name}' app does not publish its web interface port, so its "
+        "address cannot be worked out: {explanation}. Either open that app's "
         "Configuration page and assign a host port to {container_port} under "
-        "Network, or set this add-on's 'AdGuard Home URL' option to the address "
+        "Network, or set this app's 'AdGuard Home URL' option to the address "
         "you already use.": (
-            "A(z) „{name}” bővítmény nem teszi közzé a webes felületének portját, így a "
-            "címe nem állapítható meg: {explanation}. Nyisd meg annak a bővítménynek a "
+            "A(z) „{name}” alkalmazás nem teszi közzé a webes felületének portját, így a "
+            "címe nem állapítható meg: {explanation}. Nyisd meg annak az alkalmazásnak a "
             "Konfiguráció lapját, és rendelj gazdagépportot a(z) {container_port} "
-            "porthoz a Network résznél, vagy add meg ennek a bővítménynek az „AdGuard "
+            "porthoz a Network résznél, vagy add meg ennek az alkalmazásnak az „AdGuard "
             "Home URL” beállításában azt a címet, amit amúgy is használsz."
         ),
-        "The '{name}' add-on is not running (state: {state}).": (
-            "A(z) „{name}” bővítmény nem fut (állapot: {state})."
+        "The '{name}' app is not running (state: {state}).": (
+            "A(z) „{name}” alkalmazás nem fut (állapot: {state})."
         ),
         # --- talking to AdGuard Home -----------------------------------------
         "The AdGuard Home address could not be worked out.": (
             "Az AdGuard Home címe nem volt megállapítható."
         ),
-        " The AdGuard Home add-on protects its web port with Home Assistant "
+        " The AdGuard Home app protects its web port with Home Assistant "
         "login by default — set a Home Assistant username and password in "
-        "this add-on's options.": (
-            " Az AdGuard Home bővítmény alapértelmezés szerint Home Assistant "
+        "this app's options.": (
+            " Az AdGuard Home alkalmazás alapértelmezés szerint Home Assistant "
             "bejelentkezéssel védi a webes portját — add meg a Home Assistant "
-            "felhasználónevet és jelszót ennek a bővítménynek a beállításai között."
+            "felhasználónevet és jelszót ennek az alkalmazásnak a beállításai között."
         ),
         "Cannot reach AdGuard Home at {url}: {error}": (
             "Az AdGuard Home nem érhető el itt: {url} — {error}"
@@ -406,14 +406,14 @@ CATALOG: dict[str, dict[str, str]] = {
         ),
         # --- the file provider -------------------------------------------------
         "{path} does not exist inside this container. On Home "
-        "Assistant OS an add-on cannot read another add-on's data "
+        "Assistant OS an app cannot read another app's data "
         "directory — use the AdGuard API provider instead.": (
             "A(z) {path} nem létezik ezen a konténeren belül. Home Assistant OS alatt "
-            "egy bővítmény nem olvashatja egy másik bővítmény adatkönyvtárát — használd "
+            "egy alkalmazás nem olvashatja egy másik alkalmazás adatkönyvtárát — használd "
             "helyette az AdGuard API forrást."
         ),
-        "{path} exists but is not readable by this add-on.": (
-            "A(z) {path} létezik, de ez a bővítmény nem tudja olvasni."
+        "{path} exists but is not readable by this app.": (
+            "A(z) {path} létezik, de ez az alkalmazás nem tudja olvasni."
         ),
         "Tailing {path}": "A(z) {path} követése",
     },

@@ -3,13 +3,13 @@
 **English** · [Magyar](#magyar)
 
 A DNS query log viewer and analyzer for [AdGuard Home][adguard], packaged as a
-**Home Assistant OS add-on**.
+**Home Assistant OS app**.
 
 Not a text log viewer: it makes DNS traffic searchable along devices, people,
 categories and your own tags, and stays fast across millions of records.
 
 The interface follows Home Assistant's language — Hungarian and English are both
-supported, in the add-on's configuration page and in the web interface alike.
+supported, in the app's configuration page and in the web interface alike.
 
 ---
 
@@ -83,9 +83,9 @@ supported, in the add-on's configuration page and in the web interface alike.
 
 ## Language
 
-The add-on speaks **English and Hungarian**, and follows Home Assistant:
+The app speaks **English and Hungarian**, and follows Home Assistant:
 
-* **The add-on's Configuration page.** Home Assistant renders it from
+* **The app's Configuration page.** Home Assistant renders it from
   `translations/en.yaml` and `translations/hu.yaml` and picks the file matching
   the user's own language — nothing to configure.
 * **The web interface.** Under ingress the page is served from the same origin as
@@ -115,7 +115,7 @@ The full reasoning — including the source-level verification of the Home
 Assistant OS limits — is in [`ARCHITECTURE.md`](ARCHITECTURE.md). In short:
 
 ```
-AdGuard Home add-on            this add-on
+AdGuard Home app               this app
 ┌─────────────────┐            ┌──────────────────────────────────────┐
 │ AdGuardHome     │            │ ingest loop                          │
 │  127.0.0.1:45158│◀──nginx────│   AdGuardApiQueryLogProvider  ──┐    │
@@ -149,12 +149,12 @@ The **host-side** location of the AdGuard query log under HA OS is:
 /mnt/data/supervisor/apps/data/a0d7b954_adguard/adguard/data/querylog.json
 ```
 
-**That path is not reachable from another add-on**, and there is no supported way
+**That path is not reachable from another app**, and there is no supported way
 around it:
 
 | Route | Works? | Why not |
 |---|---|---|
-| Reading the file directly | ❌ | The `map:` key only knows the `homeassistant_config`, `addon_config`, `all_addon_configs`, `ssl`, `addons`, `backup`, `share`, `media` and `data` types — none of them is another add-on's `/data`. |
+| Reading the file directly | ❌ | The `map:` key only knows the `homeassistant_config`, `addon_config`, `all_addon_configs`, `ssl`, `addons`, `backup`, `share`, `media` and `data` types — none of them is another app's `/data`. |
 | File access through the Supervisor API | ❌ | No such endpoint exists. |
 | The Supervisor ingress proxy | ❌ | It requires an `ingress_session` cookie that only HA Core can mint, because of `@require_home_assistant`. |
 | AdGuard's ingress nginx | ❌ | `allow 172.30.32.2; deny all;` — the Supervisor only. |
@@ -162,8 +162,8 @@ around it:
 | Backup / export, then unpack | ⚠️ | Technically possible, but nowhere near real time and heavy on I/O. Rejected. |
 | **AdGuard's "direct" web port + HTTP API** | ✅ | The one supported, stable route. |
 
-So the add-on uses **AdGuard Home's HTTP API**. The price is a one-time change on
-the AdGuard add-on: assign a host port to the *Web interface* port (`80/tcp`).
+So the app uses **AdGuard Home's HTTP API**. The price is a one-time change on
+the AdGuard app: assign a host port to the *Web interface* port (`80/tcp`).
 The steps are in section 2 of [`DOCS.md`](adguard_log_viewer/DOCS.md).
 
 The `file` provider stays for Supervised / Container / Docker setups and for
@@ -180,10 +180,10 @@ when the configured file cannot be read.
   + `network["80/tcp"]`. Both endpoints are reachable with the least privilege
   (`hassio_role: default`).
 * **No port is guessed.** `80/tcp` is AdGuard's container-side port; the host
-  port is the user's choice. When it cannot be resolved the add-on does not
+  port is the user's choice. When it cannot be resolved the app does not
   invent an address — the Settings page shows, step by step, what it looked at —
   and the `adguard_url` option accepts a bare port number.
-* The add-on **never modifies** the AdGuard add-on's files, configuration or
+* The app **never modifies** the AdGuard app's files, configuration or
   container, and uses only AdGuard's **versioned HTTP API**, not its internal
   file format, so an AdGuard update does not break it.
 * The data source sits behind the `QueryLogProvider` abstraction
@@ -194,11 +194,11 @@ when the configured file cannot be read.
 
 ## Installation
 
-1. **Settings → Add-ons → Add-on Store → ⋮ → Repositories** → add this
+1. **Settings → Apps → Install app → ⋮ → Repositories** → add this
    repository's URL.
-2. Install the **AdGuard Log Viewer** add-on.
+2. Install the **AdGuard Log Viewer** app.
 3. Do the [one-time AdGuard setup](adguard_log_viewer/DOCS.md#2-one-time-adguard-setup--skip-this-and-nothing-will-work).
-4. Enter a Home Assistant username and password on the add-on's
+4. Enter a Home Assistant username and password on the app's
    **Configuration** tab.
 5. Start it, and open it from the sidebar.
 
@@ -207,15 +207,15 @@ when the configured file cannot be read.
 The full option list is in [`DOCS.md`](adguard_log_viewer/DOCS.md#4-options).
 There are two levels:
 
-* **Add-on options** (connection, poll interval, retention, log level) — Home
+* **App options** (connection, poll interval, retention, log level) — Home
   Assistant owns these, and they need a restart.
-* **Application settings** (language, theme, density, default period, page size,
+* **Settings page** (language, theme, density, default period, page size,
   retention override, ingest on/off) — on the Settings page, effective
   immediately.
 
 Options are read straight from `/data/options.json` (`app/config.py`); there is
 no bashio shell layer. The order is: environment variable → the s6 container
-environment → add-on option → default.
+environment → app option → default.
 
 ---
 
@@ -308,8 +308,8 @@ that the compiled frontend is present.
 The packaging tests exist because two faults only showed up on install: an
 unanchored `data/` pattern in `.gitignore` excluded the built-in rule file from
 the repository (everything was green locally, 18 tests failed in CI), and an
-`image: null` key made `config.yaml` invalid, which kept the add-on from
-appearing in the Add-on Store at all.
+`image: null` key made `config.yaml` invalid, which kept the app from
+appearing in the app store at all.
 
 Benchmarking on synthetic data:
 
@@ -322,7 +322,7 @@ cd adguard_log_viewer
 
 ## Database
 
-SQLite in WAL mode, in the add-on's `/data` directory:
+SQLite in WAL mode, in the app's `/data` directory:
 `/data/adguard_log_viewer.db`.
 
 ```
@@ -345,7 +345,7 @@ rotation can duplicate anything.
 
 ## Backups
 
-The database sits in the add-on's `/data` directory, which **Home Assistant's
+The database sits in the app's `/data` directory, which **Home Assistant's
 backup takes automatically**. With a large database that noticeably grows the
 backup — lower `retention_days` if it does.
 
@@ -359,9 +359,9 @@ ha addons start adguard_log_viewer
 
 ## Upgrading
 
-The schema migrates automatically when the add-on is updated. Imported records,
+The schema migrates automatically when the app is updated. Imported records,
 device names, people, tags, rules and saved filters are all kept. Updating
-AdGuard Home does not affect the add-on, because only the versioned HTTP API is
+AdGuard Home does not affect the app, because only the versioned HTTP API is
 used.
 
 ---
@@ -371,7 +371,7 @@ used.
 ```
 .
 ├── ARCHITECTURE.md                 the architecture and the HA OS limits
-├── repository.yaml                 Home Assistant add-on repository descriptor
+├── repository.yaml                 Home Assistant app repository descriptor
 ├── .github/workflows/ci.yaml       lint, type check, tests, wheel and image build
 ├── frontend/                       React + TypeScript source (development only)
 │   └── src/
@@ -383,7 +383,7 @@ used.
 │       ├── hooks/                  data fetching, live updates over SSE
 │       ├── types/                  the backend API's types
 │       └── utils/                  formatting
-└── adguard_log_viewer/             the add-on (the Supervisor's build context)
+└── adguard_log_viewer/             the app (the Supervisor's build context)
     ├── config.yaml  build.yaml  Dockerfile  DOCS.md  translations/
     ├── tests/                      pytest tests
     ├── tools/                      benchmark, rule generator, wheel check
@@ -453,11 +453,11 @@ a large domain table. Rarely used, and a documented trade-off.
 * DNS history **never leaves the machine.** No telemetry, no external analytics,
   no cloud, no external AI API.
 * The only outbound connections are to the Supervisor (`http://supervisor`) and
-  to the AdGuard add-on's local address.
+  to the AdGuard app's local address.
 * Every frontend asset is compiled into the build — no CDN, no external fonts.
 * The category lists live in the repository, offline; nothing is downloaded at
   runtime.
-* Below `debug` level the add-on does not write queried domains to its own log.
+* Below `debug` level the app does not write queried domains to its own log.
 * Every filter value travels as a bound SQL parameter — the filter engine never
   interpolates a value into the query text.
 * Home Assistant handles the AdGuard password as a `password` field; the API only
@@ -477,13 +477,13 @@ MIT — see [`LICENSE`](LICENSE).
 [English](#adguard-log-viewer) · **Magyar**
 
 DNS query log böngésző és elemző az [AdGuard Home][adguard]-hoz, **Home Assistant
-OS add-onként**.
+OS alkalmazásként**.
 
 Nem egy szöveges log nézegető: a DNS forgalmat eszközök, személyek, kategóriák és
 saját címkék mentén teszi kereshetővé, több millió rekord mellett is.
 
 A felület a Home Assistant nyelvét követi — a magyar és az angol egyaránt
-támogatott, az add-on beállítási oldalán és a webes felületen is.
+támogatott, az alkalmazás beállítási oldalán és a webes felületen is.
 
 ---
 
@@ -557,9 +557,9 @@ támogatott, az add-on beállítási oldalán és a webes felületen is.
 
 ## Nyelv
 
-Az add-on **magyarul és angolul** tud, és a Home Assistantot követi:
+Az alkalmazás **magyarul és angolul** tud, és a Home Assistantot követi:
 
-* **Az add-on Konfiguráció lapja.** A Home Assistant a `translations/en.yaml` és
+* **Az alkalmazás Konfiguráció lapja.** A Home Assistant a `translations/en.yaml` és
   a `translations/hu.yaml` fájlból rajzolja ki, és a felhasználó nyelvéhez
   tartozót választja — nincs mit beállítani.
 * **A webes felület.** Ingress alatt az oldal ugyanarról az origin-ről szolgál ki,
@@ -590,7 +590,7 @@ A teljes indoklás — és a Home Assistant OS korlátainak forráskód-szintű
 ellenőrzése — az [`ARCHITECTURE.md`](ARCHITECTURE.md) fájlban van. Röviden:
 
 ```
-AdGuard Home add-on            saját add-on
+AdGuard Home alkalmazás        saját alkalmazás
 ┌─────────────────┐            ┌──────────────────────────────────────┐
 │ AdGuardHome     │            │ ingest loop                          │
 │  127.0.0.1:45158│◀──nginx────│   AdGuardApiQueryLogProvider  ──┐    │
@@ -624,12 +624,12 @@ Az AdGuard query log **host oldali** helye HA OS alatt:
 /mnt/data/supervisor/apps/data/a0d7b954_adguard/adguard/data/querylog.json
 ```
 
-**Ez az útvonal egy másik add-onból nem érhető el**, és nincs rá támogatott
+**Ez az útvonal egy másik alkalmazásból nem érhető el**, és nincs rá támogatott
 megkerülés:
 
 | Út | Működik? | Miért nem |
 |---|---|---|
-| Közvetlen fájlolvasás | ❌ | A `map:` kulcs csak `homeassistant_config`, `addon_config`, `all_addon_configs`, `ssl`, `addons`, `backup`, `share`, `media`, `data` típusokat ismer — egyik sem az idegen add-on `/data`-ja. |
+| Közvetlen fájlolvasás | ❌ | A `map:` kulcs csak `homeassistant_config`, `addon_config`, `all_addon_configs`, `ssl`, `addons`, `backup`, `share`, `media`, `data` típusokat ismer — egyik sem az idegen alkalmazás `/data`-ja. |
 | Supervisor API fájlhozzáférés | ❌ | Nincs ilyen végpont. |
 | Supervisor ingress proxy | ❌ | Kötelező `ingress_session` cookie, amit `@require_home_assistant` miatt csak a HA Core hozhat létre. |
 | AdGuard ingress nginx | ❌ | `allow 172.30.32.2; deny all;` — csak a Supervisor. |
@@ -637,8 +637,8 @@ megkerülés:
 | Backup/export + kicsomagolás | ⚠️ | Technikailag megy, de nem közel valós idejű és nagy I/O. Elutasítva. |
 | **AdGuard „direct" web port + HTTP API** | ✅ | Ez az egyetlen támogatott, stabil út. |
 
-Ezért az add-on **az AdGuard Home HTTP API-ját** használja. Cserébe egyszeri
-beállítás kell az AdGuard add-onon: a *Web interface* (`80/tcp`) porthoz rendelj
+Ezért az alkalmazás **az AdGuard Home HTTP API-ját** használja. Cserébe egyszeri
+beállítás kell az AdGuard alkalmazáson: a *Web interface* (`80/tcp`) porthoz rendelj
 egy hoszt portot. A lépések a [`DOCS.md`](adguard_log_viewer/DOCS.md) 2. pontjában.
 
 A `file` provider megmarad Supervised / Container / Docker környezetre és
@@ -655,10 +655,10 @@ fájl nem elérhető.
   `network["80/tcp"]`. Mindkét végpont elérhető a legkisebb jogosultsággal
   (`hassio_role: default`).
 * **Portot nem tippelünk.** A `80/tcp` az AdGuard konténer oldali portja; a
-  hoszt port a felhasználó választása. Ha nem derül ki, az add-on nem talál ki
+  hoszt port a felhasználó választása. Ha nem derül ki, az alkalmazás nem talál ki
   egy címet, hanem a Settings oldalon lépésről lépésre megmutatja, mit nézett
   meg — és az `adguard_url` opcióval egy önmagában álló port is megadható.
-* Az add-on **nem módosítja** az AdGuard add-on fájljait, konfigját vagy
+* Az alkalmazás **nem módosítja** az AdGuard alkalmazás fájljait, konfigját vagy
   konténerét, és csak az AdGuard **verziózott HTTP API-ját** használja, nem a
   belső fájlformátumot — így egy AdGuard frissítés nem töri el.
 * Az adatforrás a `QueryLogProvider` absztrakció mögött van
@@ -669,11 +669,11 @@ fájl nem elérhető.
 
 ## Telepítés
 
-1. **Beállítások → Kiegészítők → Kiegészítőtár → ⋮ → Tárolók** → add hozzá ennek
+1. **Beállítások → Alkalmazások → Alkalmazás telepítése → ⋮ → Tárolók** → add hozzá ennek
    a repónak az URL-jét.
-2. Telepítsd az **AdGuard Log Viewer** add-ont.
+2. Telepítsd az **AdGuard Log Viewer** alkalmazást.
 3. Végezd el az [AdGuard egyszeri beállítását](adguard_log_viewer/DOCS.md#2-egyszeri-adguard-beállítás--ezt-hagyd-ki-és-semmi-nem-fog-működni).
-4. Add meg a Home Assistant felhasználónevet és jelszót az add-on
+4. Add meg a Home Assistant felhasználónevet és jelszót az alkalmazás
    **Konfiguráció** fülén.
 5. Indítsd el, és nyisd meg az oldalsávból.
 
@@ -682,15 +682,15 @@ fájl nem elérhető.
 A teljes opciólista a [`DOCS.md`](adguard_log_viewer/DOCS.md#4-beállítások)-ban.
 Két szint van:
 
-* **Add-on options** (kapcsolat, poll interval, retention, log level) — ezeket a
+* **Alkalmazásbeállítások** (kapcsolat, poll interval, retention, log level) — ezeket a
   Home Assistant kezeli, újraindítást igényelnek.
-* **Alkalmazás beállítások** (nyelv, téma, sűrűség, alapértelmezett időszak,
+* **A Settings oldal beállításai** (nyelv, téma, sűrűség, alapértelmezett időszak,
   oldalméret, retention felülírás, importálás ki/be) — a Settings oldalon,
   azonnali hatállyal.
 
 Az opciók beolvasása közvetlenül a `/data/options.json`-ből történik
 (`app/config.py`), nincs bashio shell réteg. Sorrend: környezeti változó →
-s6 konténer környezet → add-on option → alapértelmezés.
+s6 konténer környezet → alkalmazásbeállítás → alapértelmezés.
 
 ---
 
@@ -784,7 +784,7 @@ A csomagolási tesztek azért vannak, mert két hiba csak telepítéskor derült
 egy horgonyozatlan `data/` minta a `.gitignore`-ban kizárta a beépített
 szabályfájlt a repóból (lokálisan minden zöld volt, CI-ben 18 teszt bukott),
 és egy `image: null` kulcs érvénytelenné tette a `config.yaml`-t, amitől az
-add-on meg sem jelent a Kiegészítőtárban.
+alkalmazás meg sem jelent a telepíthető alkalmazások között.
 
 Teljesítménymérés szintetikus adaton:
 
@@ -797,7 +797,7 @@ cd adguard_log_viewer
 
 ## Adatbázis
 
-SQLite, WAL módban, az add-on `/data` könyvtárában:
+SQLite, WAL módban, az alkalmazás `/data` könyvtárában:
 `/data/adguard_log_viewer.db`.
 
 ```
@@ -820,7 +820,7 @@ checkpoint csak optimalizáció; a helyességet az index garantálja, így
 
 ## Mentés
 
-Az adatbázis az add-on `/data` könyvtárában van, amit a **Home Assistant backup
+Az adatbázis az alkalmazás `/data` könyvtárában van, amit a **Home Assistant backup
 automatikusan visz**. Nagy adatbázisnál ez érezhetően növeli a mentés méretét —
 ilyenkor csökkentsd a `retention_days` értéket.
 
@@ -834,9 +834,9 @@ ha addons start adguard_log_viewer
 
 ## Frissítés
 
-Az add-on frissítésekor a séma automatikusan migrálódik. Az importált rekordok,
+Az alkalmazás frissítésekor a séma automatikusan migrálódik. Az importált rekordok,
 eszköznevek, személyek, címkék, szabályok és mentett szűrők megmaradnak. Az
-AdGuard Home frissítése nem érinti az add-ont, mert csak a verziózott HTTP API-t
+AdGuard Home frissítése nem érinti az alkalmazást, mert csak a verziózott HTTP API-t
 használjuk.
 
 ---
@@ -846,7 +846,7 @@ használjuk.
 ```
 .
 ├── ARCHITECTURE.md                 architektúra és a HA OS korlátok elemzése
-├── repository.yaml                 Home Assistant add-on repository leíró
+├── repository.yaml                 Home Assistant alkalmazástároló leírója
 ├── .github/workflows/ci.yaml       lint, típusellenőrzés, teszt, wheel- és image-build
 ├── frontend/                       React + TypeScript forrás (csak fejlesztéshez)
 │   └── src/
@@ -858,7 +858,7 @@ használjuk.
 │       ├── hooks/                  adatlekérés, SSE élő frissítés
 │       ├── types/                  a backend API típusai
 │       └── utils/                  formázás
-└── adguard_log_viewer/             az add-on (a Supervisor build kontextusa)
+└── adguard_log_viewer/             az alkalmazás (a Supervisor build kontextusa)
     ├── config.yaml  build.yaml  Dockerfile  DOCS.md  translations/
     ├── tests/                      pytest tesztek
     ├── tools/                      benchmark, szabálygenerátor, wheel ellenőrzés
@@ -928,10 +928,10 @@ domain-táblán ~0,4 s. Ritkán használt, dokumentált kompromisszum.
 * A DNS előzmény **nem hagyja el a gépet.** Nincs telemetria, nincs külső
   analytics, nincs felhő, nincs külső AI API.
 * Hálózati kapcsolat csak a Supervisor (`http://supervisor`) és az AdGuard
-  add-on lokális címe felé megy.
+  alkalmazás lokális címe felé megy.
 * A frontend minden asset-je a buildbe fordul — nincs CDN, nincs külső betűtípus.
 * A kategória-listák a repóban vannak, offline; futásidőben semmit nem tölt le.
-* Az add-on `debug` szint alatt nem írja a lekérdezett domaineket a saját logjába.
+* Az alkalmazás `debug` szint alatt nem írja a lekérdezett domaineket a saját logjába.
 * Minden szűrőérték kötött SQL paraméterként megy — a filter engine nem
   interpolál értéket a lekérdezés szövegébe.
 * Az AdGuard jelszót a Home Assistant `password` típusú mezőként kezeli; az API

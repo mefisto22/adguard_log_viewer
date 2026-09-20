@@ -5,7 +5,7 @@
  *
  * * **One stream.** Every page that wanted live updates used to open its own
  *   EventSource, so moving between the log and the dashboard left several
- *   connections open against the add-on.
+ *   connections open against the app.
  * * **Reference data that does not go stale.** Devices, people and tags were
  *   loaded once at startup and never again. On a fresh install the UI comes up
  *   before ingest has seen its first query, so the Device and Tag dropdowns

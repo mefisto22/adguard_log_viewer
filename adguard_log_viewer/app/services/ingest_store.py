@@ -3,7 +3,7 @@
 The batch is written in one transaction and does four things:
 
 1. resolves the batch's domains and clients to ids, inserting the new ones;
-2. skips records already present (checked by ``uid``, so restarting the add-on
+2. skips records already present (checked by ``uid``, so restarting the app
    or re-reading an overlapping API page never double-counts anything);
 3. inserts the queries;
 4. updates the aggregate counters and the per-minute activity rollup.

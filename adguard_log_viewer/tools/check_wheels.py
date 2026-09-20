@@ -4,7 +4,7 @@
 The Docker build uses ``pip install --only-binary :all:`` so that a missing
 wheel is a loud build failure rather than an attempt to compile Rust or C on a
 Raspberry Pi. This script asks pip the same question up front, for both
-architectures the add-on supports:
+architectures the app supports:
 
     python tools/check_wheels.py
 

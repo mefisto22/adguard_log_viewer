@@ -1,5 +1,5 @@
 # Runtime dependencies.
-# Pinned for reproducible multi-arch add-on builds. All of these ship
+# Pinned for reproducible multi-arch app builds. All of these ship
 # pure-python or musllinux (aarch64 + x86_64) wheels, so no compiler is
 # needed inside the Docker build.
 fastapi==0.141.1
