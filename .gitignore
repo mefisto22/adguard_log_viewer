@@ -26,6 +26,7 @@ node_modules/
 .DS_Store
 .idea/
 .vscode/
+.claude/
 
 # macOS/iCloud conflict copies ("file 2.txt"), which have shown up in
 # app/static before and must never reach the image.
