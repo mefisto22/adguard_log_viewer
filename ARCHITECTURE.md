@@ -309,7 +309,7 @@ könyvtárat — így a beállítás akkor is helyes, ha az image-et máshogy in
 ## 10. Hivatkozott források (ellenőrizve)
 
 * HA alkalmazás config referencia (`map`, `ingress`, `hassio_role`, sémák):
-  <https://developers.home-assistant.io/docs/alkalmazások/configuration/>
+  <https://developers.home-assistant.io/docs/add-ons/configuration/>
 * AdGuard Home alkalmazás `config.yaml` (host_network, ingress, `80/tcp: null`,
   `backup_exclude: */adguard/data/querylog.*`):
   `hassio-addons/addon-adguard-home` → `adguard/config.yaml`

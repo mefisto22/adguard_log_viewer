@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.2.2
+
+**Two links that pointed somewhere else.** *(Magyarul lentebb.)*
+
+- The "open the … page" link on the app card in Home Assistant led to a
+  different owner and repository than this project's own. `config.yaml` and
+  `build.yaml` now carry the real address, the one `repository.yaml` and the git
+  remote already had.
+- Renaming "add-on" to "app" in 0.2.1 rewrote a URL along with the prose, so the
+  Home Assistant developer-documentation reference in `ARCHITECTURE.md` pointed
+  at a path that does not exist. Restored.
+- Both are now tested: the project URLs are checked against the remote this was
+  cloned from, every relative link and heading anchor in the documents is
+  resolved, and a URL containing an accented character — the fingerprint of a
+  search-and-replace that reached inside a link — fails the build.
+
+---
+
+**Két link, ami máshová mutatott.**
+
+- A Home Assistant alkalmazáskártyáján a „nyissa meg a(z) … oldalát" link egy
+  másik tulajdonoshoz és másik tárolóhoz vezetett. A `config.yaml` és a
+  `build.yaml` mostantól a valódi címet tartalmazza — ugyanazt, ami a
+  `repository.yaml`-ban és a git remote-ban eddig is szerepelt.
+- A 0.2.1-ben az „add-on” → „alkalmazás” átnevezés a szöveggel együtt egy URL-t
+  is átírt, így az `ARCHITECTURE.md`-ben a Home Assistant fejlesztői
+  dokumentációjára mutató hivatkozás nem létező útvonalra vitt. Javítva.
+- Mindkettőre van már teszt: a projekt URL-jeit a klónozás forrásához
+  hasonlítjuk, a dokumentumok minden relatív linkjét és címsor-horgonyát
+  feloldjuk, és az ékezetes karaktert tartalmazó URL — ami egy linkbe belenyúló
+  csere árulkodó jele — megbuktatja a buildet.
+
 ## 0.2.1
 
 **"Add-on" is now "app".** *(Magyarul lentebb.)*

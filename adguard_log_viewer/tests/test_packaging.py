@@ -302,3 +302,44 @@ class TestOptionTranslations:
         ports = set(config.get("ports") or {})
         for language, data in translations.items():
             assert set(data.get("network") or {}) == ports, f"{language}.yaml: ports differ"
+
+
+class TestProjectUrls:
+    """Every link that points at this project has to point at *this* project.
+
+    The app card in Home Assistant renders `url` from ``config.yaml`` as
+    "open the … page". It once carried a different owner and repository name
+    than the actual remote, and nothing caught it: the two files that held a URL
+    agreed with each other, so any check that only compared them would have
+    passed. The remote is what makes this testable.
+    """
+
+    @pytest.fixture(scope="class")
+    def repository(self) -> dict:
+        with (REPO_ROOT / "repository.yaml").open(encoding="utf-8") as handle:
+            return yaml.safe_load(handle)
+
+    @staticmethod
+    def normalise(url: str) -> str:
+        return url.strip().rstrip("/").removesuffix(".git").lower()
+
+    def test_the_config_url_matches_the_repository_descriptor(
+        self, config: dict, repository: dict
+    ) -> None:
+        assert self.normalise(config["url"]) == self.normalise(repository["url"])
+
+    def test_the_image_source_label_matches_too(self, repository: dict) -> None:
+        with (ADDON_ROOT / "build.yaml").open(encoding="utf-8") as handle:
+            build = yaml.safe_load(handle)
+        source = (build.get("labels") or {})["org.opencontainers.image.source"]
+        assert self.normalise(source) == self.normalise(repository["url"])
+
+    @needs_git
+    def test_they_match_the_remote_this_was_cloned_from(self, repository: dict) -> None:
+        remote = git("remote", "get-url", "origin")
+        if remote.returncode != 0:
+            pytest.skip("no origin remote configured")
+        # A fork legitimately fails this until it points the links at itself,
+        # which is exactly what a fork should do — otherwise its app card sends
+        # people to somebody else's repository.
+        assert self.normalise(remote.stdout) == self.normalise(repository["url"])
