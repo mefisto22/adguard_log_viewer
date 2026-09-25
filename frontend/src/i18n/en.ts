@@ -468,6 +468,8 @@ export const en = {
   'settings.about': 'About',
   'settings.version': 'Version',
   'settings.started': 'Started',
+  'settings.descriptors': 'Open file descriptors',
+  'settings.descriptorsValue': '{open} of {limit}',
   'settings.privacy': 'Privacy',
   'settings.privacyText':
     'No DNS data leaves this machine. There is no telemetry, no cloud analytics and no external API call other than to AdGuard Home and the Supervisor.',

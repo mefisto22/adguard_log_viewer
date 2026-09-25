@@ -14,6 +14,7 @@ import time
 from contextlib import suppress
 from typing import Any
 
+from app.common.resources import DescriptorWatch
 from app.common.timeutil import now_ns
 from app.db.sqlutil import kv_get, kv_set
 from app.ingest.provider import Checkpoint
@@ -43,6 +44,7 @@ class Ingestor:
         self._last_client_names = 0.0
         self._last_cleanup = 0.0
         self._consecutive_errors = 0
+        self._descriptors = DescriptorWatch()
 
     # -- lifecycle ----------------------------------------------------------
 
@@ -71,6 +73,7 @@ class Ingestor:
         _LOGGER.info("Ingest loop started (every %ds)", settings.poll_interval)
         while not self._stopping.is_set():
             delay = float(settings.poll_interval)
+            self._descriptors.check()
             try:
                 stats = await self.run_once()
                 self._consecutive_errors = 0

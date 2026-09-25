@@ -6,8 +6,14 @@ Design notes
   aggregation) never blocks the ingest writer and vice versa.
 * Exactly one *write* connection exists, guarded by a lock. SQLite allows a
   single writer anyway, and serialising it here gives clean transactions.
-* *Read* connections are thread-local, because the FastAPI handlers run their
-  database work in a thread pool via :func:`run_read`.
+* *Read* connections come from a **fixed-size pool**, not one per thread.
+  The handlers run their database work on anyio's worker threads, and anyio
+  retires a worker that has been idle for ten seconds. Tying a connection to
+  a thread therefore opened a new connection for every new worker — and kept
+  the old ones, which nothing ever closed. Each costs two or three file
+  descriptors (the database, its ``-wal``, its ``-shm``), so a few hours of
+  "poll, go quiet, poll" exhausted the process limit and the server stopped
+  accepting connections altogether. A pool makes the count a constant.
 * ``sqlite3`` has no ``REGEXP`` implementation; one is registered per connection
   so the filter engine can offer a ``regex`` operator.
 """
@@ -15,6 +21,7 @@ Design notes
 from __future__ import annotations
 
 import logging
+import queue
 import re
 import sqlite3
 import threading
@@ -39,6 +46,31 @@ DEFAULT_READ_TIMEOUT = 30.0
 
 #: How often SQLite calls the progress handler, in virtual machine steps.
 PROGRESS_STEPS = 20_000
+
+#: Read connections kept open. The dashboard issues its ten parts at once and
+#: the ingest loop reads alongside it, so twelve lets that run in parallel; a
+#: read beyond it waits for a connection rather than opening another.
+READER_POOL_SIZE = 12
+
+#: How long a read waits for a free connection before giving up. Reaching it
+#: means every connection is held by a query that is itself past its own
+#: deadline, which :data:`DEFAULT_READ_TIMEOUT` already bounds.
+READER_WAIT_SECONDS = DEFAULT_READ_TIMEOUT * 2
+
+
+class _Reader:
+    """A pooled read connection and the deadline of the query it is running.
+
+    The deadline lives here, not in thread-local state: a pooled connection
+    serves many threads over its life, and the progress handler has to judge
+    the query that is running on it *now*.
+    """
+
+    __slots__ = ("conn", "deadline")
+
+    def __init__(self, conn: sqlite3.Connection) -> None:
+        self.conn = conn
+        self.deadline = 0.0
 
 
 class QueryTimeout(RuntimeError):
@@ -95,8 +127,12 @@ class Database:
         self.read_timeout = read_timeout
         self._write_conn: sqlite3.Connection | None = None
         self._write_lock = threading.RLock()
+        # Which pooled reader, if any, this thread is inside — so a read nested
+        # in another read reuses the connection instead of taking a second one
+        # (which, with every connection taken, would wait on itself forever).
         self._local = threading.local()
-        self._readers: list[sqlite3.Connection] = []
+        self._pool: queue.LifoQueue[_Reader] = queue.LifoQueue()
+        self._readers: list[_Reader] = []
         self._readers_lock = threading.Lock()
         self._closed = False
 
@@ -121,10 +157,11 @@ class Database:
     def close(self) -> None:
         self._closed = True
         with self._readers_lock:
-            for conn in self._readers:
+            for reader in self._readers:
                 with suppress(sqlite3.Error):  # best effort during shutdown
-                    conn.close()
+                    reader.conn.close()
             self._readers.clear()
+        self._pool = queue.LifoQueue()
         self._local = threading.local()
         with self._write_lock:
             if self._write_conn is not None:
@@ -141,47 +178,72 @@ class Database:
             raise RuntimeError("Database.connect() has not been called")
         return self._write_conn
 
-    def _reader(self) -> sqlite3.Connection:
-        conn: sqlite3.Connection | None = getattr(self._local, "conn", None)
-        if conn is not None:
-            return conn
-        if self._closed:
-            raise RuntimeError("Database is closed")
-        if str(self.path) == ":memory:":
-            # An in-memory database cannot be reopened; share the writer.
-            conn = self.write_connection
-        else:
-            conn = sqlite3.connect(str(self.path), check_same_thread=False, timeout=30.0)
-            _configure(conn, read_only=True)
-            self._install_deadline(conn)
-            with self._readers_lock:
-                self._readers.append(conn)
-        self._local.conn = conn
-        return conn
+    @property
+    def reader_count(self) -> int:
+        """Read connections currently open. Constant once the pool has filled."""
+        with self._readers_lock:
+            return len(self._readers)
 
-    def _install_deadline(self, conn: sqlite3.Connection) -> None:
-        """Let SQLite abort a statement that outlives its deadline.
-
-        The handler reads the deadline from thread-local state, which
-        :meth:`read` sets around the work it yields for. Returning non-zero
-        makes SQLite raise ``OperationalError: interrupted``.
-        """
-        local = self._local
+    def _open_reader(self) -> _Reader:
+        conn = sqlite3.connect(str(self.path), check_same_thread=False, timeout=30.0)
+        _configure(conn, read_only=True)
+        reader = _Reader(conn)
 
         def _handler() -> int:
-            deadline = getattr(local, "deadline", 0.0)
+            deadline = reader.deadline
             return 1 if deadline and time.monotonic() > deadline else 0
 
+        # Returning non-zero makes SQLite raise ``OperationalError: interrupted``.
         conn.set_progress_handler(_handler, PROGRESS_STEPS)
+        return reader
+
+    def _acquire(self) -> _Reader:
+        if self._closed:
+            raise RuntimeError("Database is closed")
+        try:
+            return self._pool.get_nowait()
+        except queue.Empty:
+            pass
+        with self._readers_lock:
+            if len(self._readers) < READER_POOL_SIZE:
+                reader = self._open_reader()
+                self._readers.append(reader)
+                return reader
+        try:
+            return self._pool.get(timeout=READER_WAIT_SECONDS)
+        except queue.Empty:
+            raise RuntimeError(
+                "No database connection became free; every one is held by a running query"
+            ) from None
+
+    def _release(self, reader: _Reader) -> None:
+        reader.deadline = 0.0
+        if self._closed:
+            with suppress(sqlite3.Error):
+                reader.conn.close()
+            return
+        if reader.conn.in_transaction:
+            # Reads do not open transactions, but a connection handed on must
+            # never carry one — the next reader would see a stale snapshot.
+            with suppress(sqlite3.Error):
+                reader.conn.rollback()
+        self._pool.put(reader)
 
     @contextmanager
     def read(self) -> Iterator[sqlite3.Connection]:
         """Yield a read-only connection, bounded by :attr:`read_timeout`."""
-        conn = self._reader()
-        previous = getattr(self._local, "deadline", 0.0)
-        self._local.deadline = time.monotonic() + self.read_timeout
+        if str(self.path) == ":memory:":
+            # An in-memory database cannot be reopened; share the writer.
+            yield self.write_connection
+            return
+
+        outer: _Reader | None = getattr(self._local, "reader", None)
+        reader = outer if outer is not None else self._acquire()
+        previous = reader.deadline
+        reader.deadline = time.monotonic() + self.read_timeout
+        self._local.reader = reader
         try:
-            yield conn
+            yield reader.conn
         except sqlite3.OperationalError as err:
             if "interrupted" in str(err).lower():
                 raise QueryTimeout(
@@ -194,7 +256,10 @@ class Database:
                 ) from err
             raise
         finally:
-            self._local.deadline = previous
+            reader.deadline = previous
+            if outer is None:
+                self._local.reader = None
+                self._release(reader)
 
     @contextmanager
     def write(self) -> Iterator[sqlite3.Connection]:

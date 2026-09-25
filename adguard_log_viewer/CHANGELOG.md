@@ -1,5 +1,59 @@
 # Changelog
 
+## 0.3.1
+
+**Fixes the app losing its connection after a while.** *(Magyarul lentebb.)*
+
+The log of that outage was ten thousand copies of one line —
+`OSError: [Errno 24] No file descriptors available` — all within one second.
+The process had run out of file descriptors and could no longer accept a
+connection, so the web interface went dead.
+
+- **The cause:** each database read ran on one of anyio's worker threads, and
+  each thread opened its own SQLite connection. anyio retires a worker after
+  ten idle seconds and starts a new one for the next job; the new one opened a
+  new connection, and the retired one's was kept in a list for shutdown and
+  never closed. Measured against a running server, every dashboard load after
+  a quiet spell leaked about 18 descriptors, without limit. Read connections
+  now come from a fixed pool of twelve, so the count stays constant no matter
+  how threads come and go.
+- **Why it did not recover:** the app never told the Supervisor how to check
+  it. It now declares a watchdog on `/api/health`. **Turn on the Watchdog
+  switch on the app's Info tab** — the Supervisor keeps it off until you do —
+  and a stopped app is restarted automatically.
+- **Visibility:** the number of open file descriptors, against the limit, is on
+  **Settings → About**, and the log warns once at 80% — so a future leak shows
+  up long before it stops anything. The flood of identical lines had pushed the
+  real cause out of the log entirely.
+
+---
+
+**Javítja, hogy az alkalmazás egy idő után elveszítette a kapcsolatot.**
+
+A leállás logja egyetlen sor tízezer másolata volt —
+`OSError: [Errno 24] No file descriptors available` —, mind egy másodpercen
+belül. A folyamat kifogyott a fájlleírókból, nem tudott több kapcsolatot
+fogadni, így a webes felület elérhetetlenné vált.
+
+- **Az ok:** minden adatbázis-olvasás az anyio egyik worker-szálán futott, és
+  minden szál saját SQLite kapcsolatot nyitott. Az anyio tíz másodperc
+  üresjárat után leállít egy workert, és a következő feladathoz újat indít; az
+  új új kapcsolatot nyitott, a leállított szálé pedig egy listában maradt a
+  leállításhoz, és sosem záródott be. Futó szerveren mérve minden, szünet utáni
+  vezérlőpult-betöltés körülbelül 18 fájlleírót szivárogtatott el, korlát
+  nélkül. Az olvasó kapcsolatok mostantól egy rögzített, tizenkét elemű
+  készletből jönnek, így a számuk állandó, akárhogy jönnek-mennek a szálak.
+- **Miért nem állt helyre magától:** az alkalmazás sosem mondta meg a
+  Supervisornak, hogyan ellenőrizze. Mostantól watchdogot ad meg a
+  `/api/health` végpontra. **Kapcsold be a Watchdog kapcsolót az alkalmazás
+  Információ lapján** — a Supervisor kikapcsolva tartja, amíg ezt meg nem
+  teszed —, és egy leállt alkalmazást automatikusan újraindít.
+- **Láthatóság:** a nyitott fájlleírók száma a korláthoz képest a
+  **Beállítások → Névjegy** részen látszik, és a log 80%-nál egyszer
+  figyelmeztet — így egy jövőbeli szivárgás jóval azelőtt kiderül, hogy bármit
+  leállítana. Az azonos sorok áradata a valódi okot teljesen kiszorította a
+  logból.
+
 ## 0.3.0
 
 **Resizable columns, and a timestamp that fits.** *(Magyarul lentebb.)*

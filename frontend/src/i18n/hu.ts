@@ -479,6 +479,8 @@ export const hu: Record<keyof typeof en, string> = {
   'settings.about': 'Névjegy',
   'settings.version': 'Verzió',
   'settings.started': 'Elindult',
+  'settings.descriptors': 'Nyitott fájlleírók',
+  'settings.descriptorsValue': '{open} / {limit}',
   'settings.privacy': 'Adatvédelem',
   'settings.privacyText':
     'A DNS adatok nem hagyják el ezt a gépet. Nincs telemetria, nincs felhős analitika, és az AdGuard Home-on és a Supervisoron kívül semmilyen külső API-t nem hív.',

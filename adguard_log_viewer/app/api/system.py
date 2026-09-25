@@ -10,6 +10,7 @@ from fastapi import APIRouter, HTTPException
 from app import __version__
 from app.api.deps import DbDep, StateDep, ok
 from app.categorization.matchers import OPERATORS as MATCH_OPERATORS
+from app.common.resources import descriptor_usage
 from app.common.timeutil import NAMED_RANGES, now_ns
 from app.db.migrations import current_version, target_version
 from app.filters.fields import all_fields
@@ -69,6 +70,7 @@ async def status(db: DbDep, state: StateDep) -> dict[str, Any]:
             "ruleset_rev": state.ruleset_rev,
         },
         "stream": {"subscribers": state.events.subscriber_count},
+        "process": {"descriptors": usage.as_dict() if (usage := descriptor_usage()) else None},
     }
 
 

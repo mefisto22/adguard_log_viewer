@@ -396,6 +396,18 @@ export function SettingsPage() {
           <dl className="kv">
             <Row label={t('settings.version')}>{status.version}</Row>
             <Row label={t('settings.started')}>{formatDateTime(status.started_at_ns)}</Row>
+            {status.process?.descriptors ? (
+              <Row label={t('settings.descriptors')}>
+                <span
+                  className={status.process.descriptors.ratio >= 0.8 ? 'badge blocked' : undefined}
+                >
+                  {t('settings.descriptorsValue', {
+                    open: formatNumber(status.process.descriptors.open),
+                    limit: formatNumber(status.process.descriptors.limit),
+                  })}
+                </span>
+              </Row>
+            ) : null}
             <Row label={t('settings.privacy')}>{t('settings.privacyText')}</Row>
           </dl>
         </Section>

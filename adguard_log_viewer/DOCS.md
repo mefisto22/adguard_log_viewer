@@ -218,6 +218,23 @@ The interface uses Server-Sent Events. If the stream cannot be established the
 app falls back to polling every 15 seconds — the *Live* indicator stays green,
 it just refreshes more slowly.
 
+### Turn on the Watchdog
+
+On the app's **Info** tab, switch **Watchdog** on. The Supervisor then checks
+the app every few seconds and restarts it if it stops answering. The app
+declares where to look; the switch itself is off until you turn it on, because
+the Supervisor stores it that way for every app.
+
+### The interface lost its connection, and the log is full of `EMFILE`
+
+The log shows thousands of lines like
+`OSError: [Errno 24] No file descriptors available` within one second. The
+process ran out of file descriptors and stopped accepting connections. Up to
+0.3.0 the app leaked them: every read opened a database connection per worker
+thread and never closed it. 0.3.1 fixes that. Restart the app, turn on the
+Watchdog above, and — if it ever recurs — look at **Settings → About → Open
+file descriptors**: it should stay flat.
+
 ### The database is large
 
 The **Settings → Database** section shows its size. Lower `retention_days`, then
@@ -471,6 +488,25 @@ A **Settings** oldal megmondja, mit lát az alkalmazás. A gyakori okok:
 A felület Server-Sent Events-et használ. Ha a stream nem épül fel, az alkalmazás
 automatikusan 15 másodperces lekérdezésre vált — a *Live* jelző ilyenkor is zöld
 marad, csak lassabban frissül.
+
+### Kapcsold be a Watchdogot
+
+Az alkalmazás **Információ** lapján kapcsold be a **Watchdog** kapcsolót. A
+Supervisor ettől kezdve néhány másodpercenként ellenőrzi az alkalmazást, és
+újraindítja, ha nem válaszol. Az alkalmazás megadja, hol ellenőrizze; a
+kapcsoló viszont ki van kapcsolva, amíg be nem kapcsolod, mert a Supervisor
+minden alkalmazásnál így tárolja.
+
+### Megszakadt a kapcsolat a felülettel, és a log tele van `EMFILE`-lal
+
+A logban egyetlen másodperc alatt több ezer ilyen sor jelenik meg:
+`OSError: [Errno 24] No file descriptors available`. A folyamat kifogyott a
+fájlleírókból, és nem fogadott több kapcsolatot. A 0.3.0-ig az alkalmazás
+szivárogtatta őket: minden olvasás worker-szálanként nyitott egy adatbázis-
+kapcsolatot, és sosem zárta be. A 0.3.1 ezt javítja. Indítsd újra az
+alkalmazást, kapcsold be a fenti Watchdogot, és — ha valaha újra előfordulna —
+nézd meg a **Beállítások → Névjegy → Nyitott fájlleírók** sort: annak
+állandónak kell maradnia.
 
 ### Az adatbázis nagy
 

@@ -1,3 +1,3 @@
 """AdGuard Log Viewer — DNS query log viewer and analyzer for Home Assistant."""
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"

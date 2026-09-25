@@ -169,6 +169,27 @@ class TestAddonConfig:
         }
         assert not (used & deprecated), f"deprecated map types: {sorted(used & deprecated)}"
 
+    def test_the_watchdog_targets_the_health_endpoint(self, config: dict) -> None:
+        """Without a watchdog, an app that stops answering stays stopped.
+
+        That happened once: the process ran out of file descriptors, stopped
+        accepting connections, and nothing restarted it. The URL has to match
+        the pattern the Supervisor parses (``supervisor/apps/app.py``,
+        ``RE_WATCHDOG``) and name the internal port the server listens on.
+        """
+        import re
+
+        watchdog = config.get("watchdog")
+        assert watchdog, "no watchdog configured"
+        pattern = re.compile(
+            r"^(?:(?P<s_prefix>https?|tcp)|\[PROTO:(?P<t_proto>\w+)\])"
+            r":\/\/\[HOST\]:(?:\[PORT:)?(?P<t_port>\d+)\]?(?P<s_suffix>.*)$"
+        )
+        match = pattern.match(watchdog)
+        assert match, f"the Supervisor would ignore this watchdog URL: {watchdog}"
+        assert int(match["t_port"]) == config["ingress_port"]
+        assert match["s_suffix"] == "/api/health"
+
     def test_ingress_is_configured(self, config: dict) -> None:
         assert config.get("ingress") is True
         assert isinstance(config.get("ingress_port"), int)

@@ -1,6 +1,6 @@
 ---
 name: AdGuard Log Viewer
-version: "0.3.0"
+version: "0.3.1"
 slug: adguard_log_viewer
 description: >-
   Search, filter and analyse the AdGuard Home DNS query log — per device, per
@@ -23,6 +23,13 @@ ingress_stream: true
 panel_icon: mdi:dns
 panel_title: DNS Log
 panel_admin: true
+
+# Lets the Supervisor restart the app when it stops answering. The Supervisor
+# requests this on the container's own address and internal port, so it works
+# with nothing published. The per-install "Watchdog" switch still has to be on
+# for it to act: the Supervisor stores that switch as off until the user turns
+# it on.
+watchdog: http://[HOST]:[PORT:8099]/api/health
 
 # Optional direct access for people who want to reach the UI without going
 # through Home Assistant. Left unset, nothing is published.

@@ -289,6 +289,8 @@ export interface Status {
     ruleset_rev: number;
   };
   stream: { subscribers: number };
+  /** Null where the platform cannot report it. */
+  process?: { descriptors: { open: number; limit: number; ratio: number } | null };
 }
 
 export interface AppSettings {
